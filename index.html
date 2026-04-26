@@ -174,12 +174,23 @@ function getSlots(date, cid, bookings) {
   const baseSlots = SLOTS.filter((_,i) => ((s*(i+1)) % 5) !== 0 && !(i>=5 && i<=6));
   if (!cid || !Array.isArray(bookings)) return baseSlots;
   const dateStr = `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,"0")}-${String(date.getDate()).padStart(2,"0")}`;
-  const taken = new Set(
-    bookings
-      .filter(b => b.date === dateStr && b.status === "confirmed" && (cid === "any" || b.consultant === cid))
-      .map(b => b.time)
-  );
-  return baseSlots.filter(slot => !taken.has(slot));
+  const matches = bookings.filter(b => b.date === dateStr && b.status === "confirmed" && (cid === "any" || b.consultant === cid));
+  // Whole-day blocks wipe out availability
+  if (matches.some(b => b.time === "ALL_DAY")) return [];
+  // Hour-range blocks: from b.time to b.endTime (exclusive end)
+  const isBlocked = (slot) => {
+    return matches.some(b => {
+      if (b.time === slot) return true;
+      if (b.endTime && SLOTS.includes(b.time) && SLOTS.includes(b.endTime)) {
+        const start = SLOTS.indexOf(b.time);
+        const end = SLOTS.indexOf(b.endTime);
+        const idx = SLOTS.indexOf(slot);
+        return idx >= start && idx < end;
+      }
+      return false;
+    });
+  };
+  return baseSlots.filter(slot => !isBlocked(slot));
 }
 // ── ICS CALENDAR GENERATOR ────────────────────────────────────────────────────
 // Creates a .ics file Gary can tap to add appointment to Apple/Google Calendar
@@ -1020,8 +1031,11 @@ const NAV=[
 function SalesPortal({ bookings, salesAuth, setSalesAuth, onAddBlock, onRemoveBlock }) {
   const [pin, setPin] = useState("");
   const [err, setErr] = useState("");
+  const [blockMode, setBlockMode] = useState("allday");
   const [blockDate, setBlockDate] = useState("");
+  const [blockEndDate, setBlockEndDate] = useState("");
   const [blockTime, setBlockTime] = useState("");
+  const [blockEndTime, setBlockEndTime] = useState("");
   const [blockReason, setBlockReason] = useState("");
 
   const tryLogin = () => {
@@ -1057,25 +1071,37 @@ function SalesPortal({ bookings, salesAuth, setSalesAuth, onAddBlock, onRemoveBl
   const myAppts = myBookings.filter(b => b.source !== "Block").sort((a,b) => new Date(a.date) - new Date(b.date));
 
   const submitBlock = () => {
-    if (!blockDate || !blockTime) return;
-    onAddBlock({
-      id: "BLK-" + Date.now(),
+    const baseBlock = (date, time, endTime) => ({
+      id: "BLK-" + Date.now() + "-" + Math.floor(Math.random()*1000),
       name: "BLOCKED · " + me.name,
-      email: "",
-      phone: "",
-      type: "Time Block",
+      email: "", phone: "",
+      type: blockMode==="allday" ? "Day Off" : blockMode==="hours" ? "Hours Off" : "Slot Block",
       apptId: "block",
       consultant: salesAuth,
-      date: blockDate,
-      time: blockTime,
-      duration: 30,
+      date: date, time: time,
+      endTime: endTime || "",
+      duration: blockMode==="allday" ? 480 : blockMode==="hours" ? 60 : 30,
       status: "confirmed",
       notes: blockReason || "(no reason given)",
-      occasion: "",
-      budget: "",
+      occasion: "", budget: "",
       source: "Block",
     });
-    setBlockDate(""); setBlockTime(""); setBlockReason("");
+    if (blockMode==="allday") {
+      if (!blockDate) return;
+      const start = new Date(blockDate + "T12:00:00");
+      const end = new Date((blockEndDate || blockDate) + "T12:00:00");
+      for (let d = new Date(start); d <= end; d.setDate(d.getDate()+1)) {
+        const ds = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+        onAddBlock(baseBlock(ds, "ALL_DAY"));
+      }
+    } else if (blockMode==="hours") {
+      if (!blockDate || !blockTime || !blockEndTime) return;
+      onAddBlock(baseBlock(blockDate, blockTime, blockEndTime));
+    } else {
+      if (!blockDate || !blockTime) return;
+      onAddBlock(baseBlock(blockDate, blockTime));
+    }
+    setBlockDate(""); setBlockEndDate(""); setBlockTime(""); setBlockEndTime(""); setBlockReason("");
   };
 
   return (
@@ -1106,28 +1132,94 @@ function SalesPortal({ bookings, salesAuth, setSalesAuth, onAddBlock, onRemoveBl
         ))}
       </Card>
 
-      <Lbl c="Block off a time"/>
+      <Lbl c="Block off time"/>
       <Card mb={18}>
         <div style={{padding:"18px 16px"}}>
-          <div style={{fontFamily:B.sans,fontSize:12,color:B.gray,lineHeight:1.7,marginBottom:14}}>Use this when you're booked for personal reasons, lunch, or out of office. Customers won't see this slot in the booking flow.</div>
-          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:9,marginBottom:11}}>
-            <div>
-              <div style={{fontFamily:B.sans,fontSize:11,letterSpacing:"0.16em",textTransform:"uppercase",color:B.gray,marginBottom:5}}>Date</div>
-              <input type="date" value={blockDate} min={todayStr} onChange={e=>setBlockDate(e.target.value)} style={{width:"100%",padding:"11px 12px",border:`1px solid ${B.border}`,fontFamily:B.sans,fontSize:14,color:B.black,outline:"none",boxSizing:"border-box"}}/>
-            </div>
-            <div>
-              <div style={{fontFamily:B.sans,fontSize:11,letterSpacing:"0.16em",textTransform:"uppercase",color:B.gray,marginBottom:5}}>Time</div>
-              <select value={blockTime} onChange={e=>setBlockTime(e.target.value)} style={{width:"100%",padding:"11px 12px",border:`1px solid ${B.border}`,fontFamily:B.sans,fontSize:14,color:B.black,outline:"none",boxSizing:"border-box",background:B.white}}>
-                <option value="">Pick a slot…</option>
-                {SLOTS.map(s => <option key={s} value={s}>{s}</option>)}
-              </select>
-            </div>
+          {/* Mode tabs */}
+          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:1,background:B.border,marginBottom:16}}>
+            {[{id:"allday",lbl:"Days Off"},{id:"hours",lbl:"Hours Off"},{id:"slot",lbl:"One Slot"}].map(m=>(
+              <button key={m.id} onClick={()=>setBlockMode(m.id)} style={{padding:"10px 8px",border:"none",background: blockMode===m.id ? B.black : B.white,color: blockMode===m.id ? B.white : B.black,fontFamily:B.sans,fontSize:11,letterSpacing:"0.12em",textTransform:"uppercase",cursor:"pointer"}}>
+                {m.lbl}
+              </button>
+            ))}
           </div>
+
+          <div style={{fontFamily:B.sans,fontSize:12,color:B.gray,lineHeight:1.7,marginBottom:14}}>
+            {blockMode==="allday" && "Block one or more whole days. Pick a single date, or set both fields for a range (e.g. vacation, training)."}
+            {blockMode==="hours" && "Block a stretch of hours on a single day. Pick start + end (e.g. 1:00–5:00 PM means you're not available those four hours)."}
+            {blockMode==="slot" && "Block a single 30-minute slot. Use this for short personal appointments."}
+          </div>
+
+          {blockMode==="allday" && (
+            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:9,marginBottom:13}}>
+              <div>
+                <div style={{fontFamily:B.sans,fontSize:11,letterSpacing:"0.16em",textTransform:"uppercase",color:B.gray,marginBottom:5}}>From</div>
+                <input type="date" value={blockDate} min={todayStr} onChange={e=>setBlockDate(e.target.value)} style={{width:"100%",padding:"11px 12px",border:`1px solid ${B.border}`,fontFamily:B.sans,fontSize:14,color:B.black,outline:"none",boxSizing:"border-box"}}/>
+              </div>
+              <div>
+                <div style={{fontFamily:B.sans,fontSize:11,letterSpacing:"0.16em",textTransform:"uppercase",color:B.gray,marginBottom:5}}>Until (optional)</div>
+                <input type="date" value={blockEndDate} min={blockDate||todayStr} onChange={e=>setBlockEndDate(e.target.value)} placeholder="(same day)" style={{width:"100%",padding:"11px 12px",border:`1px solid ${B.border}`,fontFamily:B.sans,fontSize:14,color:B.black,outline:"none",boxSizing:"border-box"}}/>
+              </div>
+            </div>
+          )}
+
+          {blockMode==="hours" && (
+            <>
+              <div style={{marginBottom:9}}>
+                <div style={{fontFamily:B.sans,fontSize:11,letterSpacing:"0.16em",textTransform:"uppercase",color:B.gray,marginBottom:5}}>Date</div>
+                <input type="date" value={blockDate} min={todayStr} onChange={e=>setBlockDate(e.target.value)} style={{width:"100%",padding:"11px 12px",border:`1px solid ${B.border}`,fontFamily:B.sans,fontSize:14,color:B.black,outline:"none",boxSizing:"border-box"}}/>
+              </div>
+              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:9,marginBottom:13}}>
+                <div>
+                  <div style={{fontFamily:B.sans,fontSize:11,letterSpacing:"0.16em",textTransform:"uppercase",color:B.gray,marginBottom:5}}>From</div>
+                  <select value={blockTime} onChange={e=>setBlockTime(e.target.value)} style={{width:"100%",padding:"11px 12px",border:`1px solid ${B.border}`,fontFamily:B.sans,fontSize:14,color:B.black,outline:"none",boxSizing:"border-box",background:B.white}}>
+                    <option value="">—</option>
+                    {SLOTS.map(s => <option key={s} value={s}>{s}</option>)}
+                  </select>
+                </div>
+                <div>
+                  <div style={{fontFamily:B.sans,fontSize:11,letterSpacing:"0.16em",textTransform:"uppercase",color:B.gray,marginBottom:5}}>Until</div>
+                  <select value={blockEndTime} onChange={e=>setBlockEndTime(e.target.value)} style={{width:"100%",padding:"11px 12px",border:`1px solid ${B.border}`,fontFamily:B.sans,fontSize:14,color:B.black,outline:"none",boxSizing:"border-box",background:B.white}}>
+                    <option value="">—</option>
+                    {SLOTS.map(s => <option key={s} value={s}>{s}</option>)}
+                  </select>
+                </div>
+              </div>
+            </>
+          )}
+
+          {blockMode==="slot" && (
+            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:9,marginBottom:13}}>
+              <div>
+                <div style={{fontFamily:B.sans,fontSize:11,letterSpacing:"0.16em",textTransform:"uppercase",color:B.gray,marginBottom:5}}>Date</div>
+                <input type="date" value={blockDate} min={todayStr} onChange={e=>setBlockDate(e.target.value)} style={{width:"100%",padding:"11px 12px",border:`1px solid ${B.border}`,fontFamily:B.sans,fontSize:14,color:B.black,outline:"none",boxSizing:"border-box"}}/>
+              </div>
+              <div>
+                <div style={{fontFamily:B.sans,fontSize:11,letterSpacing:"0.16em",textTransform:"uppercase",color:B.gray,marginBottom:5}}>Time</div>
+                <select value={blockTime} onChange={e=>setBlockTime(e.target.value)} style={{width:"100%",padding:"11px 12px",border:`1px solid ${B.border}`,fontFamily:B.sans,fontSize:14,color:B.black,outline:"none",boxSizing:"border-box",background:B.white}}>
+                  <option value="">Pick a slot…</option>
+                  {SLOTS.map(s => <option key={s} value={s}>{s}</option>)}
+                </select>
+              </div>
+            </div>
+          )}
+
           <div style={{marginBottom:13}}>
             <div style={{fontFamily:B.sans,fontSize:11,letterSpacing:"0.16em",textTransform:"uppercase",color:B.gray,marginBottom:5}}>Reason (optional)</div>
-            <input type="text" value={blockReason} onChange={e=>setBlockReason(e.target.value)} placeholder="Lunch, doctor, off-site, etc." style={{width:"100%",padding:"11px 12px",border:`1px solid ${B.border}`,fontFamily:B.sans,fontSize:14,color:B.black,outline:"none",boxSizing:"border-box"}}/>
+            <input type="text" value={blockReason} onChange={e=>setBlockReason(e.target.value)} placeholder="Lunch, vacation, off-site, etc." style={{width:"100%",padding:"11px 12px",border:`1px solid ${B.border}`,fontFamily:B.sans,fontSize:14,color:B.black,outline:"none",boxSizing:"border-box"}}/>
           </div>
-          <button onClick={submitBlock} disabled={!blockDate || !blockTime} style={{width:"100%",padding:"13px",background:!blockDate || !blockTime ? "#e0e0da" : B.black,color:!blockDate || !blockTime ? B.gray : B.white,border:"none",fontFamily:B.sans,fontSize:13,letterSpacing:"0.14em",textTransform:"uppercase",cursor:!blockDate || !blockTime ? "not-allowed" : "pointer"}}>Block This Slot</button>
+
+          {(() => {
+            const ready = (blockMode==="allday" && blockDate)
+                       || (blockMode==="hours" && blockDate && blockTime && blockEndTime)
+                       || (blockMode==="slot" && blockDate && blockTime);
+            const label = blockMode==="allday" ? (blockEndDate ? "Block these days" : "Block this day")
+                        : blockMode==="hours" ? "Block these hours"
+                        : "Block this slot";
+            return (
+              <button onClick={submitBlock} disabled={!ready} style={{width:"100%",padding:"13px",background:!ready ? "#e0e0da" : B.black,color:!ready ? B.gray : B.white,border:"none",fontFamily:B.sans,fontSize:13,letterSpacing:"0.14em",textTransform:"uppercase",cursor:!ready ? "not-allowed" : "pointer"}}>{label}</button>
+            );
+          })()}
         </div>
       </Card>
 
@@ -1135,17 +1227,24 @@ function SalesPortal({ bookings, salesAuth, setSalesAuth, onAddBlock, onRemoveBl
       <Card>
         {myBlocks.length === 0 ? (
           <div style={{padding:"28px 16px",textAlign:"center",fontFamily:B.sans,fontSize:13,color:B.gray}}>No blocks set.</div>
-        ) : myBlocks.map((bl,i)=>(
-          <Row key={bl.id} last={i===myBlocks.length-1}>
-            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",gap:11}}>
-              <div>
-                <div style={{fontFamily:B.sans,fontSize:14,color:B.black,fontWeight:500}}>{bl.date} at {bl.time}</div>
-                <div style={{fontFamily:B.sans,fontSize:12,color:B.gray}}>{bl.notes}</div>
+        ) : myBlocks.map((bl,i)=>{
+          const display = bl.time === "ALL_DAY"
+            ? `${bl.date} — All day`
+            : bl.endTime
+              ? `${bl.date} — ${bl.time} to ${bl.endTime}`
+              : `${bl.date} at ${bl.time}`;
+          return (
+            <Row key={bl.id} last={i===myBlocks.length-1}>
+              <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",gap:11}}>
+                <div>
+                  <div style={{fontFamily:B.sans,fontSize:14,color:B.black,fontWeight:500}}>{display}</div>
+                  <div style={{fontFamily:B.sans,fontSize:12,color:B.gray}}>{bl.type} · {bl.notes}</div>
+                </div>
+                <button onClick={()=>onRemoveBlock(bl.id)} style={{fontFamily:B.sans,fontSize:11,letterSpacing:"0.1em",textTransform:"uppercase",padding:"7px 11px",background:B.white,border:`1px solid ${B.border}`,color:"#c0392b",cursor:"pointer"}}>Remove</button>
               </div>
-              <button onClick={()=>onRemoveBlock(bl.id)} style={{fontFamily:B.sans,fontSize:11,letterSpacing:"0.1em",textTransform:"uppercase",padding:"7px 11px",background:B.white,border:`1px solid ${B.border}`,color:"#c0392b",cursor:"pointer"}}>Remove</button>
-            </div>
-          </Row>
-        ))}
+            </Row>
+          );
+        })}
       </Card>
     </div>
   );
