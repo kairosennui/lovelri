@@ -657,6 +657,12 @@ function AdminDash({bookings,onStatus}) {
     .sort((a,b)=>new Date(a.date)-new Date(b.date));
   const byDate={};
   bookings.forEach(b=>{if(!byDate[b.date])byDate[b.date]=[];byDate[b.date].push(b);});
+  // For each date, the unique consultant ids working that day (color-coded dots)
+  const dateConsultants = (ds) => {
+    const dayBookings = byDate[ds] || [];
+    const cids = new Set(dayBookings.map(b => b.consultant).filter(c => c && c !== "any"));
+    return Array.from(cids);
+  };
   const dIM=getDaysInMonth(cy,cm);
   const fD=getFirstDay(cy,cm);
   return(
@@ -707,16 +713,39 @@ function AdminDash({bookings,onStatus}) {
               const isT=ds===todayStr;
               return(
                 <div key={day}
-                  onClick={()=> has && setDateFilter(ds === dateFilter ? null : ds)}
-                  style={{aspectRatio:"1",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",
+                  onClick={()=> setDateFilter(ds === dateFilter ? null : ds)}
+                  style={{aspectRatio:"0.85",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"flex-start",padding:"4px 2px 3px",gap:1,
                     background: ds===dateFilter ? B.black : (isT ? B.offwhite : "transparent"),
-                    border: ds===dateFilter ? `1px solid ${B.black}` : (isT ? `1px solid ${B.gold}` : "none"),
-                    position:"relative",cursor: has ? "pointer" : "default"}}>
-                  <span style={{fontFamily:B.sans,fontSize:12,color: ds===dateFilter ? B.white : B.black}}>{day}</span>
-                  {has && ds!==dateFilter && <div style={{width:4,height:4,borderRadius:"50%",background:B.gold,position:"absolute",bottom:2}}/>}
+                    border: ds===dateFilter ? `1px solid ${B.black}` : (isT ? `1px solid ${B.gold}` : `1px solid transparent`),
+                    cursor:"pointer",transition:"background 0.1s"}}
+                  onMouseEnter={e=>{ if(ds!==dateFilter) e.currentTarget.style.background=B.offwhite; }}
+                  onMouseLeave={e=>{ if(ds!==dateFilter) e.currentTarget.style.background = isT ? B.offwhite : "transparent"; }}>
+                  <span style={{fontFamily:B.sans,fontSize:13,color: ds===dateFilter ? B.white : B.black,lineHeight:1.1}}>{day}</span>
+                  {has && (
+                    <span style={{fontFamily:B.sans,fontSize:9,color: ds===dateFilter ? "rgba(255,255,255,0.7)" : B.gray,letterSpacing:"0.04em",lineHeight:1}}>
+                      {byDate[ds].length} {byDate[ds].length===1?"appt":"appts"}
+                    </span>
+                  )}
+                  {has && (
+                    <div style={{display:"flex",gap:2,marginTop:1,flexWrap:"wrap",justifyContent:"center"}}>
+                      {dateConsultants(ds).slice(0,4).map(cid=>{
+                        const t = TEAM.find(x=>x.id===cid);
+                        return <div key={cid} title={t?.name||cid} style={{width:6,height:6,borderRadius:"50%",background: t?.color||B.gold,border: ds===dateFilter?`1px solid ${B.white}`:"none"}}/>;
+                      })}
+                    </div>
+                  )}
                 </div>
               );
             })}
+          </div>
+          {/* Consultant legend */}
+          <div style={{display:"flex",flexWrap:"wrap",gap:9,padding:"8px 12px 9px",borderTop:`1px solid ${B.border}`}}>
+            {TEAM.filter(t=>t.id!=="any").map(t=>(
+              <div key={t.id} style={{display:"flex",alignItems:"center",gap:4,fontFamily:B.sans,fontSize:10,color:B.gray}}>
+                <div style={{width:6,height:6,borderRadius:"50%",background:t.color}}/>
+                <span>{t.name}</span>
+              </div>
+            ))}
           </div>
         </div>
       </div>
