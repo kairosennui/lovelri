@@ -706,9 +706,14 @@ function AdminDash({bookings,onStatus}) {
               const has=byDate[ds]?.length>0;
               const isT=ds===todayStr;
               return(
-                <div key={day} style={{aspectRatio:"1",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",background:isT?B.offwhite:"transparent",border:isT?`1px solid ${B.gold}`:"none",position:"relative"}}>
-                  <span style={{fontFamily:B.sans,fontSize:12,color:B.black}}>{day}</span>
-                  {has&&<div style={{width:4,height:4,borderRadius:"50%",background:B.gold,position:"absolute",bottom:2}}/>}
+                <div key={day}
+                  onClick={()=> has && setDateFilter(ds === dateFilter ? null : ds)}
+                  style={{aspectRatio:"1",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",
+                    background: ds===dateFilter ? B.black : (isT ? B.offwhite : "transparent"),
+                    border: ds===dateFilter ? `1px solid ${B.black}` : (isT ? `1px solid ${B.gold}` : "none"),
+                    position:"relative",cursor: has ? "pointer" : "default"}}>
+                  <span style={{fontFamily:B.sans,fontSize:12,color: ds===dateFilter ? B.white : B.black}}>{day}</span>
+                  {has && ds!==dateFilter && <div style={{width:4,height:4,borderRadius:"50%",background:B.gold,position:"absolute",bottom:2}}/>}
                 </div>
               );
             })}
@@ -1120,6 +1125,7 @@ const SECTIONS = [
 function Dashboard(){
   const [active,setActive]=useState("overview");
   const [refreshedAt] = useState(() => new Date());
+  const [leadStatusFilter,setLeadStatusFilter] = useState(null);
   const [prefill,setPrefill]=useState(null);
   const [leads,setLeads]=useState(()=>{
     try { const s=JSON.parse(localStorage.getItem("lovelri_leads")); if(Array.isArray(s)&&s.length>0) return s; } catch(e){}
@@ -1494,36 +1500,57 @@ function Dashboard(){
           const totalSubmissions = leads.length;
           const uniqueLeads = deduped.length;
           const Booked = deduped.filter(l => ["booked","sql","mql","won","lost"].includes(l.status)).length;
+          const MQLs = deduped.filter(l => l.status === "mql").length;
           const SQLs = deduped.filter(l => l.status === "sql" || l.status === "won").length;
           const Won = deduped.filter(l => l.status === "won").length;
+          const Lost = deduped.filter(l => l.status === "lost").length;
           const bookRate = uniqueLeads > 0 ? Math.round((Booked / uniqueLeads) * 100) : 0;
           const sqlRate  = Booked > 0 ? Math.round((SQLs / Booked) * 100) : 0;
           const winRate  = SQLs > 0 ? Math.round((Won / SQLs) * 100) : 0;
           return (
             <div style={{animation:"fadeIn 0.27s ease"}}>
               <Title sub="Real funnel deduplicated by email. Each step shows the conversion %. After a consultation, qualify the lead as SQL (hot), MQL (nurture), Lost, or Won.">Lead<br/><em style={{fontStyle:"italic"}}>Pipeline</em></Title>
-              <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:1,border:`1px solid ${B.border}`,marginBottom:22,background:B.border}}>
-                {[
-                  {k:"Submissions",v:totalSubmissions,sub:`${uniqueLeads} unique`},
-                  {k:"Booked",v:Booked,sub:`${bookRate}% of leads`,nav:"bookings"},
-                  {k:"SQLs",v:SQLs,sub:`${sqlRate}% of booked`,a:SQLs>0},
-                  {k:"Won",v:Won,sub:`${winRate}% close rate`,a:Won>0},
-                ].map((s,i)=>(
-                  <div key={i}
-                    onClick={()=>s.nav&&go(s.nav)}
-                    style={{background:B.white,padding:"14px 11px",cursor:s.nav?"pointer":"default",transition:"background 0.15s"}}
-                    onMouseEnter={e=>{ if(s.nav) e.currentTarget.style.background=B.offwhite; }}
-                    onMouseLeave={e=>{ e.currentTarget.style.background=B.white; }}>
-                    <div style={{fontFamily:B.sans,fontSize:11,letterSpacing:"0.14em",textTransform:"uppercase",color:B.gray,marginBottom:5}}>{s.k}</div>
-                    <div style={{fontFamily:B.serif,fontSize:24,color:s.a?B.gold:B.black,lineHeight:1}}>{s.v}</div>
-                    <div style={{fontFamily:B.sans,fontSize:11,color:B.gray,marginTop:3}}>{s.sub}</div>
+              {/* Six clickable status blocks across 2 rows */}
+              {(() => {
+                const TILES = [
+                  {k:"Submissions",v:totalSubmissions,sub:`${uniqueLeads} unique`,filter:null},
+                  {k:"Booked",     v:Booked,           sub:`${bookRate}% of leads`,    filter:"booked"},
+                  {k:"MQLs",       v:MQLs,             sub:"to nurture",                filter:"mql"},
+                  {k:"SQLs",       v:SQLs,             sub:`${sqlRate}% of booked`,a:SQLs>0,filter:"sql"},
+                  {k:"Won",        v:Won,              sub:`${winRate}% close rate`,a:Won>0,filter:"won"},
+                  {k:"Lost",       v:Lost,             sub:"archived",                  filter:"lost"},
+                ];
+                return (
+                  <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:1,border:`1px solid ${B.border}`,marginBottom:18,background:B.border}}>
+                    {TILES.map((s,i)=>{
+                      const isOn = s.filter === leadStatusFilter && (s.filter !== null || leadStatusFilter === null && i === 0 ? false : s.filter === leadStatusFilter);
+                      const active = s.filter === leadStatusFilter && s.filter !== null;
+                      return (
+                        <div key={i}
+                          onClick={()=>setLeadStatusFilter(s.filter === leadStatusFilter ? null : s.filter)}
+                          style={{background: active ? B.black : B.white,padding:"14px 11px",cursor:"pointer",transition:"background 0.15s"}}
+                          onMouseEnter={e=>{ if(!active) e.currentTarget.style.background=B.offwhite; }}
+                          onMouseLeave={e=>{ if(!active) e.currentTarget.style.background=B.white; }}>
+                          <div style={{fontFamily:B.sans,fontSize:11,letterSpacing:"0.14em",textTransform:"uppercase",color: active?"rgba(255,255,255,0.65)":B.gray,marginBottom:5}}>{s.k}</div>
+                          <div style={{fontFamily:B.serif,fontSize:24,color: active?B.white:(s.a?B.gold:B.black),lineHeight:1}}>{s.v}</div>
+                          <div style={{fontFamily:B.sans,fontSize:11,color: active?"rgba(255,255,255,0.65)":B.gray,marginTop:3}}>{s.sub}</div>
+                        </div>
+                      );
+                    })}
                   </div>
-                ))}
-              </div>
-              <Card>{deduped.map((lead,i)=>{
+                );
+              })()}
+              {leadStatusFilter && (
+                <div style={{display:"flex",gap:6,alignItems:"center",marginBottom:11,padding:"9px 11px",background:"rgba(201,169,110,0.08)",border:`1px solid ${B.gold}`}}>
+                  <span style={{fontFamily:B.sans,fontSize:11,letterSpacing:"0.14em",textTransform:"uppercase",color:B.gold}}>Filter</span>
+                  <span style={{fontFamily:B.sans,fontSize:12,color:B.black}}>Showing only <strong>{ST[leadStatusFilter]?.label}</strong></span>
+                  <button onClick={()=>setLeadStatusFilter(null)} style={{marginLeft:"auto",fontFamily:B.sans,fontSize:11,letterSpacing:"0.06em",background:"none",border:"none",color:B.gray,cursor:"pointer",textDecoration:"underline"}}>Clear</button>
+                </div>
+              )}
+              <Card>{(leadStatusFilter ? deduped.filter(l => l.status === leadStatusFilter) : deduped).map((lead,i,arr)=>{
                 const s = ST[lead.status] || ST.new;
                 const isDupe = lead.submissions > 1;
-                return (<Row key={lead.id||i} last={i===deduped.length-1}>
+                return (<Row key={lead.id||i} last={i===arr.length-1}>
                   <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:6,gap:8}}>
                     <div style={{flex:1}}>
                       <div style={{display:"flex",alignItems:"center",gap:8,flexWrap:"wrap"}}>
