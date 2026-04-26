@@ -43,6 +43,27 @@ Once `bookings.html` is hosted (Vercel/GitHub Pages/etc.), drop this into a Shop
 
 Or embed the JSX-compiled bundle directly via `<script>` once we set up a real build step.
 
+## Google Sheets Backend (free persistent storage)
+
+Bookings and leads can either live in browser `localStorage` only (default) or sync to a Google Sheet you control. The Sheet option is free, persistent, accessible from any device, and gives Tony a real place to see every lead and booking outside the dashboard.
+
+**One-time setup (~5 minutes):**
+
+1. Create a new Google Sheet. Name it "Lovelri Operations" or whatever.
+2. **Extensions → Apps Script.** A code editor opens. Delete the default `myFunction` placeholder.
+3. Open `apps-script.gs` from this repo. Copy the entire file. Paste into the Apps Script editor. Save (Ctrl+S).
+4. In the Apps Script editor, select the `seedHeaders` function from the dropdown next to the Run button. Click **Run**. Authorize when prompted (Google will warn that the script isn't reviewed — click **Advanced → Go to (project) → Allow**). This creates the "Leads" and "Bookings" tabs with proper column headers.
+5. Click **Deploy → New Deployment**. Settings:
+   - Type: **Web App**
+   - Execute as: **Me**
+   - Who has access: **Anyone**
+6. Click **Deploy**. Copy the Web App URL it shows you.
+7. Open `index.html` in a text editor. Find the line `const SHEETS_URL = "";` near the top of the script section. Paste the URL between the quotes. Save.
+
+That's it. Now every booking and every lead syncs to the sheet. Tony can open the sheet on any device to see live data. The dashboard also syncs the other direction — when it loads, it pulls the authoritative data from the sheet.
+
+If `SHEETS_URL` is empty, the dashboard falls back to localStorage-only mode silently.
+
 ## EmailJS Template Configuration
 
 The booking emails use one EmailJS template with 5 variables. Make sure `template_zi2yxpb` in your EmailJS dashboard has these:
