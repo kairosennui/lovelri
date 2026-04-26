@@ -1,6 +1,5 @@
 <!doctype html>
-<html lang="en">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Lovelri · Tony&#39;s Hub</title>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Lovelri · Tony&#39;s Hub</title>
 <style>*{box-sizing:border-box}html,body{margin:0;padding:0;background:#fafaf8}#root{min-height:100vh}.boot{display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:'Helvetica Neue','Arial',sans-serif;color:#6b6b6b;font-size:13px;letter-spacing:0.22em;text-transform:uppercase;flex-direction:column;gap:14px}.boot small{font-size:11px;color:#a8a8a4;letter-spacing:0.06em;text-transform:none;font-style:italic}</style>
 </head><body>
 <div id="root"><div class="boot">Loading Tony&#39;s Hub<small>compiling JSX in your browser… ~1s</small></div></div>
@@ -830,7 +829,15 @@ const SEED_LEADS=[
   {id:4,name:"Michael C.",email:"michael@email.com",occasion:"Engagement Ring", budget:"$12K–25K", style:"Pavé",      source:"Form",status:"new",       time:"5 hr ago"},
   {id:5,name:"Emma L.",   email:"emma@email.com",   occasion:"Anniversary",     budget:"$6K–12K",  style:"Botanical", source:"Chat",status:"contacted",  time:"Yesterday"},
 ];
-const ST={new:{label:"New",bg:"rgba(201,169,110,0.12)",color:"#8c6d3f"},contacted:{label:"Contacted",bg:"rgba(76,175,125,0.1)",color:"#2d7a54"},booked:{label:"Booked",bg:"rgba(100,149,237,0.1)",color:"#3a5fb0"}};
+const ST={
+  new:      {label:"New",       bg:"rgba(201,169,110,0.12)",color:"#8c6d3f", rank:1},
+  contacted:{label:"Contacted", bg:"rgba(76,175,125,0.1)", color:"#2d7a54", rank:2},
+  booked:   {label:"Booked",    bg:"rgba(100,149,237,0.1)",color:"#3a5fb0", rank:3},
+  mql:      {label:"MQL · Nurture",bg:"rgba(201,169,110,0.18)",color:"#8c6d3f", rank:4},
+  sql:      {label:"SQL · Hot",    bg:"rgba(76,175,125,0.18)",color:"#1f5d40", rank:5},
+  won:      {label:"Won 🎉",       bg:"rgba(76,175,125,0.28)",color:"#0f4a31", rank:7},
+  lost:     {label:"Lost",         bg:"rgba(220,53,69,0.1)", color:"#a02a36", rank:6},
+};
 // ── INTAKE ────────────────────────────────────────────────────────────────────
 const PREF_STEPS=[
   {key:"occasion",q:"What brings you to Lovelri?",      sub:"Every piece begins with a story.",       opts:["Engagement Ring","Anniversary Gift","Custom Bespoke","Just Browsing"]},
@@ -1119,6 +1126,14 @@ function Dashboard(){
     setLeads(l=>[enriched, ...l]);
     pushToSheet("Leads", enriched);
   };
+  const setLeadStatus=(id,status)=>{
+    setLeads(ls=>{
+      const updated = ls.map(l => l.id===id ? {...l, status} : l);
+      const target = updated.find(l => l.id===id);
+      if (target) pushToSheet("Leads", target);
+      return updated;
+    });
+  };
   const bookFromConfig=(quizData)=>{
     setPrefill({
       occasion: quizData.occasion || "",
@@ -1159,9 +1174,11 @@ function Dashboard(){
   return(
     <div style={{fontFamily:B.sans,background:B.offwhite,minHeight:"100vh"}}>
       <div style={{background:B.white,borderBottom:`1px solid ${B.border}`,height:52,display:"flex",alignItems:"center",padding:"0 16px",gap:12,position:"sticky",top:0,zIndex:100}}>
-        <img src="https://lovelri.com/cdn/shop/files/LOVELRI-V2-Black.png?v=1760486718&width=302" alt="Lovelri" style={{height:14}} onError={e=>e.target.style.display="none"}/>
+        <img src="https://lovelri.com/cdn/shop/files/LOVELRI-V2-Black.png?v=1760486718&width=302" alt="Lovelri" style={{height:14,cursor:"pointer"}} onClick={()=>go("overview")} title="Back to home" onError={e=>e.target.style.display="none"}/>
         <div style={{width:1,height:18,background:B.border}}/>
         <span style={{fontFamily:B.sans,fontSize:11,letterSpacing:"0.18em",textTransform:"uppercase",color:B.gray,flexShrink:0}}>Dashboard</span>
+        <div style={{width:1,height:18,background:B.border}}/>
+        <span style={{fontFamily:B.sans,fontSize:11,color:B.gray,fontStyle:"italic",flexShrink:0}}>{new Date().toLocaleDateString("en-CA",{weekday:"short",month:"short",day:"numeric"})}</span>
         <div style={{marginLeft:"auto",display:"flex",alignItems:"center",gap:8}}>
           <div style={{display:"flex",alignItems:"center",gap:5}}><div style={{width:5,height:5,borderRadius:"50%",background:"#4caf7d",animation:"blink 1.5s infinite"}}/><span style={{fontFamily:B.sans,fontSize:11,color:B.gray,textTransform:"uppercase",letterSpacing:"0.1em"}}>Live</span></div>
           <button onClick={()=>setMenuOpen(o=>!o)} style={{background:menuOpen?B.black:B.white,border:`1px solid ${B.border}`,padding:"7px 9px",cursor:"pointer",display:"flex",flexDirection:"column",gap:3.5,marginLeft:4}}>
@@ -1205,15 +1222,22 @@ function Dashboard(){
             {/* Quick metrics strip */}
             <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:1,border:`1px solid ${B.border}`,marginBottom:38,background:B.border}}>
               {[
-                {k:"Today",  v:bookings.filter(b=>b.date===new Date().toISOString().split("T")[0]).length, sub:"appts"},
-                {k:"New",    v:newCount, sub:"leads", a:newCount>0},
-                {k:"Pending",v:bookings.filter(b=>b.status==="pending").length, sub:"need action", a:bookings.filter(b=>b.status==="pending").length>0},
-                {k:"Score",  v:"65", sub:"/100 site"},
+                {k:"Today",  v:bookings.filter(b=>b.date===new Date().toISOString().split("T")[0]).length, sub:"appts",      nav:"bookings"},
+                {k:"New",    v:newCount, sub:"leads", a:newCount>0,                                                          nav:"leads"},
+                {k:"Pending",v:bookings.filter(b=>b.status==="pending").length, sub:"need action", a:bookings.filter(b=>b.status==="pending").length>0, nav:"bookings"},
+                {k:"Score",  v:"65", sub:"/100 site",                                                                         nav:"audit"},
               ].map((s,i)=>(
-                <div key={i} style={{background:B.white,padding:"15px 12px"}}>
+                <div key={i}
+                  onClick={()=>s.nav&&go(s.nav)}
+                  style={{background:B.white,padding:"15px 12px",cursor:s.nav?"pointer":"default",transition:"background 0.15s"}}
+                  onMouseEnter={e=>{ if(s.nav) e.currentTarget.style.background=B.offwhite; }}
+                  onMouseLeave={e=>{ e.currentTarget.style.background=B.white; }}>
                   <div style={{fontFamily:B.sans,fontSize:11,letterSpacing:"0.14em",textTransform:"uppercase",color:B.gray,marginBottom:5}}>{s.k}</div>
                   <div style={{fontFamily:B.serif,fontSize:26,color:s.a?B.gold:B.black,lineHeight:1}}>{s.v}</div>
-                  <div style={{fontFamily:B.sans,fontSize:12,color:B.gray,marginTop:3}}>{s.sub}</div>
+                  <div style={{fontFamily:B.sans,fontSize:12,color:B.gray,marginTop:3,display:"flex",alignItems:"center",gap:5}}>
+                    <span>{s.sub}</span>
+                    {s.nav && <span style={{opacity:0.4,fontSize:11,marginLeft:"auto"}}>→</span>}
+                  </div>
                 </div>
               ))}
             </div>
@@ -1417,7 +1441,7 @@ function Dashboard(){
           </div>
         )}
         {active==="leads"&&(() => {
-          const STATUS_RANK = { booked:3, contacted:2, new:1 };
+          const STATUS_RANK = Object.fromEntries(Object.entries(ST).map(([k,v])=>[k,v.rank]));
           const map = new Map();
           for (const l of leads) {
             const key = (l.email||"").toLowerCase().trim() || ("__no_email_" + l.id);
@@ -1441,20 +1465,28 @@ function Dashboard(){
           }
           const deduped = Array.from(map.values()).sort((a,b)=> (b.id||0) - (a.id||0));
           const totalSubmissions = leads.length;
-          const uniqueMQLs = deduped.length;
-          const SQLs = deduped.filter(l => l.status === "booked").length;
-          const bookingRate = uniqueMQLs > 0 ? Math.round((SQLs / uniqueMQLs) * 100) : 0;
+          const uniqueLeads = deduped.length;
+          const Booked = deduped.filter(l => ["booked","sql","mql","won","lost"].includes(l.status)).length;
+          const SQLs = deduped.filter(l => l.status === "sql" || l.status === "won").length;
+          const Won = deduped.filter(l => l.status === "won").length;
+          const bookRate = uniqueLeads > 0 ? Math.round((Booked / uniqueLeads) * 100) : 0;
+          const sqlRate  = Booked > 0 ? Math.round((SQLs / Booked) * 100) : 0;
+          const winRate  = SQLs > 0 ? Math.round((Won / SQLs) * 100) : 0;
           return (
             <div style={{animation:"fadeIn 0.27s ease"}}>
-              <Title sub="Deduplicated by email — same person across multiple forms shows up once. Submissions count raw events; MQLs count unique people; SQLs count booked appointments — the metric that matters.">Lead<br/><em style={{fontStyle:"italic"}}>Pipeline</em></Title>
+              <Title sub="Real funnel deduplicated by email. Each step shows the conversion %. After a consultation, qualify the lead as SQL (hot), MQL (nurture), Lost, or Won.">Lead<br/><em style={{fontStyle:"italic"}}>Pipeline</em></Title>
               <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:1,border:`1px solid ${B.border}`,marginBottom:22,background:B.border}}>
                 {[
-                  {k:"Submissions",v:totalSubmissions,sub:"raw events"},
-                  {k:"MQLs",v:uniqueMQLs,sub:"unique people"},
-                  {k:"SQLs",v:SQLs,sub:"booked",a:SQLs>0},
-                  {k:"Rate",v:bookingRate+"%",sub:"MQL → SQL"},
+                  {k:"Submissions",v:totalSubmissions,sub:`${uniqueLeads} unique`},
+                  {k:"Booked",v:Booked,sub:`${bookRate}% of leads`,nav:"bookings"},
+                  {k:"SQLs",v:SQLs,sub:`${sqlRate}% of booked`,a:SQLs>0},
+                  {k:"Won",v:Won,sub:`${winRate}% close rate`,a:Won>0},
                 ].map((s,i)=>(
-                  <div key={i} style={{background:B.white,padding:"14px 11px"}}>
+                  <div key={i}
+                    onClick={()=>s.nav&&go(s.nav)}
+                    style={{background:B.white,padding:"14px 11px",cursor:s.nav?"pointer":"default",transition:"background 0.15s"}}
+                    onMouseEnter={e=>{ if(s.nav) e.currentTarget.style.background=B.offwhite; }}
+                    onMouseLeave={e=>{ e.currentTarget.style.background=B.white; }}>
                     <div style={{fontFamily:B.sans,fontSize:11,letterSpacing:"0.14em",textTransform:"uppercase",color:B.gray,marginBottom:5}}>{s.k}</div>
                     <div style={{fontFamily:B.serif,fontSize:24,color:s.a?B.gold:B.black,lineHeight:1}}>{s.v}</div>
                     <div style={{fontFamily:B.sans,fontSize:11,color:B.gray,marginTop:3}}>{s.sub}</div>
@@ -1493,9 +1525,45 @@ function Dashboard(){
                       </div>
                     </div>
                   )}
-                  <button onClick={()=>bookLead(lead)} style={{width:"100%",marginTop:11,padding:"11px 14px",background:B.black,color:B.white,border:"none",fontFamily:B.sans,fontSize:13,letterSpacing:"0.14em",textTransform:"uppercase",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",gap:8}}>
-                    📅 Book a Consult <span style={{opacity:0.6}}>→</span>
-                  </button>
+                  {(lead.status === "new" || lead.status === "contacted") && (
+                    <button onClick={()=>bookLead(lead)} style={{width:"100%",marginTop:11,padding:"11px 14px",background:B.black,color:B.white,border:"none",fontFamily:B.sans,fontSize:13,letterSpacing:"0.14em",textTransform:"uppercase",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",gap:8}}>
+                      📅 Book a Consult <span style={{opacity:0.6}}>→</span>
+                    </button>
+                  )}
+                  {lead.status === "booked" && (
+                    <div style={{marginTop:11,paddingTop:11,borderTop:`1px solid ${B.border}`}}>
+                      <div style={{fontFamily:B.sans,fontSize:11,letterSpacing:"0.16em",textTransform:"uppercase",color:B.gray,marginBottom:7}}>After consultation, qualify:</div>
+                      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:6}}>
+                        <button onClick={()=>setLeadStatus(lead.id,"sql")} style={{padding:"9px 6px",background:"rgba(76,175,125,0.18)",color:"#1f5d40",border:`1px solid #1f5d40`,fontFamily:B.sans,fontSize:11,letterSpacing:"0.06em",textTransform:"uppercase",cursor:"pointer",fontWeight:500}}>SQL · Hot</button>
+                        <button onClick={()=>setLeadStatus(lead.id,"mql")} style={{padding:"9px 6px",background:"rgba(201,169,110,0.18)",color:"#8c6d3f",border:`1px solid ${B.gold}`,fontFamily:B.sans,fontSize:11,letterSpacing:"0.06em",textTransform:"uppercase",cursor:"pointer",fontWeight:500}}>MQL · Nurture</button>
+                        <button onClick={()=>setLeadStatus(lead.id,"lost")} style={{padding:"9px 6px",background:B.white,color:"#a02a36",border:`1px solid #a02a36`,fontFamily:B.sans,fontSize:11,letterSpacing:"0.06em",textTransform:"uppercase",cursor:"pointer"}}>Lost</button>
+                      </div>
+                    </div>
+                  )}
+                  {lead.status === "sql" && (
+                    <div style={{marginTop:11,paddingTop:11,borderTop:`1px solid ${B.border}`}}>
+                      <div style={{fontFamily:B.sans,fontSize:11,letterSpacing:"0.16em",textTransform:"uppercase",color:B.gray,marginBottom:7}}>Close the deal:</div>
+                      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:6}}>
+                        <button onClick={()=>setLeadStatus(lead.id,"won")} style={{padding:"10px 6px",background:"#1f5d40",color:B.white,border:"none",fontFamily:B.sans,fontSize:12,letterSpacing:"0.1em",textTransform:"uppercase",cursor:"pointer",fontWeight:500}}>Won 🎉</button>
+                        <button onClick={()=>setLeadStatus(lead.id,"lost")} style={{padding:"10px 6px",background:B.white,color:"#a02a36",border:`1px solid #a02a36`,fontFamily:B.sans,fontSize:12,letterSpacing:"0.1em",textTransform:"uppercase",cursor:"pointer"}}>Lost</button>
+                      </div>
+                    </div>
+                  )}
+                  {lead.status === "mql" && (
+                    <div style={{marginTop:11,paddingTop:11,borderTop:`1px solid ${B.border}`}}>
+                      <div style={{fontFamily:B.sans,fontSize:11,letterSpacing:"0.16em",textTransform:"uppercase",color:B.gray,marginBottom:7}}>Nurture path:</div>
+                      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:6}}>
+                        <button onClick={()=>setLeadStatus(lead.id,"sql")} style={{padding:"9px 6px",background:"rgba(76,175,125,0.18)",color:"#1f5d40",border:`1px solid #1f5d40`,fontFamily:B.sans,fontSize:11,letterSpacing:"0.06em",textTransform:"uppercase",cursor:"pointer"}}>Promote SQL</button>
+                        <button onClick={()=>bookLead(lead)} style={{padding:"9px 6px",background:B.black,color:B.white,border:"none",fontFamily:B.sans,fontSize:11,letterSpacing:"0.06em",textTransform:"uppercase",cursor:"pointer"}}>Re-Book</button>
+                        <button onClick={()=>setLeadStatus(lead.id,"lost")} style={{padding:"9px 6px",background:B.white,color:"#a02a36",border:`1px solid #a02a36`,fontFamily:B.sans,fontSize:11,letterSpacing:"0.06em",textTransform:"uppercase",cursor:"pointer"}}>Lost</button>
+                      </div>
+                    </div>
+                  )}
+                  {(lead.status === "won" || lead.status === "lost") && (
+                    <div style={{marginTop:11,fontFamily:B.sans,fontSize:11,color:B.gray,textAlign:"right",fontStyle:"italic"}}>
+                      {lead.status === "won" ? "Closed Won — leave alone" : "Closed Lost — archive"}
+                    </div>
+                  )}
                 </Row>);
               })}</Card>
             </div>
