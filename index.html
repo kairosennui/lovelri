@@ -378,7 +378,7 @@ let STORE = [
 const Lbl = ({c,mt})=><div style={{fontFamily:B.sans,fontSize:11,letterSpacing:"0.22em",textTransform:"uppercase",color:B.gray,marginBottom:10,marginTop:mt||0}}>{c}</div>;
 const Badge = ({s})=>{const m={confirmed:{bg:"rgba(76,175,125,0.1)",c:"#2d7a54",l:"Confirmed"},pending:{bg:"rgba(201,169,110,0.12)",c:"#8c6d3f",l:"Pending"},cancelled:{bg:"rgba(220,53,69,0.08)",c:"#c0392b",l:"Cancelled"}};const t=m[s]||m.pending;return <span style={{fontFamily:B.sans,fontSize:11,letterSpacing:"0.06em",padding:"3px 8px",background:t.bg,color:t.c}}>{t.l}</span>;};
 // ── CUSTOMER BOOKING FLOW ─────────────────────────────────────────────────────
-function BookingFlow({onDone}) {
+function BookingFlow({onDone, prefill}) {
   const [step,setStep]   = useState(0);
   const [appt,setAppt]   = useState(null);
   const [cons,setCons]   = useState(null);
@@ -387,6 +387,9 @@ function BookingFlow({onDone}) {
   const [month,setMonth] = useState(new Date().getMonth());
   const [year,setYear]   = useState(new Date().getFullYear());
   const [form,setForm]   = useState({name:"",email:"",phone:"",occasion:"",budget:"",notes:""});
+  useEffect(()=>{
+    if (prefill) setForm(f => ({ ...f, ...Object.fromEntries(Object.entries(prefill).filter(([_,v]) => v)) }));
+  }, [prefill]);
   const [busy,setBusy]   = useState(false);
   const [calLink,setCalLink] = useState(null);
   const today = new Date(); today.setHours(0,0,0,0);
@@ -469,6 +472,12 @@ function BookingFlow({onDone}) {
     <div>
       {/* Progress */}
       <div style={{display:"flex",gap:3,marginBottom:20}}>
+      {prefill && form.name && (
+        <div style={{padding:"11px 14px",marginBottom:14,background:"rgba(201,169,110,0.12)",border:`1px solid ${B.gold}`,fontFamily:B.sans,fontSize:13,color:B.black,lineHeight:1.5}}>
+          <strong>Booking on behalf of {form.name}.</strong> Pre-filled with their info — pick the appointment type, consultant, date and time.
+        </div>
+      )}
+      
         {["Type","Consultant","Date & Time","Details"].map((s,i)=>(
           <div key={i} style={{flex:1}}>
             <div style={{height:2,background:i<=step?B.black:B.lightgray,marginBottom:4,transition:"background 0.3s"}}/>
@@ -1063,6 +1072,7 @@ const SECTIONS = [
 // ── DASHBOARD ─────────────────────────────────────────────────────────────────
 function Dashboard(){
   const [active,setActive]=useState("overview");
+  const [prefill,setPrefill]=useState(null);
   const [leads,setLeads]=useState(()=>{
     try { const s=JSON.parse(localStorage.getItem("lovelri_leads")); if(Array.isArray(s)&&s.length>0) return s; } catch(e){}
     return SEED_LEADS;
@@ -1094,6 +1104,18 @@ function Dashboard(){
     const enriched = {...lead, id: lead.id || Date.now()};
     setLeads(l=>[enriched, ...l]);
     pushToSheet("Leads", enriched);
+  };
+  const bookLead=lead=>{
+    setPrefill({
+      name: lead.name || "",
+      email: lead.email || "",
+      phone: lead.phone || "",
+      occasion: lead.occasion || "",
+      budget: lead.budget || "",
+      notes: `From lead — style: ${lead.style||"—"} · source: ${lead.source||"—"}`
+    });
+    setLeads(ls => ls.map(l => l.id===lead.id ? {...l, status:"booked"} : l));
+    go("book");
   };
   const handleBookingDone=()=>setBookings([...STORE]);
   const handleBookingStatus=(id,status)=>{ STORE = STORE.map(b=>b.id===id?{...b,status}:b); setBookings([...STORE]); };
@@ -1237,7 +1259,7 @@ function Dashboard(){
               Book a<br/><em style={{fontStyle:"italic"}}>Consultation</em>
             </Title>
             <Card><div style={{padding:"24px 18px"}}>
-              <BookingFlow onDone={handleBookingDone}/>
+              <BookingFlow onDone={(bk)=>{handleBookingDone(bk); setPrefill(null);}} prefill={prefill}/>
             </div></Card>
           </div>
         )}
@@ -1370,7 +1392,10 @@ function Dashboard(){
                 </div>
               ))}
             </div>
-            <Card>{leads.map((lead,i)=>{const s=ST[lead.status]||ST.new;return(<Row key={lead.id} last={i===leads.length-1}><div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:6}}><div><div style={{fontFamily:B.sans,fontSize:15,color:B.black,fontWeight:500}}>{lead.name}</div><div style={{fontFamily:B.sans,fontSize:12,color:B.gray}}>{lead.email}</div></div><span style={{fontFamily:B.sans,fontSize:11,letterSpacing:"0.06em",padding:"3px 8px",background:s.bg,color:s.color,flexShrink:0}}>{s.label}</span></div><div style={{display:"flex",gap:8,flexWrap:"wrap"}}>{[lead.occasion,lead.style,lead.budget,lead.source].filter(Boolean).map((v,j)=>(<span key={j} style={{fontFamily:B.sans,fontSize:12,color:B.gray,background:B.offwhite,padding:"2px 8px"}}>{v}</span>))}<span style={{fontFamily:B.sans,fontSize:12,color:B.lightgray,marginLeft:"auto"}}>{lead.time}</span></div></Row>);})}</Card>
+            <Card>{leads.map((lead,i)=>{const s=ST[lead.status]||ST.new;return(<Row key={lead.id} last={i===leads.length-1}><div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:6}}><div><div style={{fontFamily:B.sans,fontSize:15,color:B.black,fontWeight:500}}>{lead.name}</div><div style={{fontFamily:B.sans,fontSize:12,color:B.gray}}>{lead.email}</div></div><span style={{fontFamily:B.sans,fontSize:11,letterSpacing:"0.06em",padding:"3px 8px",background:s.bg,color:s.color,flexShrink:0}}>{s.label}</span></div><div style={{display:"flex",gap:8,flexWrap:"wrap"}}>{[lead.occasion,lead.style,lead.budget,lead.source].filter(Boolean).map((v,j)=>(<span key={j} style={{fontFamily:B.sans,fontSize:12,color:B.gray,background:B.offwhite,padding:"2px 8px"}}>{v}</span>))}<span style={{fontFamily:B.sans,fontSize:12,color:B.lightgray,marginLeft:"auto"}}>{lead.time}</span></div>
+              <button onClick={()=>bookLead(lead)} style={{width:"100%",marginTop:11,padding:"11px 14px",background:B.black,color:B.white,border:"none",fontFamily:B.sans,fontSize:11,letterSpacing:"0.14em",textTransform:"uppercase",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",gap:8}}>
+                📅 Book a Consult <span style={{opacity:0.6}}>→</span>
+              </button></Row>);})}</Card>
           </div>
         )}
         {active==="intake"&&(
