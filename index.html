@@ -158,10 +158,9 @@ const TEAM = [
 ];
 // ── APPOINTMENT TYPES ─────────────────────────────────────────────────────────
 const APPT_TYPES = [
-  { id:"consultation", label:"Private Consultation",  duration:60, desc:"Explore our collection with a master jeweller.", icon:"💍" },
-  { id:"custom",       label:"Custom Design Session", duration:90, desc:"Design your ring from scratch — the full bespoke process.", icon:"✦" },
+  { id:"consultation", label:"Private Consultation",  duration:60, desc:"Meet a master jeweller in our King Street Showroom and explore the collection.", icon:"💍" },
   { id:"virtual",      label:"Virtual Consultation",  duration:45, desc:"Video call from anywhere in the world.", icon:"◻" },
-  { id:"viewing",      label:"Ring Viewing",           duration:30, desc:"Try on styles from our collection at Bay Street.", icon:"◇" },
+  { id:"custom",       label:"Custom Design Session", duration:90, desc:"Design your ring from scratch — the full bespoke process. King Street Showroom.", icon:"✦" },
   { id:"review",       label:"Design Review",          duration:30, desc:"Review your 3D rendering and approve the final design.", icon:"○" },
 ];
 const BUDGET_OPTS = ["Under $3,500","$3,500–$6,000","$6,000–$12,000","$12,000–$25,000","$25,000+","Prefer not to say"];
@@ -196,7 +195,7 @@ function makeICS(booking, consultantName) {
   const em = (min+booking.duration)%60;
   const dtStart = `${y}${pad(m)}${pad(d)}T${pad(h)}${pad(min)}00`;
   const dtEnd   = `${y}${pad(m)}${pad(d)}T${pad(eh)}${pad(em)}00`;
-  const loc = booking.apptId==="virtual" ? "Virtual — Video Call" : "320 Bay Street\\, Toronto\\, ON M5H 4A6";
+  const loc = booking.apptId==="virtual" ? "Virtual — Video Call" : "King Street Showroom\\, Toronto";
   const desc = `Client: ${booking.name}\\nEmail: ${booking.email}\\nPhone: ${booking.phone||"—"}\\nOccasion: ${booking.occasion||"—"}\\nBudget: ${booking.budget||"—"}\\nNotes: ${booking.notes||"—"}\\nBooking ID: ${booking.id}`;
   const ics = [
     "BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//Lovelri//Bookings//EN","CALSCALE:GREGORIAN",
@@ -233,7 +232,7 @@ function makeCalLinks(booking) {
   const title = `Lovelri ${booking.type} — ${booking.name}`;
   const loc = booking.apptId === "virtual"
     ? "Virtual Video Call (Lovelri)"
-    : "320 Bay Street, Toronto ON M5H 4A6";
+    : "King Street Showroom, Toronto";
   const lines = [
     `Lovelri Booking ${booking.id}`,
     `Client: ${booking.name}`,
@@ -255,7 +254,7 @@ function makeCalLinks(booking) {
 async function sendEmails(booking) {
   const con = TEAM.find(t=>t.id===booking.consultant);
   const apptDate = new Date(booking.date+"T12:00:00").toLocaleDateString("en-CA",{weekday:"long",month:"long",day:"numeric",year:"numeric"});
-  const loc = booking.apptId==="virtual" ? "Virtual — send video call link before appointment" : "320 Bay Street, Toronto ON M5H 4A6";
+  const loc = booking.apptId==="virtual" ? "Virtual — send video call link before appointment" : "King Street Showroom, Toronto";
   const calURL = makeICS(booking, con?.name||"Team");
   const cal = makeCalLinks(booking);
   const teamMsg = [
@@ -310,7 +309,7 @@ async function sendEmails(booking) {
     "",
     "With warmth,",
     "The Lovelri Team",
-    "lovelri.com · 320 Bay Street, Toronto",
+    "lovelri.com · King Street Showroom, Toronto, Toronto",
   ].join("\n");
   if (!window.emailjs) return;
   try {
@@ -466,7 +465,7 @@ function BookingFlow({onDone, prefill, bookings = []}) {
             ["With", TEAM.find(t=>t.id===cons?.id)?.name],
             ["Date", date?.toLocaleDateString("en-CA",{weekday:"long",month:"long",day:"numeric"})],
             ["Time", slot],
-            ["Location", appt?.id==="virtual"?"Video Call — link coming by email":"320 Bay Street, Toronto ON M5H 4A6"],
+            ["Location", appt?.id==="virtual"?"Video Call — link coming by email":"King Street Showroom, Toronto"],
           ].map(([k,v])=>(
             <div key={k} style={{display:"flex",justifyContent:"space-between",gap:12,padding:"6px 0",borderBottom:`1px solid ${B.border}`}}>
               <span style={{fontFamily:B.sans,fontSize:13,color:B.gray,flexShrink:0}}>{k}</span>
@@ -515,9 +514,9 @@ function BookingFlow({onDone, prefill, bookings = []}) {
         <div>
           <Lbl c="What brings you in?"/>
           <div style={{fontFamily:B.serif,fontSize:24,color:B.black,marginBottom:4,lineHeight:1.2}}>Choose your appointment</div>
-          <div style={{fontFamily:B.sans,fontSize:14,color:B.gray,marginBottom:20,lineHeight:1.6}}>320 Bay Street, Toronto — or virtually from anywhere.</div>
+          <div style={{fontFamily:B.sans,fontSize:14,color:B.gray,marginBottom:20,lineHeight:1.6}}>King Street Showroom, Toronto, Toronto — or virtually from anywhere.</div>
           <div style={{display:"flex",flexDirection:"column",gap:8,marginBottom:20}}>
-            {APPT_TYPES.map(t=>(
+            {(prefill ? APPT_TYPES.filter(t => t.id === "consultation" || t.id === "virtual") : APPT_TYPES).map(t=>(
               <div key={t.id} onClick={()=>setAppt(t)} style={{border:`1px solid ${appt?.id===t.id?B.black:B.border}`,background:appt?.id===t.id?B.black:B.white,padding:"13px 16px",cursor:"pointer",transition:"all 0.15s",display:"flex",gap:14,alignItems:"center"}}>
                 <div style={{fontSize:19,flexShrink:0}}>{t.icon}</div>
                 <div style={{flex:1}}>
