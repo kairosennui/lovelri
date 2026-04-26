@@ -1,0 +1,631 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Lovelri · Intelligence Dashboard</title>
+<style>
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:#fafaf8}
+  #root{min-height:100vh}
+  .boot{
+    display:flex;align-items:center;justify-content:center;
+    min-height:100vh;
+    font-family:'Helvetica Neue','Arial',sans-serif;
+    color:#6b6b6b;font-size:11px;letter-spacing:0.22em;text-transform:uppercase;
+    flex-direction:column;gap:14px;
+  }
+  .boot small{font-size:9px;color:#a8a8a4;letter-spacing:0.06em;text-transform:none;font-style:italic}
+</style>
+</head>
+<body>
+<div id="root"><div class="boot">Loading Lovelri Dashboard<small>compiling JSX in your browser… ~1s</small></div></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+<script type="text/babel" data-presets="env,react">
+const { useState, useEffect, useRef } = React;
+
+// React hooks destructured below — original ESM import removed for browser/Babel.
+const B = {
+  white:"#ffffff",offwhite:"#fafaf8",black:"#1a1a1a",gray:"#6b6b6b",
+  lightgray:"#e8e8e4",border:"#d8d8d2",gold:"#c9a96e",
+  serif:"'Cormorant Garamond','Georgia',serif",
+  sans:"'Helvetica Neue','Arial',sans-serif",
+};
+// ── AUDIT DATA ────────────────────────────────────────────────────────────────
+const AUDIT_ISSUES = [
+  {title:"Lead Capture",score:28,severity:"critical",note:"Raw phone number only. No form, no chat, no email capture on high-intent pages."},
+  {title:"Social Proof",score:18,severity:"critical",note:"Zero testimonials. For a $5K–$50K purchase this is a major conversion blocker."},
+  {title:"Pricing Anchor",score:22,severity:"critical",note:"No starting price anywhere. All competitors publish from-prices."},
+  {title:"Booking Flow",score:45,severity:"high",note:"Every CTA leaves to Square. Breaks brand immersion, loses retargeting pixels."},
+  {title:"SEO / Schema",score:48,severity:"medium",note:"No LocalBusiness schema. No H1 geo-keyword on landing page."},
+  {title:"Navigation Bugs",score:55,severity:"medium",note:"'About Us' and 'Custom Ring Process' both link to wrong pages."},
+  {title:"Email Capture",score:30,severity:"medium",note:"Footer form has no incentive. No lead magnet offered."},
+];
+const AUDIT_STRENGTHS = [
+  {title:"Brand Voice",score:82,note:"'From the ateliers of the great maisons, to yours' — maison-level positioning."},
+  {title:"Photography",score:80,note:"High quality product and lifestyle imagery throughout."},
+  {title:"Collections",score:75,note:"Well-segmented: Solitaire, Halo, Cathedral, Pavé, Botanical, Modern."},
+  {title:"Custom Process",score:72,note:"4-step bespoke journey is clearly documented and reassuring for buyers."},
+];
+const RECS = [
+  "Deploy AI intake form with ring matching on all collection pages",
+  "Add chat widget to homepage — capture every high-intent visitor",
+  "Embed Square booking calendar directly — remove off-site redirect",
+  "Add 5 customer testimonials with photos above the fold on homepage",
+  "Publish 'From $2,700 CAD' pricing anchor on every collection page",
+  "Fix footer navigation — About Us and Custom Ring links go to wrong pages",
+  "Add LocalBusiness JSON-LD schema markup to all pages",
+  "Create a lead magnet: 'Lab Diamond Buyer's Guide' PDF for email capture",
+];
+// ── COMPETITOR DATA (researched April 2026) ───────────────────────────────────
+const COMPETITORS = [
+  {
+    name:"Kimberfire", url:"https://www.kimberfire.com",
+    location:"Toronto studio + virtual Canada-wide",
+    type:"Custom-first boutique",
+    pitch:"Transparent pricing, wholesale direct, no retail markup. 800+ 5-star reviews.",
+    startingPrice:"~$3,000 CAD",
+    labDiamond:true, naturalDiamond:true, bespoke:true, onlineBooking:true,
+    reviews:"800+ 5-star Google", turnaround:"6–8 weeks",
+    threat:"high",
+    threatNote:"Strongest direct competitor. Massive review base, award-winning, wholesale model undercuts retail pricing.",
+    lovelriEdge:"Lovelri's maison-level brand story and Botanical Garden collection differentiate on aesthetics. Kimberfire sells value; Lovelri sells heritage.",
+    collections:[
+      {name:"All Engagement Rings", url:"https://www.kimberfire.com/category/engagement-rings"},
+      {name:"Lab Diamonds", url:"https://www.kimberfire.com/lab-grown-diamonds"},
+      {name:"Custom Process", url:"https://www.kimberfire.com/custom-engagement-rings"},
+      {name:"Diamond Rings Gallery", url:"https://www.kimberfire.com/diamond-rings"},
+    ],
+  },
+  {
+    name:"Alexis Gallery", url:"https://www.alexisgallery.com",
+    location:"Toronto design office",
+    type:"Bespoke-only boutique",
+    pitch:"Sisters-run, one ring at a time, perfect 5-star rating. 3D renderings before production.",
+    startingPrice:"Custom only — no published price",
+    labDiamond:true, naturalDiamond:true, bespoke:true, onlineBooking:true,
+    reviews:"Perfect 5-star rating (10+ yrs)", turnaround:"12+ weeks recommended",
+    threat:"medium",
+    threatNote:"Bespoke-only limits volume. No collection to browse. Longer process deters impulsive buyers.",
+    lovelriEdge:"Lovelri offers browsable collection AND bespoke. Lower barrier for buyers not ready to commit to a 12-week custom-only process.",
+    collections:[
+      {name:"Custom Engagement Rings", url:"https://www.alexisgallery.com/custom-engagement-rings"},
+      {name:"Custom Wedding Bands", url:"https://www.alexisgallery.com/custom-wedding-rings"},
+      {name:"About the Process", url:"https://www.alexisgallery.com/our-process"},
+    ],
+  },
+  {
+    name:"Livia Diamonds", url:"https://liviadiamonds.com",
+    location:"Downtown Toronto",
+    type:"Independent custom boutique",
+    pitch:"3rd-generation Armenian jeweller. Fully Canadian-made. Lab, natural, moissanite.",
+    startingPrice:"Custom — consultation required",
+    labDiamond:true, naturalDiamond:true, bespoke:true, onlineBooking:false,
+    reviews:"Strong local word-of-mouth", turnaround:"6–10 weeks",
+    threat:"medium",
+    threatNote:"Good reputation but weak digital presence. No published pricing, no collection to browse online.",
+    lovelriEdge:"Lovelri's Shopify store allows discovery and purchase intent without requiring a prior consultation. Livia requires commitment upfront.",
+    collections:[
+      {name:"Custom Rings", url:"https://liviadiamonds.com"},
+    ],
+  },
+  {
+    name:"Diamond Exchange Canada", url:"https://www.diamondexchange.ca",
+    location:"Toronto (online-first, est. 2002)",
+    type:"Online diamond & ring retailer",
+    pitch:"Wholesale prices, 30–80% below competitors, Canadian-made. Price-match guarantee.",
+    startingPrice:"~$1,500 CAD",
+    labDiamond:true, naturalDiamond:true, bespoke:true, onlineBooking:true,
+    reviews:"Established 2002", turnaround:"4–6 weeks",
+    threat:"low",
+    threatNote:"Aggressively price-focused. Targets budget shoppers. Different buyer segment from Lovelri's luxury positioning.",
+    lovelriEdge:"Lovelri competes on brand story, craftsmanship, and atelier experience — not price. Minimal overlap in target customer.",
+    collections:[
+      {name:"Engagement Rings", url:"https://www.diamondexchange.ca/collections/engagement-rings"},
+      {name:"Lab Grown Diamonds", url:"https://www.diamondexchange.ca/collections/lab-grown-diamonds"},
+    ],
+  },
+  {
+    name:"Engage Studio", url:"https://www.engagestudio.com",
+    location:"Toronto",
+    type:"Bespoke boutique",
+    pitch:"Consultation-first, unusually thorough process. Top-rated in Toronto Reddit & wedding forums.",
+    startingPrice:"Custom — no published price",
+    labDiamond:true, naturalDiamond:true, bespoke:true, onlineBooking:true,
+    reviews:"Top-rated in community forums", turnaround:"8–12 weeks",
+    threat:"medium",
+    threatNote:"Strong word-of-mouth in exactly Lovelri's target community. Similar positioning and buyer profile.",
+    lovelriEdge:"Lovelri's Botanical Garden and maison heritage story are more distinctive. Engage focuses on process transparency; Lovelri on aesthetic identity.",
+    collections:[
+      {name:"Engagement Rings", url:"https://www.engagestudio.com/engagement-rings"},
+      {name:"Bespoke Guide", url:"https://www.engagestudio.com/pebble/best-engagement-ring-jewellers-toronto/"},
+    ],
+  },
+  {
+    name:"Serli & Siroan", url:"https://www.serliandsiroan.com",
+    location:"Toronto (Yorkville area)",
+    type:"Legacy fine jeweller",
+    pitch:"40+ years, 3 generations, Yorkville luxury destination. Master handcraft techniques.",
+    startingPrice:"~$3,000+ CAD",
+    labDiamond:false, naturalDiamond:true, bespoke:true, onlineBooking:false,
+    reviews:"Decades of client relationships", turnaround:"6–10 weeks",
+    threat:"low",
+    threatNote:"Natural-diamond focused, traditional demographic. Less overlap with Lovelri's lab-diamond, digital-native target market.",
+    lovelriEdge:"Lovelri's lab diamond focus and digital-native experience are built for the next generation of buyers. Serli & Siroan targets older, more traditional clientele.",
+    collections:[
+      {name:"Engagement Rings", url:"https://www.serliandsiroan.com/engagement-rings"},
+    ],
+  },
+];
+const THREAT = {
+  high:  {label:"High Threat",  bg:"rgba(220,53,69,0.08)",  color:"#c0392b"},
+  medium:{label:"Med Threat",   bg:"rgba(255,193,7,0.08)",  color:"#8c6d00"},
+  low:   {label:"Low Threat",   bg:"rgba(76,175,125,0.08)", color:"#2d7a54"},
+};
+// ── RING / INTAKE / CHAT DATA ─────────────────────────────────────────────────
+const IMG = {
+  solitaire:"https://lovelri.com/cdn/shop/files/IMG_6932.jpg?v=1761797993&width=600",
+  halo:     "https://lovelri.com/cdn/shop/files/IMG_3316_2.jpg?v=1761798094&width=600",
+  cathedral:"https://lovelri.com/cdn/shop/files/DSC00642.jpg?v=1761797135&width=600",
+  sides:    "https://lovelri.com/cdn/shop/files/DSC01046.jpg?v=1761797278&width=600",
+  pave:     "https://lovelri.com/cdn/shop/files/FullSizeRender_2.jpg?v=1763229617&width=600",
+  modern:   "https://lovelri.com/cdn/shop/files/DSC01081.jpg?v=1761797119&width=600",
+  botanical:"https://lovelri.com/cdn/shop/files/DSC01183.jpg?v=1760480002&width=600",
+};
+const RINGS = [
+  {name:"Paris Ring",slug:"paris",styles:["Solitaire"],budgetMax:6000,price:"From $2,621",img:IMG.solitaire,url:"https://lovelri.com/en-us/products/paris",collection:"Solitaire"},
+  {name:"Whistler Ring",slug:"whistler",styles:["Solitaire"],budgetMax:6000,price:"From $3,198",img:IMG.solitaire,url:"https://lovelri.com/en-us/products/whistler",collection:"Solitaire"},
+  {name:"Niagara Ring",slug:"niagara",styles:["Solitaire"],budgetMax:6000,price:"From $2,938",img:IMG.solitaire,url:"https://lovelri.com/en-us/products/niagara",collection:"Solitaire"},
+  {name:"Portland Ring",slug:"portland",styles:["Solitaire","Botanical"],budgetMax:6000,price:"From $2,934",img:IMG.botanical,url:"https://lovelri.com/en-us/products/portland",collection:"Botanical"},
+  {name:"Lake Louise Ring",slug:"lake-louise",styles:["Botanical"],budgetMax:6000,price:"From $2,766",img:IMG.botanical,url:"https://lovelri.com/en-us/products/lake-louise",collection:"Botanical"},
+  {name:"Ottawa Ring",slug:"ottawa",styles:["Botanical","Side Stones"],budgetMax:6000,price:"From $3,031",img:IMG.botanical,url:"https://lovelri.com/en-us/products/ottawa",collection:"Botanical"},
+  {name:"Vienna Ring",slug:"vienna",styles:["Halo","Hidden Halo"],budgetMax:6000,price:"From $2,997",img:IMG.halo,url:"https://lovelri.com/en-us/products/vienna",collection:"Halo"},
+  {name:"Victoria Ring",slug:"victoria",styles:["Halo"],budgetMax:6000,price:"From $3,131",img:IMG.halo,url:"https://lovelri.com/en-us/products/victoria",collection:"Halo"},
+  {name:"Manhattan Ring",slug:"manhattan",styles:["Halo","Modern"],budgetMax:6000,price:"From $2,908",img:IMG.halo,url:"https://lovelri.com/en-us/products/manhattan",collection:"Halo"},
+  {name:"Switzerland Ring",slug:"switzerland",styles:["Cathedral","Side Stones"],budgetMax:8000,price:"From $3,635",img:IMG.cathedral,url:"https://lovelri.com/en-us/products/switzerland",collection:"Cathedral"},
+  {name:"Sydney Ring",slug:"sydney",styles:["Cathedral"],budgetMax:6000,price:"From $2,999",img:IMG.cathedral,url:"https://lovelri.com/en-us/products/sydney",collection:"Cathedral"},
+  {name:"Verona Ring",slug:"verona",styles:["Side Stones","Cathedral"],budgetMax:8000,price:"From $3,828",img:IMG.sides,url:"https://lovelri.com/en-us/products/verona",collection:"Side Stones"},
+  {name:"San Francisco Ring",slug:"sf",styles:["Side Stones"],budgetMax:6000,price:"From $3,391",img:IMG.sides,url:"https://lovelri.com/en-us/products/san-francisco",collection:"Side Stones"},
+  {name:"LA Ring",slug:"la",styles:["Pavé","Halo"],budgetMax:6000,price:"From $3,131",img:IMG.pave,url:"https://lovelri.com/en-us/products/la",collection:"Pavé"},
+  {name:"Dolomites Ring",slug:"dolomites",styles:["Pavé","Modern"],budgetMax:8000,price:"From $3,703",img:IMG.pave,url:"https://lovelri.com/en-us/products/dolomites",collection:"Pavé"},
+  {name:"Amalfi Coast Ring",slug:"amalfi",styles:["Modern"],budgetMax:6000,price:"From $2,934",img:IMG.modern,url:"https://lovelri.com/en-us/products/amalfi-coast",collection:"Modern"},
+  {name:"Hawaii Ring",slug:"hawaii",styles:["Side Stones","Botanical"],budgetMax:8000,price:"From $3,703",img:IMG.botanical,url:"https://lovelri.com/en-us/products/hawaii",collection:"Botanical"},
+  {name:"Nara Ring",slug:"nara",styles:["Side Stones","Solitaire"],budgetMax:6000,price:"From $2,957",img:IMG.sides,url:"https://lovelri.com/en-us/products/nara",collection:"Side Stones"},
+  {name:"Manitoba Ring",slug:"manitoba",styles:["Side Stones","Solitaire"],budgetMax:6000,price:"From $2,957",img:IMG.sides,url:"https://lovelri.com/en-us/products/manitoba",collection:"Side Stones"},
+];
+const STYLE_MAP={"Solitaire":["Solitaire"],"Halo / Hidden Halo":["Halo","Hidden Halo"],"Vintage / Cathedral":["Cathedral"],"Modern / Pavé":["Modern","Pavé"],"Botanical / Nature":["Botanical"],"Side Stones":["Side Stones"]};
+const BUDGET_MAP={"$3,500–$6,000":6000,"$6,000–$12,000":12000,"$12,000–$25,000":25000,"$25,000+":999999};
+const getMatches=d=>{const keys=STYLE_MAP[d.style]||[],ceil=BUDGET_MAP[d.budget]||999999;return RINGS.map(r=>({...r,score:(r.styles.some(s=>keys.includes(s))?10:0)+(r.budgetMax<=ceil?5:2)})).filter(r=>r.score>=5).sort((a,b)=>b.score-a.score).slice(0,3);};
+const SEED_LEADS=[
+  {id:1,name:"Sarah M.",  email:"sarah@email.com",  occasion:"Engagement Ring", budget:"$6K–12K",  style:"Halo",      source:"Chat",status:"new",      time:"2 min ago"},
+  {id:2,name:"James T.",  email:"james@email.com",  occasion:"Anniversary",     budget:"$3.5K–6K", style:"Solitaire", source:"Form",status:"contacted", time:"1 hr ago"},
+  {id:3,name:"Priya K.",  email:"priya@email.com",  occasion:"Custom Bespoke",  budget:"$25K+",    style:"Cathedral", source:"SMS", status:"booked",    time:"3 hr ago"},
+  {id:4,name:"Michael C.",email:"michael@email.com",occasion:"Engagement Ring", budget:"$12K–25K", style:"Pavé",      source:"Form",status:"new",       time:"5 hr ago"},
+  {id:5,name:"Emma L.",   email:"emma@email.com",   occasion:"Anniversary",     budget:"$6K–12K",  style:"Botanical", source:"Chat",status:"contacted",  time:"Yesterday"},
+];
+const ST={new:{label:"New",bg:"rgba(201,169,110,0.12)",color:"#8c6d3f"},contacted:{label:"Contacted",bg:"rgba(76,175,125,0.1)",color:"#2d7a54"},booked:{label:"Booked",bg:"rgba(100,149,237,0.1)",color:"#3a5fb0"}};
+// ── INTAKE ────────────────────────────────────────────────────────────────────
+const PREF_STEPS=[
+  {key:"occasion",q:"What brings you to Lovelri?",      sub:"Every piece begins with a story.",       opts:["Engagement Ring","Anniversary Gift","Custom Bespoke","Just Browsing"]},
+  {key:"style",   q:"What setting speaks to you?",       sub:"We'll match you to our collection.",     opts:["Solitaire","Halo / Hidden Halo","Vintage / Cathedral","Modern / Pavé","Botanical / Nature","Side Stones"]},
+  {key:"stone",   q:"Stone preference?",                 sub:"Lab diamonds are identical to natural.", opts:["Lab Diamond","Natural Diamond","Sapphire / Coloured Gem","Open to Suggestions"]},
+  {key:"timeline",q:"When do you need it?",              sub:"Custom pieces take 4–8 weeks.",          opts:["Within 4 weeks","1–3 months","3–6 months","Just exploring"]},
+  {key:"budget",  q:"What's your investment range?",     sub:"Pieces start from $2,700 CAD.",          opts:["$3,500–$6,000","$6,000–$12,000","$12,000–$25,000","$25,000+"]},
+];
+function IntakeForm({onLead}){
+  const [phase,setPhase]=useState("prefs");
+  const [ps,setPs]=useState(0);
+  const [d,setD]=useState({occasion:"",style:"",stone:"",timeline:"",budget:"",name:"",email:""});
+  const [matches,setMatches]=useState([]);
+  const [liked,setLiked]=useState([]);
+  const [sending,setSending]=useState(false);
+  const sel=(f,v)=>setD(x=>({...x,[f]:v}));
+  const goNext=()=>{if(ps<PREF_STEPS.length-1)setPs(p=>p+1);else{setMatches(getMatches(d));setPhase("results");}};
+  const submit=async()=>{setSending(true);onLead({...d,id:Date.now(),source:"Form",status:"new",time:"Just now",style:d.style||"—"});await new Promise(r=>setTimeout(r,700));setSending(false);setPhase("done");};
+  const s=PREF_STEPS[ps];
+  const PBtn=(label,onClick,disabled)=><button onClick={onClick} disabled={disabled} style={{width:"100%",padding:"12px",background:!disabled?B.black:"#e0e0da",color:!disabled?B.white:B.gray,border:"none",fontFamily:B.sans,fontSize:11,letterSpacing:"0.14em",textTransform:"uppercase",cursor:!disabled?"pointer":"not-allowed",marginTop:16}}>{label}</button>;
+  if(phase==="done")return(<div style={{textAlign:"center",padding:"32px 0"}}><div style={{fontFamily:B.serif,fontSize:22,color:B.black,marginBottom:8}}>Consultation Sent ✓</div><div style={{fontFamily:B.sans,fontSize:12,color:B.gray,marginBottom:20,lineHeight:1.6}}>Lead delivered to christinaquach98@gmail.com</div><button onClick={()=>{setPhase("prefs");setPs(0);setD({occasion:"",style:"",stone:"",timeline:"",budget:"",name:"",email:""});setMatches([]);setLiked([]);}} style={{fontFamily:B.sans,fontSize:11,letterSpacing:"0.12em",textTransform:"uppercase",padding:"10px 20px",border:`1px solid ${B.border}`,background:B.white,cursor:"pointer",color:B.black}}>Reset</button></div>);
+  if(phase==="results")return(<div><div style={{fontFamily:B.sans,fontSize:9,letterSpacing:"0.2em",textTransform:"uppercase",color:B.gray,marginBottom:6}}>Your Matches</div><div style={{fontFamily:B.serif,fontSize:20,color:B.black,marginBottom:12}}>{matches.length} rings curated for you</div><div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:8,marginBottom:16}}>{matches.map(r=>{const s2=liked.includes(r.slug);return(<div key={r.slug} onClick={()=>setLiked(l=>l.includes(r.slug)?l.filter(x=>x!==r.slug):[...l,r.slug])} style={{border:`1px solid ${s2?B.black:B.border}`,cursor:"pointer",background:B.white}}><div style={{paddingTop:"100%",position:"relative",background:B.offwhite,overflow:"hidden"}}><img src={r.img} alt={r.name} style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",objectPosition:"center 30%"}} onError={e=>e.target.style.opacity=0}/>{s2&&<div style={{position:"absolute",top:4,right:4,width:14,height:14,borderRadius:"50%",background:B.black,color:B.white,display:"flex",alignItems:"center",justifyContent:"center",fontSize:8}}>✓</div>}</div><div style={{padding:"8px"}}><div style={{fontFamily:B.serif,fontSize:12,color:B.black,marginBottom:2}}>{r.name}</div><div style={{fontFamily:B.sans,fontSize:9,color:B.gray,marginBottom:4}}>{r.price}</div><a href={r.url} target="_blank" rel="noopener noreferrer" onClick={e=>e.stopPropagation()} style={{fontFamily:B.sans,fontSize:8,letterSpacing:"0.1em",textTransform:"uppercase",color:B.black,textDecoration:"none",borderBottom:`1px solid ${B.black}`,paddingBottom:1}}>View ↗</a></div></div>);})}</div><div style={{borderTop:`1px solid ${B.border}`,paddingTop:14}}><div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10,marginBottom:10}}>{[{label:"Name *",field:"name",type:"text",ph:"Alexander"},{label:"Email *",field:"email",type:"email",ph:"your@email.com"}].map(f=>(<div key={f.field}><div style={{fontFamily:B.sans,fontSize:9,letterSpacing:"0.14em",textTransform:"uppercase",color:B.gray,marginBottom:4}}>{f.label}</div><input type={f.type} value={d[f.field]} onChange={e=>sel(f.field,e.target.value)} placeholder={f.ph} style={{width:"100%",padding:"9px 11px",border:`1px solid ${B.border}`,fontFamily:B.sans,fontSize:12,color:B.black,background:B.white,outline:"none",boxSizing:"border-box"}}/></div>))}</div>{PBtn(sending?"Sending…":"Book Consultation",submit,!d.name||!/\S+@\S+\.\S+/.test(d.email)||sending)}</div></div>);
+  return(<div><div style={{display:"flex",gap:3,marginBottom:20}}>{PREF_STEPS.map((_,i)=><div key={i} style={{flex:1,height:2,background:i<=ps?B.black:B.lightgray}}/>)}</div><div style={{fontFamily:B.sans,fontSize:9,letterSpacing:"0.2em",textTransform:"uppercase",color:B.gray,marginBottom:8}}>Step {String(ps+1).padStart(2,"0")} of 05</div><div style={{fontFamily:B.serif,fontSize:22,color:B.black,marginBottom:4,lineHeight:1.2}}>{s.q}</div><div style={{fontFamily:B.sans,fontSize:12,color:B.gray,marginBottom:16,lineHeight:1.6}}>{s.sub}</div><div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>{s.opts.map(opt=><button key={opt} onClick={()=>sel(s.key,opt)} style={{padding:"11px 10px",border:`1px solid ${d[s.key]===opt?B.black:B.border}`,background:d[s.key]===opt?B.black:B.white,color:d[s.key]===opt?B.white:B.black,fontFamily:B.sans,fontSize:11,cursor:"pointer",textAlign:"left",display:"flex",justifyContent:"space-between",alignItems:"center"}}>{opt}{d[s.key]===opt&&<span style={{fontSize:10}}>✓</span>}</button>)}</div>{PBtn(ps<PREF_STEPS.length-1?"Continue":"See My Rings",goNext,!d[s.key])}</div>);
+}
+// ── CHAT ──────────────────────────────────────────────────────────────────────
+const CHAT_FLOW=[
+  {bot:"Welcome to Lovelri. I'm your personal concierge. What brings you in — engagement ring, anniversary gift, or something custom?",chips:["Engagement ring","Anniversary gift","Custom piece","Just browsing"],free:false},
+  {bot:()=>"What setting style are you drawn to?",chips:["Solitaire","Halo / Hidden halo","Cathedral","Modern / Pavé","Botanical"],free:false},
+  {bot:()=>"Our pieces start from $2,700 CAD. Do you have a rough budget in mind?",chips:["$3,500–$6,000","$6,000–$12,000","$12,000–$25,000","$25,000+"],free:false},
+  {bot:()=>"When are you hoping to have the piece ready?",chips:["Within a month","1–3 months","3–6 months","Just exploring"],free:false},
+  {bot:()=>"May I take your first name so our jeweller can reach out personally?",chips:[],free:true},
+  {bot:(n)=>`Lovely to meet you, ${n}. And the best email for our team?`,chips:[],free:true},
+  {bot:(e)=>`You're all set — a Lovelri jeweller will be in touch at ${e} within 2 hours.`,chips:[],free:false,done:true},
+];
+function ChatWidget({onLead}){
+  const [msgs,setMsgs]=useState([]);const [chips,setChips]=useState([]);const [input,setInput]=useState("");const [step,setStep]=useState(0);const [cdata,setCdata]=useState({});const [complete,setComplete]=useState(false);const [thinking,setThinking]=useState(false);const [started,setStarted]=useState(false);const ref=useRef(null);
+  useEffect(()=>ref.current?.scrollIntoView({behavior:"smooth"}),[msgs,thinking]);
+  const start=()=>{if(started)return;setStarted(true);setThinking(true);setTimeout(()=>{setMsgs([{role:"bot",text:CHAT_FLOW[0].bot}]);setChips(CHAT_FLOW[0].chips);setThinking(false);},500);};
+  const advance=(text)=>{const nd={...cdata,[`f${step}`]:text};setCdata(nd);setMsgs(m=>[...m,{role:"user",text}]);setChips([]);setInput("");const ni=step+1;if(ni>=CHAT_FLOW.length)return;setThinking(true);setTimeout(()=>{const next=CHAT_FLOW[ni];const bt=typeof next.bot==="function"?next.bot(text):next.bot;setMsgs(m=>[...m,{role:"bot",text:bt}]);setChips(next.chips||[]);setStep(ni);setThinking(false);if(next.done){setComplete(true);onLead({id:Date.now(),name:nd.f4||"Chat Lead",email:text,occasion:nd.f0||"",budget:"",timeline:"",style:"",source:"Chat",status:"new",time:"Just now"});}},600+Math.random()*300);};
+  return(<div style={{border:`1px solid ${B.border}`,background:B.white}}><div style={{padding:"11px 14px",borderBottom:`1px solid ${B.border}`,display:"flex",alignItems:"center",gap:10}}><img src="https://lovelri.com/cdn/shop/files/LOVELRI-V2-Black.png?v=1760486718&width=200" alt="Lovelri" style={{height:12}} onError={e=>e.target.style.display="none"}/><div style={{marginLeft:"auto",display:"flex",alignItems:"center",gap:5}}><div style={{width:5,height:5,borderRadius:"50%",background:"#4caf7d",animation:"blink 1.5s infinite"}}/><span style={{fontFamily:B.sans,fontSize:9,letterSpacing:"0.1em",color:B.gray,textTransform:"uppercase"}}>Concierge Online</span></div></div><div style={{height:240,overflowY:"auto",padding:"12px 12px 6px",display:"flex",flexDirection:"column",gap:7}}>{!started&&<div style={{textAlign:"center",padding:"24px 0"}}><div style={{fontFamily:B.serif,fontSize:18,color:B.black,marginBottom:8}}>Begin your consultation</div><div style={{fontFamily:B.sans,fontSize:11,color:B.gray,marginBottom:16}}>Our concierge will guide you to your perfect ring.</div><button onClick={start} style={{fontFamily:B.sans,fontSize:10,letterSpacing:"0.14em",textTransform:"uppercase",padding:"9px 20px",background:B.black,color:B.white,border:"none",cursor:"pointer"}}>Start</button></div>}{msgs.map((m,i)=><div key={i} style={{display:"flex",justifyContent:m.role==="user"?"flex-end":"flex-start"}}><div style={{maxWidth:"80%",padding:"7px 11px",background:m.role==="user"?B.black:B.offwhite,color:m.role==="user"?B.white:B.black,fontFamily:B.sans,fontSize:12,lineHeight:1.5,borderRadius:m.role==="user"?"12px 12px 2px 12px":"12px 12px 12px 2px"}}>{m.text}</div></div>)}{thinking&&<div style={{display:"flex",gap:3,padding:"7px 11px",background:B.offwhite,width:"fit-content",borderRadius:"12px 12px 12px 2px"}}>{[0,1,2].map(i=><div key={i} style={{width:4,height:4,borderRadius:"50%",background:B.gray,animation:`bounce 1.2s ${i*0.2}s infinite`}}/>)}</div>}{complete&&<div style={{textAlign:"center",padding:"8px",background:"rgba(76,175,125,0.06)",fontFamily:B.sans,fontSize:10,color:"#2d7a54",letterSpacing:"0.06em"}}>✓ Lead → christinaquach98@gmail.com</div>}<div ref={ref}/></div>{chips.length>0&&!complete&&<div style={{padding:"4px 10px 8px",display:"flex",flexWrap:"wrap",gap:5,borderTop:`1px solid ${B.border}`}}>{chips.map((c,i)=><button key={i} onClick={()=>advance(c)} style={{padding:"5px 9px",border:`1px solid ${B.border}`,background:B.white,fontFamily:B.sans,fontSize:10,color:B.black,cursor:"pointer"}}>{c}</button>)}</div>}{started&&!complete&&CHAT_FLOW[step]?.free&&<div style={{padding:"7px 10px 10px",display:"flex",gap:7,borderTop:`1px solid ${B.border}`}}><input value={input} onChange={e=>setInput(e.target.value)} onKeyDown={e=>e.key==="Enter"&&input.trim()&&advance(input.trim())} placeholder={step===5?"your@email.com":"Your name..."} style={{flex:1,padding:"8px 10px",border:`1px solid ${B.border}`,fontFamily:B.sans,fontSize:12,color:B.black,background:B.white,outline:"none"}}/><button onClick={()=>input.trim()&&advance(input.trim())} style={{padding:"8px 12px",background:B.black,color:B.white,border:"none",fontFamily:B.sans,fontSize:11,cursor:"pointer",opacity:input.trim()?1:0.4}}>→</button></div>}</div>);
+}
+// ── SHARED UI ─────────────────────────────────────────────────────────────────
+const Label=({children,mt})=><div style={{fontFamily:B.sans,fontSize:9,letterSpacing:"0.22em",textTransform:"uppercase",color:B.gray,marginBottom:10,marginTop:mt||0}}>{children}</div>;
+const Title=({sub,children})=><div style={{marginBottom:24}}><h1 style={{fontFamily:B.serif,fontSize:28,fontWeight:400,color:B.black,lineHeight:1.15,marginBottom:sub?8:0}}>{children}</h1>{sub&&<p style={{fontFamily:B.sans,fontSize:13,color:B.gray,lineHeight:1.75,margin:0}}>{sub}</p>}</div>;
+const Card=({children,mb})=><div style={{border:`1px solid ${B.border}`,background:B.white,marginBottom:mb||16}}>{children}</div>;
+const Row=({children,last})=><div style={{padding:"13px 16px",borderBottom:last?0:`1px solid ${B.border}`}}>{children}</div>;
+const Chip=({label,bg,color})=><span style={{fontFamily:B.sans,fontSize:8,letterSpacing:"0.1em",textTransform:"uppercase",padding:"2px 7px",background:bg||"rgba(26,26,26,0.06)",color:color||B.black}}>{label}</span>;
+const Ext=({href,children})=><a href={href} target="_blank" rel="noopener noreferrer" style={{fontFamily:B.sans,fontSize:10,color:B.black,textDecoration:"none",borderBottom:`1px solid ${B.black}`,paddingBottom:1,letterSpacing:"0.06em"}}>{children} ↗</a>;
+const Check=({val})=><span style={{fontFamily:B.sans,fontSize:11,color:val?"#2d7a54":"#c0392b"}}>{val?"✓":"✗"}</span>;
+// ── NAV ───────────────────────────────────────────────────────────────────────
+const NAV=[
+  {id:"overview",    label:"Overview"},
+  {id:"audit",       label:"Site Audit"},
+  {id:"competition", label:"Competition"},
+  {id:"marketing",   label:"Marketing"},
+  {id:"social",      label:"Social Media"},
+  {id:"seo",         label:"SEO"},
+  {id:"leads",       label:"Leads"},
+  {id:"intake",      label:"Intake Form"},
+  {id:"chat",        label:"Chat Widget"},
+  {id:"embed",       label:"Embed Guide"},
+];
+// ── DASHBOARD ─────────────────────────────────────────────────────────────────
+function Dashboard(){
+  const [active,setActive]=useState("overview");
+  const [leads,setLeads]=useState(SEED_LEADS);
+  const [menuOpen,setMenuOpen]=useState(false);
+  const [expanded,setExpanded]=useState(null);
+  const addLead=lead=>setLeads(l=>[{...lead,id:Date.now()},...l]);
+  const newCount=leads.filter(l=>l.status==="new").length;
+  const go=id=>{setActive(id);setMenuOpen(false);window.scrollTo(0,0);};
+  return(
+    <div style={{fontFamily:B.sans,background:B.offwhite,minHeight:"100vh"}}>
+      <div style={{background:B.white,borderBottom:`1px solid ${B.border}`,height:52,display:"flex",alignItems:"center",padding:"0 16px",gap:12,position:"sticky",top:0,zIndex:100}}>
+        <img src="https://lovelri.com/cdn/shop/files/LOVELRI-V2-Black.png?v=1760486718&width=302" alt="Lovelri" style={{height:14}} onError={e=>e.target.style.display="none"}/>
+        <div style={{width:1,height:18,background:B.border}}/>
+        <span style={{fontFamily:B.sans,fontSize:9,letterSpacing:"0.18em",textTransform:"uppercase",color:B.gray,flexShrink:0}}>Dashboard</span>
+        <div style={{marginLeft:"auto",display:"flex",alignItems:"center",gap:8}}>
+          <div style={{display:"flex",alignItems:"center",gap:5}}><div style={{width:5,height:5,borderRadius:"50%",background:"#4caf7d",animation:"blink 1.5s infinite"}}/><span style={{fontFamily:B.sans,fontSize:9,color:B.gray,textTransform:"uppercase",letterSpacing:"0.1em"}}>Live</span></div>
+          <button onClick={()=>setMenuOpen(o=>!o)} style={{background:menuOpen?B.black:B.white,border:`1px solid ${B.border}`,padding:"7px 9px",cursor:"pointer",display:"flex",flexDirection:"column",gap:3.5,marginLeft:4}}>
+            {[0,1,2].map(i=><div key={i} style={{width:15,height:1,background:menuOpen?B.white:B.black}}/>)}
+          </button>
+        </div>
+      </div>
+      {menuOpen&&(
+        <div style={{position:"fixed",top:52,left:0,right:0,background:B.white,borderBottom:`1px solid ${B.border}`,zIndex:99,boxShadow:"0 8px 24px rgba(0,0,0,0.08)"}}>
+          {NAV.map(n=>(
+            <button key={n.id} onClick={()=>go(n.id)} style={{width:"100%",textAlign:"left",padding:"13px 16px",border:"none",borderBottom:`1px solid ${B.border}`,background:active===n.id?B.offwhite:B.white,color:active===n.id?B.black:B.gray,fontFamily:B.sans,fontSize:12,letterSpacing:"0.04em",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
+              <span>{n.label}</span>
+              {n.id==="leads"&&newCount>0&&<span style={{background:B.black,color:B.white,fontSize:9,padding:"2px 7px",borderRadius:8}}>{newCount} new</span>}
+              {active===n.id&&<span style={{fontSize:10,color:B.gray}}>●</span>}
+            </button>
+          ))}
+          <div style={{padding:"12px 16px",display:"flex",gap:24,background:B.offwhite}}>
+            {[["Leads",leads.length],["New",newCount],["Pipeline",`$${(leads.length*9.2).toFixed(0)}K`]].map(([k,v])=>(
+              <div key={k}><div style={{fontFamily:B.sans,fontSize:9,color:B.gray,letterSpacing:"0.12em",textTransform:"uppercase",marginBottom:2}}>{k}</div><div style={{fontFamily:B.serif,fontSize:18,color:B.black}}>{v}</div></div>
+            ))}
+          </div>
+        </div>
+      )}
+      <div style={{background:B.white,borderBottom:`1px solid ${B.border}`,padding:"7px 16px"}}>
+        <span style={{fontFamily:B.sans,fontSize:9,letterSpacing:"0.18em",textTransform:"uppercase",color:B.gray}}>{NAV.find(n=>n.id===active)?.label}</span>
+      </div>
+      <div style={{padding:"24px 16px 80px",maxWidth:640,margin:"0 auto",boxSizing:"border-box"}}>
+        {active==="overview"&&(
+          <div style={{animation:"fadeIn 0.25s ease"}}>
+            <Title sub="Complete operational view of Lovelri's performance, competitive landscape, lead pipeline, and customer intake tools.">Lovelri<br/><em style={{fontStyle:"italic"}}>Intelligence Centre</em></Title>
+            <Label>Key Metrics</Label>
+            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:1,border:`1px solid ${B.border}`,marginBottom:24}}>
+              {[{k:"Site Score",v:"65/100",sub:"Needs improvement"},{k:"Total Leads",v:leads.length,sub:"All channels"},{k:"New Leads",v:newCount,sub:"Awaiting contact",a:newCount>0},{k:"Est. Pipeline",v:`$${(leads.length*9.2).toFixed(0)}K`,sub:"CAD"},{k:"Competitors",v:COMPETITORS.length,sub:"Toronto market mapped"},{k:"High Threats",v:COMPETITORS.filter(c=>c.threat==="high").length,sub:"Need differentiation"}].map((k,i)=>(
+                <div key={i} style={{background:B.white,padding:"16px",borderRight:i%2===0?`1px solid ${B.border}`:"none",borderBottom:i<4?`1px solid ${B.border}`:"none"}}>
+                  <div style={{fontFamily:B.sans,fontSize:9,letterSpacing:"0.14em",textTransform:"uppercase",color:B.gray,marginBottom:6}}>{k.k}</div>
+                  <div style={{fontFamily:B.serif,fontSize:24,color:k.a?B.gold:B.black,lineHeight:1}}>{k.v}</div>
+                  <div style={{fontFamily:B.sans,fontSize:10,color:B.gray,marginTop:3}}>{k.sub}</div>
+                </div>
+              ))}
+            </div>
+            <Label>Tools & Status</Label>
+            <Card mb={24}>
+              {[{n:"Intake Form",s:"Ready",d:"5-step ring matcher + lead delivery to Christina.",nav:"intake"},{n:"Chat Widget",s:"Ready",d:"AI concierge conversation flow.",nav:"chat"},{n:"Lead Pipeline",s:"Live",d:"All leads from all channels in one dashboard.",nav:"leads"},{n:"Site Audit",s:"Complete",d:"Full analysis with 8-point action plan.",nav:"audit"},{n:"Competition Report",s:"Live",d:"6 Toronto competitors mapped with SKUs and strategy.",nav:"competition"},{n:"Marketing Plan",s:"Complete",d:"90-day plan, channel matrix, full gap analysis.",nav:"marketing"},{n:"Social Media Audit",s:"Complete",d:"Instagram, TikTok, WeddingWire — full strategy.",nav:"social"},{n:"SEO Strategy",s:"Complete",d:"8 priority keywords, technical fixes, 6-post blog calendar.",nav:"seo"},{n:"Embed Guide",s:"Ready",d:"One-snippet Shopify install for every tool.",nav:"embed"}].map((t,i,a)=>(
+                <div key={i} onClick={()=>t.nav&&go(t.nav)} style={{padding:"13px 16px",borderBottom:i<a.length-1?`1px solid ${B.border}`:"none",display:"flex",gap:12,alignItems:"center",cursor:t.nav?"pointer":"default",background:B.white}} onMouseEnter={e=>t.nav&&(e.currentTarget.style.background=B.offwhite)} onMouseLeave={e=>e.currentTarget.style.background=B.white}>
+                  <div style={{flex:1}}><div style={{display:"flex",alignItems:"center",gap:8,marginBottom:2}}><span style={{fontFamily:B.serif,fontSize:15,color:B.black}}>{t.n}</span><Chip label={t.s} bg={t.s==="Live"?"rgba(76,175,125,0.1)":t.s==="Planned"?"rgba(201,169,110,0.12)":"rgba(26,26,26,0.06)"} color={t.s==="Live"?"#2d7a54":t.s==="Planned"?"#8c6d3f":B.black}/></div><div style={{fontFamily:B.sans,fontSize:11,color:B.gray,lineHeight:1.5}}>{t.d}</div></div>
+                  {t.nav&&<span style={{fontFamily:B.sans,fontSize:12,color:B.gray}}>›</span>}
+                </div>
+              ))}
+            </Card>
+            <Label>Critical Issues</Label>
+            <Card>
+              {AUDIT_ISSUES.slice(0,4).map((issue,i)=>(
+                <Row key={i} last={i===3}>
+                  <div style={{display:"flex",gap:12,alignItems:"flex-start"}}>
+                    <div style={{fontFamily:B.serif,fontSize:20,color:issue.score<30?"#c0392b":B.gold,flexShrink:0,width:28,lineHeight:1.2}}>{issue.score}</div>
+                    <div style={{flex:1}}><div style={{display:"flex",gap:8,alignItems:"center",marginBottom:3,flexWrap:"wrap"}}><span style={{fontFamily:B.sans,fontSize:12,fontWeight:500,color:B.black}}>{issue.title}</span><Chip label={issue.severity} bg={issue.severity==="critical"?"rgba(220,53,69,0.08)":"rgba(255,193,7,0.08)"} color={issue.severity==="critical"?"#c0392b":"#8c6d00"}/></div><div style={{fontFamily:B.sans,fontSize:11,color:B.gray,lineHeight:1.5}}>{issue.note}</div></div>
+                  </div>
+                </Row>
+              ))}
+            </Card>
+          </div>
+        )}
+        {active==="audit"&&(
+          <div style={{animation:"fadeIn 0.25s ease"}}>
+            <Title sub="Strong brand language and photography. Critical gaps in lead capture, social proof, and booking flow are costing conversions daily.">lovelri.com<br/><em style={{fontStyle:"italic"}}>Audit Report</em></Title>
+            <Label>Overall Score</Label>
+            <Card mb={24}>
+              <div style={{padding:"20px 16px",borderBottom:`1px solid ${B.border}`,display:"flex",alignItems:"center",gap:20}}>
+                <div style={{fontFamily:B.serif,fontSize:52,color:B.black,lineHeight:1,flexShrink:0}}>65</div>
+                <div style={{flex:1}}><div style={{fontFamily:B.sans,fontSize:9,letterSpacing:"0.12em",textTransform:"uppercase",color:B.gray,marginBottom:6}}>/100 — Needs Improvement</div><div style={{height:4,background:B.lightgray}}><div style={{width:"65%",height:"100%",background:B.black}}/></div></div>
+              </div>
+              <div style={{padding:"14px 16px"}}>
+                <Label>All Scores</Label>
+                {[...AUDIT_STRENGTHS,...AUDIT_ISSUES].map((item,i)=>(
+                  <div key={i} style={{display:"flex",alignItems:"center",gap:10,marginBottom:8}}>
+                    <div style={{width:120,fontFamily:B.sans,fontSize:10,color:B.black,flexShrink:0}}>{item.title}</div>
+                    <div style={{flex:1,height:3,background:B.lightgray,position:"relative"}}><div style={{position:"absolute",top:0,left:0,height:"100%",width:`${item.score}%`,background:item.score>60?B.black:item.score>40?B.gold:"#c0392b",transition:"width 1s ease"}}/></div>
+                    <div style={{width:22,fontFamily:B.serif,fontSize:14,color:B.black,textAlign:"right",flexShrink:0}}>{item.score}</div>
+                  </div>
+                ))}
+              </div>
+            </Card>
+            <Label>All Issues</Label>
+            <Card mb={24}>
+              {AUDIT_ISSUES.map((issue,i,a)=>(
+                <Row key={i} last={i===a.length-1}>
+                  <div style={{display:"flex",gap:12}}><div style={{fontFamily:B.serif,fontSize:20,color:issue.score<30?"#c0392b":B.gold,flexShrink:0,width:28,lineHeight:1.2}}>{issue.score}</div><div><div style={{display:"flex",gap:8,alignItems:"center",marginBottom:3,flexWrap:"wrap"}}><span style={{fontFamily:B.sans,fontSize:12,fontWeight:500,color:B.black}}>{issue.title}</span><Chip label={issue.severity} bg={issue.severity==="critical"?"rgba(220,53,69,0.08)":"rgba(255,193,7,0.08)"} color={issue.severity==="critical"?"#c0392b":"#8c6d00"}/></div><div style={{fontFamily:B.sans,fontSize:11,color:B.gray,lineHeight:1.6}}>{issue.note}</div></div></div>
+                </Row>
+              ))}
+            </Card>
+            <Label>Action Plan</Label>
+            <Card>{RECS.map((rec,i,a)=>(<Row key={i} last={i===a.length-1}><div style={{display:"flex",gap:12}}><div style={{fontFamily:B.serif,fontSize:16,color:B.gold,flexShrink:0,width:22}}>{String(i+1).padStart(2,"0")}</div><div style={{fontFamily:B.sans,fontSize:12,color:B.black,lineHeight:1.6}}>{rec}</div></div></Row>))}</Card>
+          </div>
+        )}
+        {active==="competition"&&(
+          <div style={{animation:"fadeIn 0.25s ease"}}>
+            <Title sub="6 Toronto engagement ring competitors mapped by threat level, pricing, positioning, and live collection links. Updated April 2026.">Toronto Market<br/><em style={{fontStyle:"italic"}}>Competition Report</em></Title>
+            <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:1,border:`1px solid ${B.border}`,marginBottom:24}}>
+              {[
+                {k:"Competitors",v:COMPETITORS.length,sub:"Mapped"},
+                {k:"High Threat",v:COMPETITORS.filter(c=>c.threat==="high").length,sub:"Require strategy",a:true},
+                {k:"Lovelri Advantages",v:"4",sub:"Clear differentiators"},
+              ].map((s,i)=>(
+                <div key={i} style={{background:B.white,padding:"14px 12px",borderRight:i<2?`1px solid ${B.border}`:"none"}}>
+                  <div style={{fontFamily:B.sans,fontSize:9,letterSpacing:"0.12em",textTransform:"uppercase",color:B.gray,marginBottom:4}}>{s.k}</div>
+                  <div style={{fontFamily:B.serif,fontSize:22,color:s.a?B.gold:B.black}}>{s.v}</div>
+                  <div style={{fontFamily:B.sans,fontSize:10,color:B.gray,marginTop:2}}>{s.sub}</div>
+                </div>
+              ))}
+            </div>
+            <Label>Lovelri's Differentiators</Label>
+            <Card mb={24}>
+              {[
+                {n:"Botanical Garden Collection",d:"Nature-inspired floral settings are unique in the Toronto market. No competitor offers this — it's a category of one."},
+                {n:"Maison-level Brand Story",d:"'From the ateliers of the great maisons, to yours' — no local competitor has this level of heritage positioning."},
+                {n:"Shopify Browse + Bespoke",d:"Customers can browse real products OR go fully custom. Most competitors are bespoke-only (Alexis, Livia) OR browse-only."},
+                {n:"Lab Diamond First",d:"70% of Toronto buyers now choose lab diamonds. Lovelri is positioned as the lab-diamond maison — Serli & Siroan barely offer them."},
+              ].map((d,i,a)=>(
+                <Row key={i} last={i===a.length-1}>
+                  <div style={{display:"flex",gap:12}}><div style={{fontFamily:B.serif,fontSize:16,color:B.gold,flexShrink:0,width:22,marginTop:1}}>{String(i+1).padStart(2,"0")}</div><div><div style={{fontFamily:B.sans,fontSize:12,fontWeight:500,color:B.black,marginBottom:3}}>{d.n}</div><div style={{fontFamily:B.sans,fontSize:11,color:B.gray,lineHeight:1.6}}>{d.d}</div></div></div>
+                </Row>
+              ))}
+            </Card>
+            <Label>Competitor Profiles</Label>
+            {COMPETITORS.map((c,i)=>{
+              const isOpen=expanded===c.name;
+              const t=THREAT[c.threat];
+              return(
+                <div key={i} style={{border:`1px solid ${B.border}`,background:B.white,marginBottom:10}}>
+                  <div onClick={()=>setExpanded(isOpen?null:c.name)} style={{padding:"14px 16px",cursor:"pointer",display:"flex",gap:12,alignItems:"flex-start"}} onMouseEnter={e=>e.currentTarget.style.background=B.offwhite} onMouseLeave={e=>e.currentTarget.style.background=B.white}>
+                    <div style={{flex:1}}>
+                      <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:4,flexWrap:"wrap"}}>
+                        <span style={{fontFamily:B.serif,fontSize:17,color:B.black}}>{c.name}</span>
+                        <Chip label={t.label} bg={t.bg} color={t.color}/>
+                      </div>
+                      <div style={{fontFamily:B.sans,fontSize:11,color:B.gray,lineHeight:1.5,marginBottom:6}}>{c.pitch}</div>
+                      <div style={{display:"flex",gap:6,flexWrap:"wrap",alignItems:"center"}}>
+                        <span style={{fontFamily:B.sans,fontSize:10,color:B.black}}>{c.startingPrice}</span>
+                        <span style={{color:B.lightgray}}>·</span>
+                        <span style={{fontFamily:B.sans,fontSize:10,color:B.gray}}>{c.turnaround}</span>
+                        <span style={{color:B.lightgray}}>·</span>
+                        <Ext href={c.url}>{c.url.replace("https://www.","").replace("https://","")}</Ext>
+                      </div>
+                    </div>
+                    <span style={{fontFamily:B.sans,fontSize:14,color:B.gray,flexShrink:0,marginTop:2}}>{isOpen?"▲":"▼"}</span>
+                  </div>
+                  {isOpen&&(
+                    <div style={{borderTop:`1px solid ${B.border}`}}>
+                      <div style={{padding:"12px 16px",borderBottom:`1px solid ${B.border}`}}>
+                        <Label>Features</Label>
+                        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
+                          {[["Lab Diamond",c.labDiamond],["Natural Diamond",c.naturalDiamond],["Bespoke / Custom",c.bespoke],["Online Booking",c.onlineBooking]].map(([k,v])=>(
+                            <div key={k} style={{display:"flex",justifyContent:"space-between",padding:"6px 0",borderBottom:`1px solid ${B.border}`}}>
+                              <span style={{fontFamily:B.sans,fontSize:11,color:B.gray}}>{k}</span>
+                              <Check val={v}/>
+                            </div>
+                          ))}
+                        </div>
+                        <div style={{marginTop:10,display:"flex",gap:8,flexWrap:"wrap"}}>
+                          <div><span style={{fontFamily:B.sans,fontSize:9,letterSpacing:"0.12em",textTransform:"uppercase",color:B.gray}}>Location: </span><span style={{fontFamily:B.sans,fontSize:11,color:B.black}}>{c.location}</span></div>
+                          <div><span style={{fontFamily:B.sans,fontSize:9,letterSpacing:"0.12em",textTransform:"uppercase",color:B.gray}}>Reviews: </span><span style={{fontFamily:B.sans,fontSize:11,color:B.black}}>{c.reviews}</span></div>
+                        </div>
+                      </div>
+                      <div style={{padding:"12px 16px",borderBottom:`1px solid ${B.border}`}}>
+                        <Label>Collections & Links</Label>
+                        <div style={{display:"flex",flexDirection:"column",gap:8}}>
+                          {c.collections.map((col,j)=>(
+                            <div key={j} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"6px 0",borderBottom:`1px solid ${B.border}`}}>
+                              <span style={{fontFamily:B.sans,fontSize:11,color:B.black}}>{col.name}</span>
+                              <Ext href={col.url}>View</Ext>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                      <div style={{padding:"12px 16px",borderBottom:`1px solid ${B.border}`,background:"rgba(220,53,69,0.03)"}}>
+                        <Label>Why They're a Threat</Label>
+                        <div style={{fontFamily:B.sans,fontSize:12,color:B.black,lineHeight:1.6}}>{c.threatNote}</div>
+                      </div>
+                      <div style={{padding:"12px 16px",background:"rgba(76,175,125,0.03)"}}>
+                        <Label>Lovelri's Edge</Label>
+                        <div style={{fontFamily:B.sans,fontSize:12,color:B.black,lineHeight:1.6}}>{c.lovelriEdge}</div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+            <Label mt={24}>Toronto Market Intelligence</Label>
+            <Card>
+              {[
+                {n:"Lab Diamond Adoption",v:"~70% of Toronto couples now choose lab diamonds over natural — up from ~40% in 2021."},
+                {n:"Most Requested Shapes",v:"Oval and round dominate. Hidden halo and side stones are the #1 requested settings in 2025–26."},
+                {n:"Budget Reality",v:"A $5K budget unlocks a stunning lab-grown oval. $10K opens a serious natural diamond conversation. $15K+ brings exceptional quality + setting complexity."},
+                {n:"US Tariffs (2025)",v:"US import duties are driving Toronto buyers to Canadian-made jewellers. Lovelri's local production is a growing competitive advantage."},
+                {n:"Booking Trend",v:"Couples increasingly research online and expect to book a consultation digitally — not call a direct number."},
+              ].map((d,i,a)=>(
+                <Row key={i} last={i===a.length-1}>
+                  <div style={{fontFamily:B.sans,fontSize:11,fontWeight:500,color:B.black,marginBottom:3}}>{d.n}</div>
+                  <div style={{fontFamily:B.sans,fontSize:11,color:B.gray,lineHeight:1.6}}>{d.v}</div>
+                </Row>
+              ))}
+            </Card>
+          </div>
+        )}
+        {active==="leads"&&(
+          <div style={{animation:"fadeIn 0.25s ease"}}>
+            <Title sub="All leads captured across intake form, chat widget, and SMS — delivered to christinaquach98@gmail.com in real time.">Lead<br/><em style={{fontStyle:"italic"}}>Pipeline</em></Title>
+            <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:1,border:`1px solid ${B.border}`,marginBottom:20}}>
+              {[{k:"Total",v:leads.length},{k:"New",v:newCount,a:true},{k:"Booked",v:leads.filter(l=>l.status==="booked").length}].map((s,i)=>(
+                <div key={i} style={{background:B.white,padding:"14px 12px",borderRight:i<2?`1px solid ${B.border}`:"none"}}>
+                  <div style={{fontFamily:B.sans,fontSize:9,letterSpacing:"0.12em",textTransform:"uppercase",color:B.gray,marginBottom:4}}>{s.k}</div>
+                  <div style={{fontFamily:B.serif,fontSize:22,color:s.a&&s.v>0?B.gold:B.black}}>{s.v}</div>
+                </div>
+              ))}
+            </div>
+            <Card>{leads.map((lead,i)=>{const s=ST[lead.status]||ST.new;return(<Row key={lead.id} last={i===leads.length-1}><div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:6}}><div><div style={{fontFamily:B.sans,fontSize:13,color:B.black,fontWeight:500}}>{lead.name}</div><div style={{fontFamily:B.sans,fontSize:10,color:B.gray}}>{lead.email}</div></div><span style={{fontFamily:B.sans,fontSize:9,letterSpacing:"0.06em",padding:"3px 8px",background:s.bg,color:s.color,flexShrink:0}}>{s.label}</span></div><div style={{display:"flex",gap:8,flexWrap:"wrap"}}>{[lead.occasion,lead.style,lead.budget,lead.source].filter(Boolean).map((v,j)=>(<span key={j} style={{fontFamily:B.sans,fontSize:10,color:B.gray,background:B.offwhite,padding:"2px 8px"}}>{v}</span>))}<span style={{fontFamily:B.sans,fontSize:10,color:B.lightgray,marginLeft:"auto"}}>{lead.time}</span></div></Row>);})}</Card>
+          </div>
+        )}
+        {active==="intake"&&(
+          <div style={{animation:"fadeIn 0.25s ease"}}>
+            <Title sub="5-step ring quiz → matched ring photos + links → contact capture → instant lead email to Christina.">Ring Preference<br/><em style={{fontStyle:"italic"}}>Intake Form</em></Title>
+            <Label>Live — Try It</Label>
+            <Card><div style={{padding:"20px 16px"}}><IntakeForm onLead={addLead}/></div></Card>
+          </div>
+        )}
+        {active==="chat"&&(
+          <div style={{animation:"fadeIn 0.25s ease"}}>
+            <Title sub="Guided conversation that collects preferences and contact info naturally. Delivers leads to Christina instantly.">AI Concierge<br/><em style={{fontStyle:"italic"}}>Chat Widget</em></Title>
+            <Label>Live — Try It</Label>
+            <ChatWidget onLead={addLead}/>
+          </div>
+        )}
+        {active==="marketing"&&(
+          <div style={{animation:"fadeIn 0.25s ease"}}>
+            <Title sub="Lovelri has a strong brand story but is missing the conversion infrastructure to turn awareness into booked consultations.">Marketing<br/><em style={{fontStyle:"italic"}}>Strategy & Audit</em></Title>
+            <Label>What Lovelri Has Going For It</Label>
+            <Card mb={24}>
+              {[
+                {n:"BlogTO Feature",d:"Being featured on BlogTO is a meaningful Toronto media win. It needs to be prominent on the homepage."},
+                {n:"29K Instagram Followers",d:"29K followers with 131 posts is a real audience."},
+                {n:"Cartier / Tiffany / Van Cleef Credibility",d:"Master jewellers trained at Cartier, Tiffany & Co., and Van Cleef & Arpels."},
+                {n:"Lifetime Warranty",d:"A lifetime manufacturer warranty is a significant purchase-decision driver."},
+                {n:"Ships Internationally",d:"Lovelri ships internationally — this opens the entire diaspora market."},
+              ].map((d,i,a)=>(<Row key={i} last={i===a.length-1}><div style={{fontFamily:B.sans,fontSize:12,fontWeight:500,color:B.black,marginBottom:3}}>{d.n}</div><div style={{fontFamily:B.sans,fontSize:11,color:B.gray,lineHeight:1.6}}>{d.d}</div></Row>))}
+            </Card>
+            <Label>Critical Marketing Gaps</Label>
+            <Card mb={24}>
+              {[
+                {n:"No Email List",sev:"critical",d:"Zero lead magnet, no email capture incentive, no nurture sequence."},
+                {n:"No Google Ads",sev:"critical",d:"'Lab diamond engagement ring Toronto' has no paid presence."},
+                {n:"No Retargeting",sev:"critical",d:"Every CTA goes to Square offsite — no Meta Pixel, no Google Tag fires on booking completion."},
+                {n:"No Proposal Season Campaigns",sev:"high",d:"Valentine's Day, Christmas Eve, and summer proposals are the 3 peaks."},
+                {n:"No Referral Programme",sev:"high",d:"Engagement ring buyers have engaged friends who will also need rings within 1–3 years."},
+                {n:"No Press Strategy",sev:"medium",d:"BlogTO is one hit. Toronto Life, The Kit, Weddingwire editorial are zero."},
+              ].map((d,i,a)=>(<Row key={i} last={i===a.length-1}><div style={{display:"flex",gap:8,alignItems:"center",marginBottom:3,flexWrap:"wrap"}}><span style={{fontFamily:B.sans,fontSize:12,fontWeight:500,color:B.black}}>{d.n}</span><Chip label={d.sev} bg={d.sev==="critical"?"rgba(220,53,69,0.08)":"rgba(255,193,7,0.08)"} color={d.sev==="critical"?"#c0392b":"#8c6d00"}/></div><div style={{fontFamily:B.sans,fontSize:11,color:B.gray,lineHeight:1.6}}>{d.d}</div></Row>))}
+            </Card>
+            <Label>90-Day Marketing Action Plan</Label>
+            <Card>
+              {[
+                {phase:"Days 1–14",t:"Fix the Funnel",items:["Install Meta Pixel + Google Tag on Shopify","Add Google Analytics 4 with conversion tracking","Set up email capture with lead magnet","Activate retargeting","Move Square booking inline on website"]},
+                {phase:"Days 15–30",t:"Launch Paid Acquisition",items:["Google Ads: lab diamond, custom, bespoke engagement ring Toronto","Meta Ads: retargeting warm visitors","Daily budget: $50–100/day","A/B test landing page"]},
+                {phase:"Days 31–60",t:"Build Email Engine",items:["Welcome sequence: 5 emails over 14 days","Abandoned consultation follow-up","Monthly newsletter"]},
+                {phase:"Days 61–90",t:"PR & Partnerships",items:["Pitch Toronto Life, The Kit, Weddingwire","Partner with 2–3 Toronto wedding photographers","Launch referral programme: $200/$200","Submit BlogTO Best Of"]},
+              ].map((phase,i,a)=>(<Row key={i} last={i===a.length-1}><div style={{display:"flex",gap:10,alignItems:"flex-start"}}><div style={{fontFamily:B.serif,fontSize:15,color:B.gold,flexShrink:0,width:68,marginTop:1}}>{phase.phase}</div><div><div style={{fontFamily:B.sans,fontSize:12,fontWeight:500,color:B.black,marginBottom:6}}>{phase.t}</div>{phase.items.map((item,j)=>(<div key={j} style={{display:"flex",gap:6,marginBottom:4,alignItems:"flex-start"}}><span style={{color:B.gold,flexShrink:0,marginTop:1}}>—</span><span style={{fontFamily:B.sans,fontSize:11,color:B.gray,lineHeight:1.5}}>{item}</span></div>))}</div></div></Row>))}
+            </Card>
+          </div>
+        )}
+        {active==="social"&&(
+          <div style={{animation:"fadeIn 0.25s ease"}}>
+            <Title sub="29K Instagram followers and a BlogTO feature. Convert that audience into booked consultations.">Social Media<br/><em style={{fontStyle:"italic"}}>Audit & Strategy</em></Title>
+            <Label>Current Social Presence</Label>
+            <Card mb={24}>
+              {[
+                {p:"Instagram @lovelri",s:"Active",stats:"29K followers · 131 posts",a:"Bio link should go to intake form, not homepage."},
+                {p:"Facebook",s:"Low activity",stats:"151 likes",a:"Essentially inactive. Revive with repurposed Instagram content."},
+                {p:"TikTok",s:"Not found",stats:"No verified presence",a:"Significant missed opportunity for ring reveals and atelier behind-the-scenes."},
+                {p:"Pinterest",s:"Not confirmed",stats:"Unknown",a:"Pinterest drives significant engagement ring discovery traffic."},
+                {p:"WeddingWire.ca",s:"Listed, no reviews",stats:"0 reviews",a:"Top-5 research source for Toronto engaged couples. Needs 10+ reviews urgently."},
+              ].map((x,i,a)=>(<Row key={i} last={i===a.length-1}><div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:4,gap:8}}><div style={{fontFamily:B.sans,fontSize:12,fontWeight:500,color:B.black}}>{x.p}</div><Chip label={x.s} bg={x.s==="Active"?"rgba(76,175,125,0.1)":x.s==="Not found"?"rgba(220,53,69,0.08)":"rgba(255,193,7,0.08)"} color={x.s==="Active"?"#2d7a54":x.s==="Not found"?"#c0392b":"#8c6d00"}/></div><div style={{fontFamily:B.sans,fontSize:10,color:B.gray,marginBottom:4,letterSpacing:"0.04em"}}>{x.stats}</div><div style={{fontFamily:B.sans,fontSize:11,color:B.gray,lineHeight:1.6}}>{x.a}</div></Row>))}
+            </Card>
+            <Label>Content Calendar — Monthly Framework</Label>
+            <Card>
+              {[
+                {week:"Week 1",theme:"Craftsmanship",posts:["Atelier close-up","Ring of the week","Reel — making-of Botanical","Ask our jeweller Q&A"]},
+                {week:"Week 2",theme:"Client Love",posts:["Proposal reveal","She said yes ring close-up","Client testimonial","Behind-the-scenes wax-to-ring"]},
+                {week:"Week 3",theme:"Education",posts:["Lab vs natural diamond","Choosing ring shape","Reel — 5 things nobody tells you","Story poll: Oval or Round?"]},
+                {week:"Week 4",theme:"Brand Story",posts:["Maison heritage","New collection announcement","Reel — Toronto atelier tour","CTA: Book consultation"]},
+              ].map((w,i,a)=>(<Row key={i} last={i===a.length-1}><div style={{fontFamily:B.sans,fontSize:11,fontWeight:500,color:B.black,marginBottom:6,letterSpacing:"0.04em"}}>{w.week} — {w.theme}</div>{w.posts.map((p,j)=>(<div key={j} style={{display:"flex",gap:6,marginBottom:3,alignItems:"flex-start"}}><span style={{color:B.gold,flexShrink:0}}>—</span><span style={{fontFamily:B.sans,fontSize:11,color:B.gray,lineHeight:1.5}}>{p}</span></div>))}</Row>))}
+            </Card>
+          </div>
+        )}
+        {active==="seo"&&(
+          <div style={{animation:"fadeIn 0.25s ease"}}>
+            <Title sub="Shopify store, blog, and physical Toronto location — strong local SEO foundations. Almost none of it is currently optimised.">SEO<br/><em style={{fontStyle:"italic"}}>Audit & Keyword Strategy</em></Title>
+            <Label>Priority Keywords to Own</Label>
+            <Card mb={24}>
+              {[
+                {kw:"Lab diamond engagement ring Toronto",intent:"Commercial",difficulty:"High",priority:"#1"},
+                {kw:"Custom engagement ring Toronto",intent:"Commercial",difficulty:"High",priority:"#1"},
+                {kw:"Bespoke engagement ring Toronto",intent:"Commercial",difficulty:"Medium",priority:"High"},
+                {kw:"Botanical engagement ring",intent:"Commercial",difficulty:"Low",priority:"High"},
+                {kw:"Lab diamond vs natural diamond Toronto",intent:"Informational",difficulty:"Low",priority:"Medium"},
+                {kw:"Engagement ring Toronto price",intent:"Commercial",difficulty:"Medium",priority:"High"},
+                {kw:"Oval engagement ring Toronto",intent:"Commercial",difficulty:"Medium",priority:"Medium"},
+                {kw:"Hidden halo engagement ring Toronto",intent:"Commercial",difficulty:"Low",priority:"Medium"},
+              ].map((kw,i,a)=>(<Row key={i} last={i===a.length-1}><div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",gap:8,marginBottom:4}}><div style={{fontFamily:B.sans,fontSize:12,fontWeight:500,color:B.black,flex:1}}>{kw.kw}</div><Chip label={kw.priority==="#1"?"🎯 Priority #1":kw.priority} bg={kw.priority==="#1"?"rgba(201,169,110,0.15)":"rgba(26,26,26,0.06)"} color={kw.priority==="#1"?B.gold:B.black}/></div><div style={{display:"flex",gap:6}}><Chip label={kw.intent}/><Chip label={`Difficulty: ${kw.difficulty}`} bg={kw.difficulty==="Low"?"rgba(76,175,125,0.08)":kw.difficulty==="Medium"?"rgba(255,193,7,0.08)":"rgba(220,53,69,0.08)"} color={kw.difficulty==="Low"?"#2d7a54":kw.difficulty==="Medium"?"#8c6d00":"#c0392b"}/></div></Row>))}
+            </Card>
+          </div>
+        )}
+        {active==="embed"&&(
+          <div style={{animation:"fadeIn 0.25s ease"}}>
+            <Title sub="All tools embed directly into the Shopify storefront. One snippet per tool — no redesign, no rebuild.">Embed on<br/><em style={{fontStyle:"italic"}}>lovelri.com</em></Title>
+            {[{t:"1. Intake Form",d:"Add to any collection page or /pages/consultation."},{t:"2. Chat Widget",d:"Add to theme.liquid before </body>. Floats on every page."},{t:"3. EmailJS Setup",d:"Free. 200 emails/month. 5-minute setup."},{t:"4. Deploy to Vercel",d:"Host both tools free. One command in terminal."}].map((b,i)=>(
+              <Card key={i} mb={14}><Row><div style={{fontFamily:B.sans,fontSize:12,fontWeight:500,color:B.black,marginBottom:3}}>{b.t}</div><div style={{fontFamily:B.sans,fontSize:11,color:B.gray,lineHeight:1.6}}>{b.d}</div></Row></Card>
+            ))}
+          </div>
+        )}
+      </div>
+      <div style={{position:"fixed",bottom:0,left:0,right:0,background:B.white,borderTop:`1px solid ${B.border}`,display:"flex",zIndex:98,overflowX:"auto"}}>
+        {NAV.map(n=>(
+          <button key={n.id} onClick={()=>go(n.id)} style={{flex:"0 0 auto",minWidth:0,padding:"10px 8px 8px",border:"none",background:"none",cursor:"pointer",borderTop:active===n.id?`2px solid ${B.black}`:"2px solid transparent",display:"flex",flexDirection:"column",alignItems:"center",gap:2}}>
+            <span style={{fontFamily:B.sans,fontSize:8,letterSpacing:"0.04em",textTransform:"uppercase",color:active===n.id?B.black:B.gray,lineHeight:1.2,textAlign:"center",whiteSpace:"nowrap"}}>{n.label}</span>
+            {n.id==="leads"&&newCount>0&&<span style={{width:5,height:5,borderRadius:"50%",background:B.gold,display:"inline-block"}}/>}
+          </button>
+        ))}
+      </div>
+      <style>{`
+        @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+        @keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
+        @keyframes bounce{0%,80%,100%{transform:translateY(0)}40%{transform:translateY(-4px)}}
+        *{box-sizing:border-box}
+      `}</style>
+    </div>
+  );
+}
+// export default Dashboard;  // not needed in browser bundle
+
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(<Dashboard />);
+</script>
+</body>
+</html>

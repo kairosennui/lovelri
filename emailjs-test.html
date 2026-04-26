@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Lovelri · EmailJS Credential Test</title>
+<style>
+  :root{
+    --black:#1a1a1a; --gray:#6b6b6b; --light:#e8e8e4; --border:#d8d8d2;
+    --offwhite:#fafaf8; --white:#fff; --gold:#c9a96e;
+    --serif:'Cormorant Garamond','Georgia',serif;
+    --sans:'Helvetica Neue','Arial',sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:var(--sans);background:var(--offwhite);color:var(--black);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
+  .card{background:var(--white);border:1px solid var(--border);max-width:480px;width:100%;padding:32px}
+  h1{font-family:var(--serif);font-weight:400;font-size:28px;margin:0 0 8px;line-height:1.2}
+  h1 em{font-style:italic;color:var(--gold)}
+  .sub{font-size:13px;color:var(--gray);line-height:1.7;margin:0 0 24px}
+  .lbl{font-size:9px;letter-spacing:0.22em;text-transform:uppercase;color:var(--gray);margin:0 0 6px;display:block}
+  input{width:100%;padding:11px 13px;border:1px solid var(--border);font-family:var(--sans);font-size:13px;color:var(--black);background:var(--white);outline:none;margin-bottom:14px}
+  input:focus{border-color:var(--black)}
+  button{width:100%;padding:14px;background:var(--black);color:var(--white);border:0;font-family:var(--sans);font-size:11px;letter-spacing:0.14em;text-transform:uppercase;cursor:pointer;margin-top:8px}
+  button:disabled{background:#e0e0da;color:var(--gray);cursor:not-allowed}
+  .creds{background:var(--offwhite);border:1px solid var(--border);padding:11px 13px;margin-bottom:20px;font-size:11px;line-height:1.8;color:var(--gray)}
+  .creds strong{color:var(--black);font-weight:500}
+  .out{margin-top:18px;padding:12px 14px;font-size:12px;line-height:1.6;border:1px solid var(--border);display:none}
+  .out.ok{background:rgba(76,175,125,0.06);border-color:#2d7a54;color:#2d7a54;display:block}
+  .out.err{background:rgba(220,53,69,0.06);border-color:#c0392b;color:#c0392b;display:block}
+  .step{font-size:12px;color:var(--gray);line-height:1.7;margin-top:24px;padding-top:20px;border-top:1px solid var(--border)}
+  .step ol{margin:8px 0 0 18px;padding:0}
+  .step li{margin-bottom:6px}
+  code{font-family:'SF Mono','Consolas',monospace;font-size:11px;background:var(--offwhite);padding:1px 5px}
+</style>
+</head>
+<body>
+<div class="card">
+  <span class="lbl">Lovelri Bookings · Diagnostic</span>
+  <h1>EmailJS<br><em>Credential Test</em></h1>
+  <p class="sub">One click to verify your EmailJS service, template, and public key actually work. Sends a test email to your inbox.</p>
+
+  <div class="creds">
+    <strong>Service:</strong> service_ood0bss<br>
+    <strong>Template:</strong> template_zi2yxpb<br>
+    <strong>Public key:</strong> bRAPk3VW--Jj1UcpG<br>
+    <strong>Sending to:</strong> garykcli@gmail.com
+  </div>
+
+  <span class="lbl">Your name (for the email body)</span>
+  <input id="name" type="text" value="Gary Test" placeholder="Your name">
+
+  <span class="lbl">Email to send the test TO</span>
+  <input id="email" type="email" value="garykcli@gmail.com" placeholder="you@example.com">
+
+  <button id="go">Send Test Email</button>
+
+  <div id="out" class="out"></div>
+
+  <div class="step">
+    <strong style="color:var(--black)">If success:</strong> check the inbox. Two emails should arrive (one to "Gary", one to the test address) within ~30 seconds.<br><br>
+    <strong style="color:var(--black)">If error:</strong> the message will tell you what's wrong. Most common: the template variables don't match. Your <code>template_zi2yxpb</code> needs these fields:
+    <ol>
+      <li><code>{{to_name}}</code></li>
+      <li><code>{{to_email}}</code> &nbsp;<em>(set as the "To Email" recipient)</em></li>
+      <li><code>{{subject}}</code> &nbsp;<em>(set as the email Subject)</em></li>
+      <li><code>{{message}}</code> &nbsp;<em>(set as the email Body)</em></li>
+      <li><code>{{reply_to}}</code> &nbsp;<em>(set as Reply-To)</em></li>
+    </ol>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script>
+  const SERVICE  = "service_ood0bss";
+  const TEMPLATE = "template_zi2yxpb";
+  const PUBKEY   = "bRAPk3VW--Jj1UcpG";
+
+  emailjs.init({ publicKey: PUBKEY });
+
+  const out = document.getElementById("out");
+  const btn = document.getElementById("go");
+
+  btn.addEventListener("click", async () => {
+    out.className = "out";
+    out.style.display = "none";
+    btn.disabled = true;
+    btn.textContent = "Sending…";
+
+    const name  = document.getElementById("name").value.trim() || "Test User";
+    const email = document.getElementById("email").value.trim();
+
+    if (!/\S+@\S+\.\S+/.test(email)) {
+      out.className = "out err";
+      out.textContent = "Please enter a valid email address.";
+      btn.disabled = false;
+      btn.textContent = "Send Test Email";
+      return;
+    }
+
+    const stamp = new Date().toLocaleString("en-CA", { timeZone: "America/Toronto" });
+
+    try {
+      const res = await emailjs.send(SERVICE, TEMPLATE, {
+        to_name:  name,
+        to_email: email,
+        subject:  `✅ Lovelri EmailJS Test — ${stamp}`,
+        message:  [
+          `This is a test email from your Lovelri bookings system.`,
+          ``,
+          `If you can read this, your EmailJS credentials are correctly configured`,
+          `and the bookings app will be able to send real booking confirmations.`,
+          ``,
+          `Sent at: ${stamp}`,
+          `To name: ${name}`,
+          `To email: ${email}`,
+          ``,
+          `Next: open bookings.html and run a test booking.`
+        ].join("\n"),
+        reply_to: "garykcli@gmail.com",
+      });
+
+      out.className = "out ok";
+      out.innerHTML = `<strong>✓ Email sent successfully.</strong><br>` +
+        `Status: ${res.status} — ${res.text}<br>` +
+        `Check the inbox for <code>${email}</code> in 10–30 seconds. ` +
+        `If nothing arrives, check spam.`;
+    } catch (err) {
+      out.className = "out err";
+      const msg = err?.text || err?.message || String(err);
+      out.innerHTML = `<strong>✗ Email failed.</strong><br>` +
+        `Error: ${msg}<br><br>` +
+        `Common fixes:<br>` +
+        `• Check the template <code>template_zi2yxpb</code> has the variables <code>{{to_name}}</code>, <code>{{to_email}}</code>, <code>{{subject}}</code>, <code>{{message}}</code>, <code>{{reply_to}}</code><br>` +
+        `• In your EmailJS template's "Settings" tab, set the "To Email" field to <code>{{to_email}}</code><br>` +
+        `• In EmailJS dashboard → Account → Security, make sure your domain (or <code>localhost</code> / <code>file://</code>) is allowed`;
+    } finally {
+      btn.disabled = false;
+      btn.textContent = "Send Another Test";
+    }
+  });
+</script>
+</body>
+</html>
