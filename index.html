@@ -1018,7 +1018,6 @@ const NAV=[
 // their schedule and block off times. Blocks are stored as bookings with
 // source="Block" so they auto-disappear from the customer booking flow.
 function SalesPortal({ bookings, salesAuth, setSalesAuth, onAddBlock, onRemoveBlock }) {
-  const [pickedRep, setPickedRep] = useState("");
   const [pin, setPin] = useState("");
   const [err, setErr] = useState("");
   const [blockDate, setBlockDate] = useState("");
@@ -1026,9 +1025,10 @@ function SalesPortal({ bookings, salesAuth, setSalesAuth, onAddBlock, onRemoveBl
   const [blockReason, setBlockReason] = useState("");
 
   const tryLogin = () => {
-    const rep = TEAM.find(t => t.id === pickedRep);
-    if (!rep) { setErr("Pick your name."); return; }
-    if (!rep.pin || rep.pin !== pin) { setErr("Incorrect pin."); return; }
+    if (!pin) { setErr("Enter your pin."); return; }
+    // Pin uniquely (or by first match) identifies the rep
+    const rep = TEAM.find(t => t.pin && t.pin === pin);
+    if (!rep) { setErr("Pin not recognized."); return; }
     setSalesAuth(rep.id);
     setPin(""); setErr("");
   };
@@ -1036,24 +1036,13 @@ function SalesPortal({ bookings, salesAuth, setSalesAuth, onAddBlock, onRemoveBl
   if (!salesAuth) {
     return (
       <div style={{animation:"fadeIn 0.27s ease"}}>
-        <Title sub="Private — your name + pin gets you in. Pin is 1998 for Christina. Other reps default to 1234 (change in code).">Sales<br/><em style={{fontStyle:"italic"}}>Portal</em></Title>
+        <Title sub="Private — enter your pin to see your schedule and block off times.">Sales<br/><em style={{fontStyle:"italic"}}>Portal</em></Title>
         <Card>
-          <div style={{padding:"24px 22px"}}>
-            <div style={{fontFamily:B.sans,fontSize:11,letterSpacing:"0.18em",textTransform:"uppercase",color:B.gray,marginBottom:6}}>Sign In</div>
-            <div style={{fontFamily:B.serif,fontSize:20,color:B.black,marginBottom:18,lineHeight:1.2}}>Welcome back.</div>
-            <div style={{fontFamily:B.sans,fontSize:11,letterSpacing:"0.16em",textTransform:"uppercase",color:B.gray,marginBottom:6}}>Your name</div>
-            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:6,marginBottom:14}}>
-              {TEAM.filter(t => t.id !== "any").map(t => (
-                <button key={t.id} onClick={()=>setPickedRep(t.id)} style={{padding:"11px 12px",border:`1px solid ${pickedRep===t.id ? B.black : B.border}`,background:pickedRep===t.id ? B.black : B.white,color:pickedRep===t.id ? B.white : B.black,fontFamily:B.sans,fontSize:13,cursor:"pointer",display:"flex",alignItems:"center",gap:9,textAlign:"left"}}>
-                  <div style={{width:9,height:9,borderRadius:"50%",background:t.color}}/>
-                  {t.name}
-                </button>
-              ))}
-            </div>
-            <div style={{fontFamily:B.sans,fontSize:11,letterSpacing:"0.16em",textTransform:"uppercase",color:B.gray,marginBottom:6}}>Pin</div>
-            <input type="password" value={pin} onChange={e=>{setPin(e.target.value); setErr("");}} onKeyDown={e=>e.key==="Enter" && tryLogin()} placeholder="••••" style={{width:"100%",padding:"12px 13px",border:`1px solid ${B.border}`,fontFamily:B.sans,fontSize:14,color:B.black,outline:"none",letterSpacing:"0.4em",boxSizing:"border-box",marginBottom:14}}/>
-            {err && <div style={{fontFamily:B.sans,fontSize:12,color:"#c0392b",marginBottom:11}}>{err}</div>}
-            <button onClick={tryLogin} style={{width:"100%",padding:"14px",background:B.black,color:B.white,border:"none",fontFamily:B.sans,fontSize:13,letterSpacing:"0.16em",textTransform:"uppercase",cursor:"pointer"}}>Sign In</button>
+          <div style={{padding:"32px 22px"}}>
+            <div style={{fontFamily:B.sans,fontSize:11,letterSpacing:"0.22em",textTransform:"uppercase",color:B.gold,marginBottom:8,textAlign:"center"}}>Enter your pin</div>
+            <input type="password" autoFocus value={pin} onChange={e=>{setPin(e.target.value); setErr("");}} onKeyDown={e=>e.key==="Enter" && tryLogin()} placeholder="••••" style={{width:"100%",padding:"18px 16px",border:`1px solid ${B.border}`,fontFamily:B.sans,fontSize:22,color:B.black,outline:"none",letterSpacing:"0.5em",textAlign:"center",boxSizing:"border-box",marginBottom:14}}/>
+            {err && <div style={{fontFamily:B.sans,fontSize:12,color:"#c0392b",marginBottom:11,textAlign:"center"}}>{err}</div>}
+            <button onClick={tryLogin} style={{width:"100%",padding:"14px",background:B.black,color:B.white,border:"none",fontFamily:B.sans,fontSize:13,letterSpacing:"0.16em",textTransform:"uppercase",cursor:"pointer"}}>Unlock</button>
           </div>
         </Card>
       </div>
