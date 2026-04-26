@@ -1,0 +1,40 @@
+# OS junk
+.DS_Store
+Thumbs.db
+desktop.ini
+$RECYCLE.BIN/
+
+# Editor backups
+*~
+*.swp
+*.swo
+.idea/
+.vscode/
+
+# Node (when we migrate to a real build)
+node_modules/
+dist/
+build/
+.cache/
+.parcel-cache/
+*.log
+npm-debug.log*
+
+# Vercel / Netlify deploy artifacts
+.vercel/
+.netlify/
+
+# Environment & secrets
+.env
+.env.local
+.env.*.local
+
+# Source files we generate locally but don't ship to the repo
+outputs/
+raw_*.jsx
+clean_*.jsx
+final_*.jsx
+
+# OneDrive / Dropbox sync conflicts
+*conflict*
+*Conflict*

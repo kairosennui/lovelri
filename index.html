@@ -12,14 +12,14 @@
     display:flex;align-items:center;justify-content:center;
     min-height:100vh;
     font-family:'Helvetica Neue','Arial',sans-serif;
-    color:#6b6b6b;font-size:11px;letter-spacing:0.22em;text-transform:uppercase;
+    color:#6b6b6b;font-size:13px;letter-spacing:0.22em;text-transform:uppercase;
     flex-direction:column;gap:14px;
   }
-  .boot small{font-size:9px;color:#a8a8a4;letter-spacing:0.06em;text-transform:none;font-style:italic}
+  .boot small{font-size:11px;color:#a8a8a4;letter-spacing:0.06em;text-transform:none;font-style:italic}
 </style>
 </head>
 <body>
-<div id="root"><div class="boot">Loading Lovelri Dashboard<small>compiling JSX in your browser… ~1s</small></div></div>
+<div id="root"><div class="boot">Loading Tony&#39;s Hub<small>compiling JSX in your browser… ~1s</small></div></div>
 
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
@@ -167,6 +167,589 @@ const THREAT = {
   medium:{label:"Med Threat",   bg:"rgba(255,193,7,0.08)",  color:"#8c6d00"},
   low:   {label:"Low Threat",   bg:"rgba(76,175,125,0.08)", color:"#2d7a54"},
 };
+
+// ── TEAM ─────────────────────────────────────────────────────────────────────
+const TEAM = [
+  { id:"any",       name:"Any Consultant", role:"First available",         color:"#c9a96e" },
+  { id:"tony",      name:"Tony",           role:"Founder & Lead Jeweller", color:"#2d7a54" },
+  { id:"christina", name:"Christina",      role:"Senior Consultant",       color:"#3a5fb0" },
+  { id:"jen",       name:"Jen",            role:"Ring Consultant",         color:"#8c6d3f" },
+  { id:"natalie",   name:"Natalie",        role:"Ring Consultant",         color:"#6b4c8c" },
+];
+// ── APPOINTMENT TYPES ─────────────────────────────────────────────────────────
+const APPT_TYPES = [
+  { id:"consultation", label:"Private Consultation",  duration:60, desc:"Explore our collection with a master jeweller.", icon:"💍" },
+  { id:"custom",       label:"Custom Design Session", duration:90, desc:"Design your ring from scratch — the full bespoke process.", icon:"✦" },
+  { id:"virtual",      label:"Virtual Consultation",  duration:45, desc:"Video call from anywhere in the world.", icon:"◻" },
+  { id:"viewing",      label:"Ring Viewing",           duration:30, desc:"Try on styles from our collection at Bay Street.", icon:"◇" },
+  { id:"review",       label:"Design Review",          duration:30, desc:"Review your 3D rendering and approve the final design.", icon:"○" },
+];
+const BUDGET_OPTS = ["Under $3,500","$3,500–$6,000","$6,000–$12,000","$12,000–$25,000","$25,000+","Prefer not to say"];
+const SLOTS = ["9:00 AM","9:30 AM","10:00 AM","10:30 AM","11:00 AM","11:30 AM","1:00 PM","1:30 PM","2:00 PM","2:30 PM","3:00 PM","3:30 PM","4:00 PM","4:30 PM"];
+const MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+const DAYS = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+function getDaysInMonth(y,m){return new Date(y,m+1,0).getDate();}
+function getFirstDay(y,m){return new Date(y,m,1).getDay();}
+function getSlots(date,cid){const s=date.getDate()+date.getMonth()*31+(cid==="tony"?7:cid==="christina"?13:cid==="jen"?17:cid==="natalie"?11:3);return SLOTS.filter((_,i)=>((s*(i+1))%5)!==0&&!(i>=5&&i<=6));}
+// ── ICS CALENDAR GENERATOR ────────────────────────────────────────────────────
+// Creates a .ics file Gary can tap to add appointment to Apple/Google Calendar
+// Includes 1hr and 15min reminders
+function makeICS(booking, consultantName) {
+  const [y,m,d] = booking.date.split("-").map(Number);
+  const [tp, ap] = booking.time.split(" ");
+  let [h,min] = tp.split(":").map(Number);
+  if(ap==="PM"&&h!==12) h+=12;
+  if(ap==="AM"&&h===12) h=0;
+  const pad = n=>String(n).padStart(2,"0");
+  const eh = h+Math.floor((min+booking.duration)/60);
+  const em = (min+booking.duration)%60;
+  const dtStart = `${y}${pad(m)}${pad(d)}T${pad(h)}${pad(min)}00`;
+  const dtEnd   = `${y}${pad(m)}${pad(d)}T${pad(eh)}${pad(em)}00`;
+  const loc = booking.apptId==="virtual" ? "Virtual — Video Call" : "320 Bay Street\\, Toronto\\, ON M5H 4A6";
+  const desc = `Client: ${booking.name}\\nEmail: ${booking.email}\\nPhone: ${booking.phone||"—"}\\nOccasion: ${booking.occasion||"—"}\\nBudget: ${booking.budget||"—"}\\nNotes: ${booking.notes||"—"}\\nBooking ID: ${booking.id}`;
+  const ics = [
+    "BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//Lovelri//Bookings//EN","CALSCALE:GREGORIAN",
+    "BEGIN:VEVENT",
+    `DTSTART;TZID=America/Toronto:${dtStart}`,
+    `DTEND;TZID=America/Toronto:${dtEnd}`,
+    `SUMMARY:💍 ${booking.type} — ${booking.name}`,
+    `DESCRIPTION:${desc}`,
+    `LOCATION:${loc}`,
+    `STATUS:CONFIRMED`,
+    `BEGIN:VALARM\nTRIGGER:-PT60M\nACTION:DISPLAY\nDESCRIPTION:1 hour: ${booking.type} with ${booking.name}\nEND:VALARM`,
+    `BEGIN:VALARM\nTRIGGER:-PT15M\nACTION:DISPLAY\nDESCRIPTION:15 min: ${booking.type} with ${booking.name}\nEND:VALARM`,
+    "END:VEVENT","END:VCALENDAR"
+  ].join("\r\n");
+  return "data:text/calendar;charset=utf8," + encodeURIComponent(ics);
+}
+// ── CALENDAR DEEP LINKS ───────────────────────────────────────────────────────
+// One-click "Add to Calendar" URLs for Google / Outlook (live + 365) / Yahoo.
+// These are quick-add deep links that work without any server. The recipient
+// taps the link in their email and the event opens pre-filled in their calendar.
+function makeCalLinks(booking) {
+  const [y, mo, d] = booking.date.split("-").map(Number);
+  const [tp, ap] = booking.time.split(" ");
+  let [h, min] = tp.split(":").map(Number);
+  if (ap === "PM" && h !== 12) h += 12;
+  if (ap === "AM" && h === 12) h = 0;
+  // Note: we treat the wall-clock time as floating local time. Calendar apps
+  // will display it in the user's tz unless ctz is specified (Google).
+  const startD = new Date(Date.UTC(y, mo - 1, d, h, min));
+  const endD = new Date(startD.getTime() + booking.duration * 60000);
+  const fmt = dt => dt.toISOString().replace(/[-:]|\.\d{3}/g, "");
+  const startStr = fmt(startD);
+  const endStr = fmt(endD);
+  const title = `Lovelri ${booking.type} — ${booking.name}`;
+  const loc = booking.apptId === "virtual"
+    ? "Virtual Video Call (Lovelri)"
+    : "320 Bay Street, Toronto ON M5H 4A6";
+  const lines = [
+    `Lovelri Booking ${booking.id}`,
+    `Client: ${booking.name}`,
+    `Email: ${booking.email}`,
+    `Phone: ${booking.phone || "—"}`,
+    `Notes: ${booking.notes || "None"}`,
+  ];
+  const desc = lines.join("\n");
+  const enc = encodeURIComponent;
+  return {
+    google:  `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${enc(title)}&dates=${startStr}/${endStr}&details=${enc(desc)}&location=${enc(loc)}&ctz=America/Toronto`,
+    outlook: `https://outlook.live.com/calendar/0/deeplink/compose?path=%2Fcalendar%2Faction%2Fcompose&rru=addevent&subject=${enc(title)}&startdt=${enc(startD.toISOString())}&enddt=${enc(endD.toISOString())}&body=${enc(desc)}&location=${enc(loc)}`,
+    office:  `https://outlook.office.com/calendar/0/deeplink/compose?path=%2Fcalendar%2Faction%2Fcompose&rru=addevent&subject=${enc(title)}&startdt=${enc(startD.toISOString())}&enddt=${enc(endD.toISOString())}&body=${enc(desc)}&location=${enc(loc)}`,
+    yahoo:   `https://calendar.yahoo.com/?v=60&title=${enc(title)}&st=${startStr}&et=${endStr}&desc=${enc(desc)}&in_loc=${enc(loc)}`,
+  };
+}
+// ── EMAIL SENDER ──────────────────────────────────────────────────────────────
+// Fires in background — never blocks the booking confirmation
+async function sendEmails(booking) {
+  const con = TEAM.find(t=>t.id===booking.consultant);
+  const apptDate = new Date(booking.date+"T12:00:00").toLocaleDateString("en-CA",{weekday:"long",month:"long",day:"numeric",year:"numeric"});
+  const loc = booking.apptId==="virtual" ? "Virtual — send video call link before appointment" : "320 Bay Street, Toronto ON M5H 4A6";
+  const calURL = makeICS(booking, con?.name||"Team");
+  const cal = makeCalLinks(booking);
+  const teamMsg = [
+    `📅 NEW LOVELRI BOOKING — ${booking.id}`,
+    "─".repeat(44),
+    `Client:      ${booking.name}`,
+    `Email:       ${booking.email}`,
+    `Phone:       ${booking.phone||"Not provided"}`,
+    "─".repeat(44),
+    `Appointment: ${booking.type}`,
+    `Date:        ${apptDate}`,
+    `Time:        ${booking.time} (${booking.duration} min)`,
+    `Consultant:  ${con?.name||"Any"}`,
+    `Location:    ${loc}`,
+    "─".repeat(44),
+    `Occasion:    ${booking.occasion||"—"}`,
+    `Budget:      ${booking.budget||"—"}`,
+    `Notes:       ${booking.notes||"None"}`,
+    "─".repeat(44),
+    `🗓️  ADD TO CALENDAR — pick your service (one click):`,
+    `   • Google Calendar: ${cal.google}`,
+    `   • Outlook (live):  ${cal.outlook}`,
+    `   • Office 365:      ${cal.office}`,
+    `   • Yahoo / Apple:   ${cal.yahoo}`,
+    `   • Download .ics:   ${calURL}`,
+    "",
+    `Reply to this email to contact the client directly.`,
+    `Submitted: ${new Date().toLocaleString("en-CA",{timeZone:"America/Toronto"})} EST`,
+  ].join("\n");
+  const clientMsg = [
+    `Dear ${booking.name},`,
+    "",
+    `Your ${booking.type} with Lovelri has been confirmed.`,
+    "",
+    "─".repeat(44),
+    `Date:     ${apptDate}`,
+    `Time:     ${booking.time}`,
+    `With:     ${con?.name||"Our team"}`,
+    `Location: ${loc}`,
+    "─".repeat(44),
+    "",
+    "🗓️ Add this appointment to your calendar:",
+    `   Google Calendar:  ${cal.google}`,
+    `   Outlook (live):   ${cal.outlook}`,
+    `   Office 365:       ${cal.office}`,
+    `   Yahoo / Apple:    ${cal.yahoo}`,
+    "",
+    "To reschedule or cancel, please call us at +1 437-433-3799",
+    "or reply to this email.",
+    "",
+    "We look forward to meeting you.",
+    "",
+    "With warmth,",
+    "The Lovelri Team",
+    "lovelri.com · 320 Bay Street, Toronto",
+  ].join("\n");
+  if (!window.emailjs) return;
+  try {
+    // Email 1: Gary — full booking details + calendar link
+    await window.emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+      to_name:  "Gary",
+      to_email: GARY_EMAIL,
+      subject:  `📅 New Booking — ${booking.name} | ${booking.type} | ${apptDate} at ${booking.time}`,
+      message:  teamMsg,
+      reply_to: booking.email,
+    }, EMAILJS_PUBLIC_KEY);
+    // Email 2: Client — confirmation
+    await window.emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+      to_name:  booking.name,
+      to_email: booking.email,
+      subject:  `Your Lovelri Consultation is Confirmed — ${apptDate} at ${booking.time}`,
+      message:  clientMsg,
+      reply_to: GARY_EMAIL,
+    }, EMAILJS_PUBLIC_KEY);
+  } catch(err) {
+    console.error("EmailJS error:", err);
+  }
+}
+// ── BOOKING STORE ─────────────────────────────────────────────────────────────
+let STORE = [
+  {id:"BK001",name:"Sarah M.",  email:"sarah@email.com",  phone:"+1 416 555 0101",type:"Private Consultation", apptId:"consultation",consultant:"tony",    date:"2026-05-12",time:"10:00 AM",duration:60,status:"confirmed",notes:"Lab diamond halo ~$8K",   occasion:"Engagement",budget:"$6,000–$12,000"},
+  {id:"BK002",name:"James T.",  email:"james@email.com",  phone:"+1 416 555 0202",type:"Virtual Consultation",  apptId:"virtual",     consultant:"christina",date:"2026-05-13",time:"2:00 PM", duration:45,status:"confirmed",notes:"Anniversary gift",       occasion:"Anniversary",budget:"$3,500–$6,000"},
+  {id:"BK003",name:"Priya K.",  email:"priya@email.com",  phone:"+1 416 555 0303",type:"Custom Design Session", apptId:"custom",      consultant:"tony",    date:"2026-05-14",time:"11:00 AM",duration:90,status:"pending",  notes:"Bespoke $25K+ cathedral",occasion:"Engagement",budget:"$25,000+"},
+  {id:"BK004",name:"Michael C.",email:"michael@email.com",phone:"+1 416 555 0404",type:"Ring Viewing",          apptId:"viewing",     consultant:"jen",     date:"2026-05-15",time:"3:00 PM", duration:30,status:"confirmed",notes:"Pavé solitaire",          occasion:"Engagement",budget:"$3,500–$6,000"},
+  {id:"BK005",name:"Emma L.",   email:"emma@email.com",   phone:"+1 416 555 0505",type:"Private Consultation",  apptId:"consultation",consultant:"natalie", date:"2026-05-16",time:"1:30 PM", duration:60,status:"pending",  notes:"Botanical style",         occasion:"Engagement",budget:"$6,000–$12,000"},
+];
+// ── SHARED UI ─────────────────────────────────────────────────────────────────
+const Lbl = ({c,mt})=><div style={{fontFamily:B.sans,fontSize:11,letterSpacing:"0.22em",textTransform:"uppercase",color:B.gray,marginBottom:10,marginTop:mt||0}}>{c}</div>;
+const Badge = ({s})=>{const m={confirmed:{bg:"rgba(76,175,125,0.1)",c:"#2d7a54",l:"Confirmed"},pending:{bg:"rgba(201,169,110,0.12)",c:"#8c6d3f",l:"Pending"},cancelled:{bg:"rgba(220,53,69,0.08)",c:"#c0392b",l:"Cancelled"}};const t=m[s]||m.pending;return <span style={{fontFamily:B.sans,fontSize:11,letterSpacing:"0.06em",padding:"3px 8px",background:t.bg,color:t.c}}>{t.l}</span>;};
+// ── CUSTOMER BOOKING FLOW ─────────────────────────────────────────────────────
+function BookingFlow({onDone}) {
+  const [step,setStep]   = useState(0);
+  const [appt,setAppt]   = useState(null);
+  const [cons,setCons]   = useState(null);
+  const [date,setDate]   = useState(null);
+  const [slot,setSlot]   = useState(null);
+  const [month,setMonth] = useState(new Date().getMonth());
+  const [year,setYear]   = useState(new Date().getFullYear());
+  const [form,setForm]   = useState({name:"",email:"",phone:"",occasion:"",budget:"",notes:""});
+  const [busy,setBusy]   = useState(false);
+  const [calLink,setCalLink] = useState(null);
+  const today = new Date(); today.setHours(0,0,0,0);
+  const slots = date ? getSlots(date,cons?.id) : [];
+  const f = (k,v)=>setForm(x=>({...x,[k]:v}));
+  const ok = [!!appt, !!cons, !!date&&!!slot, !!form.name&&/\S+@\S+\.\S+/.test(form.email)];
+  const submit = async () => {
+    setBusy(true);
+    const bk = {
+      id:"BK"+String(STORE.length+1).padStart(3,"0"),
+      name:form.name, email:form.email, phone:form.phone,
+      type:appt.label, apptId:appt.id, consultant:cons.id,
+      date:`${year}-${String(month+1).padStart(2,"0")}-${String(date.getDate()).padStart(2,"0")}`,
+      time:slot, duration:appt.duration, status:"confirmed",
+      notes:form.notes, occasion:form.occasion, budget:form.budget,
+    };
+    STORE = [bk,...STORE];
+    // Generate calendar link immediately
+    const cl = makeICS(bk, TEAM.find(t=>t.id===cons.id)?.name||"Team");
+    setCalLink(cl);
+    // Fire emails in background — NEVER await so booking is instant
+    sendEmails(bk);
+    setBusy(false);
+    onDone(bk);
+    setStep(4);
+  };
+  const dIM=getDaysInMonth(year,month);
+  const fD=getFirstDay(year,month);
+  const NavBtn=({l,fn})=><button onClick={fn} style={{flex:1,padding:"12px",background:B.white,color:B.black,border:`1px solid ${B.black}`,fontFamily:B.sans,fontSize:13,letterSpacing:"0.12em",textTransform:"uppercase",cursor:"pointer"}}>{l}</button>;
+  const NextBtn=({l,fn,off})=><button onClick={fn} disabled={off} style={{flex:1,padding:"12px",background:off?"#e0e0da":B.black,color:off?B.gray:B.white,border:"none",fontFamily:B.sans,fontSize:13,letterSpacing:"0.12em",textTransform:"uppercase",cursor:off?"not-allowed":"pointer"}}>{l}</button>;
+  // ── CONFIRMATION ──
+  if(step===4) {
+    const bk = STORE[0]; // most recent
+    return(
+      <div style={{padding:"32px 0",textAlign:"center"}}>
+        <div style={{width:52,height:52,border:`1px solid ${B.black}`,borderRadius:"50%",display:"flex",alignItems:"center",justifyContent:"center",fontSize:22,margin:"0 auto 20px"}}>✓</div>
+        <div style={{fontFamily:B.sans,fontSize:11,letterSpacing:"0.25em",textTransform:"uppercase",color:B.gray,marginBottom:10}}>Booking Confirmed</div>
+        <div style={{fontFamily:B.serif,fontSize:28,fontWeight:400,color:B.black,marginBottom:8,lineHeight:1.2}}>
+          See you soon,<br/><em>{form.name.split(" ")[0]}.</em>
+        </div>
+        <div style={{fontFamily:B.sans,fontSize:14,color:B.gray,lineHeight:1.8,marginBottom:24}}>
+          Confirmation sent to <strong style={{color:B.black}}>{form.email}</strong><br/>
+          Our team has been notified at <strong style={{color:B.black}}>garykcli@gmail.com</strong>
+        </div>
+        {/* Summary */}
+        <div style={{border:`1px solid ${B.border}`,background:B.offwhite,padding:"14px 16px",textAlign:"left",marginBottom:20}}>
+          {[
+            ["Appointment", appt?.label],
+            ["With", TEAM.find(t=>t.id===cons?.id)?.name],
+            ["Date", date?.toLocaleDateString("en-CA",{weekday:"long",month:"long",day:"numeric"})],
+            ["Time", slot],
+            ["Location", appt?.id==="virtual"?"Video Call — link coming by email":"320 Bay Street, Toronto ON M5H 4A6"],
+          ].map(([k,v])=>(
+            <div key={k} style={{display:"flex",justifyContent:"space-between",gap:12,padding:"6px 0",borderBottom:`1px solid ${B.border}`}}>
+              <span style={{fontFamily:B.sans,fontSize:13,color:B.gray,flexShrink:0}}>{k}</span>
+              <span style={{fontFamily:B.sans,fontSize:13,color:B.black,textAlign:"right"}}>{v}</span>
+            </div>
+          ))}
+        </div>
+        {/* Calendar add button — works on iPhone and Android */}
+        {calLink && (
+          <a href={calLink} download={`lovelri-booking-${bk.id}.ics`} style={{textDecoration:"none",display:"block",marginBottom:12}}>
+            <div style={{padding:"14px",background:B.black,color:B.white,fontFamily:B.sans,fontSize:13,letterSpacing:"0.12em",textTransform:"uppercase",textAlign:"center"}}>
+              📅 Add to My Calendar
+            </div>
+          </a>
+        )}
+        <div style={{fontFamily:B.sans,fontSize:13,color:B.gray,lineHeight:1.6,marginBottom:20}}>
+          Need to reschedule? Call <strong style={{color:B.black}}>+1 437-433-3799</strong>
+        </div>
+        <button onClick={()=>{setStep(0);setAppt(null);setCons(null);setDate(null);setSlot(null);setForm({name:"",email:"",phone:"",occasion:"",budget:"",notes:""});setCalLink(null);}}
+          style={{fontFamily:B.sans,fontSize:12,letterSpacing:"0.1em",textTransform:"uppercase",background:"none",border:"none",color:B.gray,cursor:"pointer",textDecoration:"underline"}}>
+          Book Another
+        </button>
+      </div>
+    );
+  }
+  return(
+    <div>
+      {/* Progress */}
+      <div style={{display:"flex",gap:3,marginBottom:20}}>
+        {["Type","Consultant","Date & Time","Details"].map((s,i)=>(
+          <div key={i} style={{flex:1}}>
+            <div style={{height:2,background:i<=step?B.black:B.lightgray,marginBottom:4,transition:"background 0.3s"}}/>
+            <div style={{fontFamily:B.sans,fontSize:10,letterSpacing:"0.08em",textTransform:"uppercase",color:i===step?B.black:B.gray}}>{s}</div>
+          </div>
+        ))}
+      </div>
+      {/* STEP 0 — Type */}
+      {step===0&&(
+        <div>
+          <Lbl c="What brings you in?"/>
+          <div style={{fontFamily:B.serif,fontSize:24,color:B.black,marginBottom:4,lineHeight:1.2}}>Choose your appointment</div>
+          <div style={{fontFamily:B.sans,fontSize:14,color:B.gray,marginBottom:20,lineHeight:1.6}}>320 Bay Street, Toronto — or virtually from anywhere.</div>
+          <div style={{display:"flex",flexDirection:"column",gap:8,marginBottom:20}}>
+            {APPT_TYPES.map(t=>(
+              <div key={t.id} onClick={()=>setAppt(t)} style={{border:`1px solid ${appt?.id===t.id?B.black:B.border}`,background:appt?.id===t.id?B.black:B.white,padding:"13px 16px",cursor:"pointer",transition:"all 0.15s",display:"flex",gap:14,alignItems:"center"}}>
+                <div style={{fontSize:19,flexShrink:0}}>{t.icon}</div>
+                <div style={{flex:1}}>
+                  <div style={{fontFamily:B.serif,fontSize:17,color:appt?.id===t.id?B.white:B.black,marginBottom:2}}>{t.label}</div>
+                  <div style={{fontFamily:B.sans,fontSize:13,color:appt?.id===t.id?"rgba(255,255,255,0.65)":B.gray}}>{t.desc}</div>
+                </div>
+                <div style={{fontFamily:B.sans,fontSize:12,color:appt?.id===t.id?"rgba(255,255,255,0.5)":B.gray,flexShrink:0}}>{t.duration}min</div>
+              </div>
+            ))}
+          </div>
+          <NextBtn l="Continue" fn={()=>setStep(1)} off={!ok[0]}/>
+        </div>
+      )}
+      {/* STEP 1 — Consultant */}
+      {step===1&&(
+        <div>
+          <Lbl c="Who would you like to meet?"/>
+          <div style={{fontFamily:B.serif,fontSize:24,color:B.black,marginBottom:4,lineHeight:1.2}}>Choose your consultant</div>
+          <div style={{fontFamily:B.sans,fontSize:14,color:B.gray,marginBottom:20,lineHeight:1.6}}>Each member of our team brings decades of expertise.</div>
+          <div style={{display:"flex",flexDirection:"column",gap:8,marginBottom:20}}>
+            {TEAM.map(t=>(
+              <div key={t.id} onClick={()=>setCons(t)} style={{border:`1px solid ${cons?.id===t.id?B.black:B.border}`,background:cons?.id===t.id?B.black:B.white,padding:"13px 16px",cursor:"pointer",transition:"all 0.15s",display:"flex",gap:14,alignItems:"center"}}>
+                <div style={{width:34,height:34,borderRadius:"50%",background:t.color,display:"flex",alignItems:"center",justifyContent:"center",fontFamily:B.serif,fontSize:17,color:B.white,flexShrink:0}}>{t.name[0]}</div>
+                <div style={{flex:1}}>
+                  <div style={{fontFamily:B.serif,fontSize:17,color:cons?.id===t.id?B.white:B.black}}>{t.name}</div>
+                  <div style={{fontFamily:B.sans,fontSize:13,color:cons?.id===t.id?"rgba(255,255,255,0.6)":B.gray}}>{t.role}</div>
+                </div>
+                {cons?.id===t.id&&<span style={{color:B.white,fontSize:15}}>✓</span>}
+              </div>
+            ))}
+          </div>
+          <div style={{display:"flex",gap:8}}>
+            <NavBtn l="← Back" fn={()=>setStep(0)}/>
+            <NextBtn l="Continue" fn={()=>setStep(2)} off={!ok[1]}/>
+          </div>
+        </div>
+      )}
+      {/* STEP 2 — Date & Time */}
+      {step===2&&(
+        <div>
+          <Lbl c="When would you like to come in?"/>
+          <div style={{fontFamily:B.serif,fontSize:24,color:B.black,marginBottom:20,lineHeight:1.2}}>Select a date & time</div>
+          <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:10}}>
+            <button onClick={()=>{if(month===0){setMonth(11);setYear(y=>y-1);}else setMonth(m=>m-1);setDate(null);setSlot(null);}} style={{background:"none",border:`1px solid ${B.border}`,padding:"5px 12px",cursor:"pointer",fontFamily:B.sans,fontSize:15,color:B.black}}>‹</button>
+            <div style={{fontFamily:B.serif,fontSize:17,color:B.black}}>{MONTHS[month]} {year}</div>
+            <button onClick={()=>{if(month===11){setMonth(0);setYear(y=>y+1);}else setMonth(m=>m+1);setDate(null);setSlot(null);}} style={{background:"none",border:`1px solid ${B.border}`,padding:"5px 12px",cursor:"pointer",fontFamily:B.sans,fontSize:15,color:B.black}}>›</button>
+          </div>
+          <div style={{display:"grid",gridTemplateColumns:"repeat(7,1fr)",gap:2,marginBottom:4}}>
+            {DAYS.map(d=><div key={d} style={{fontFamily:B.sans,fontSize:11,color:B.gray,textAlign:"center",letterSpacing:"0.06em"}}>{d}</div>)}
+          </div>
+          <div style={{display:"grid",gridTemplateColumns:"repeat(7,1fr)",gap:2,marginBottom:20}}>
+            {Array.from({length:fD}).map((_,i)=><div key={`e${i}`}/>)}
+            {Array.from({length:dIM}).map((_,i)=>{
+              const day=i+1, d=new Date(year,month,day);
+              const off=d<today||d.getDay()===0||d.getDay()===6;
+              const sel=date?.getDate()===day&&date?.getMonth()===month;
+              const isT=d.toDateString()===new Date().toDateString();
+              return(
+                <div key={day} onClick={()=>{if(!off){setDate(d);setSlot(null);}}}
+                  style={{aspectRatio:"1",display:"flex",alignItems:"center",justifyContent:"center",cursor:off?"default":"pointer",background:sel?B.black:"transparent",border:isT?`1px solid ${B.gold}`:"1px solid transparent",transition:"background 0.1s"}}
+                  onMouseEnter={e=>{if(!off&&!sel)e.currentTarget.style.background=B.offwhite;}}
+                  onMouseLeave={e=>{if(!sel)e.currentTarget.style.background="transparent";}}>
+                  <span style={{fontFamily:B.sans,fontSize:14,color:sel?B.white:off?B.lightgray:isT?B.gold:B.black}}>{day}</span>
+                </div>
+              );
+            })}
+          </div>
+          {date&&(
+            <div style={{marginBottom:20}}>
+              <Lbl c={date.toLocaleDateString("en-CA",{weekday:"long",month:"long",day:"numeric"})}/>
+              {slots.length>0
+                ?<div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:6}}>
+                  {slots.map(s=>(
+                    <button key={s} onClick={()=>setSlot(s)} style={{padding:"9px 4px",border:`1px solid ${slot===s?B.black:B.border}`,background:slot===s?B.black:B.white,color:slot===s?B.white:B.black,fontFamily:B.sans,fontSize:13,cursor:"pointer",transition:"all 0.15s"}}>
+                      {s}
+                    </button>
+                  ))}
+                </div>
+                :<div style={{fontFamily:B.sans,fontSize:14,color:B.gray,textAlign:"center",padding:"16px 0"}}>No availability — try another date.</div>
+              }
+            </div>
+          )}
+          <div style={{display:"flex",gap:8}}>
+            <NavBtn l="← Back" fn={()=>setStep(1)}/>
+            <NextBtn l="Continue" fn={()=>setStep(3)} off={!ok[2]}/>
+          </div>
+        </div>
+      )}
+      {/* STEP 3 — Contact */}
+      {step===3&&(
+        <div>
+          <Lbl c="Almost there"/>
+          <div style={{fontFamily:B.serif,fontSize:24,color:B.black,marginBottom:4,lineHeight:1.2}}>Your details</div>
+          <div style={{fontFamily:B.sans,fontSize:14,color:B.gray,marginBottom:20,lineHeight:1.6}}>
+            {appt?.label} · {date?.toLocaleDateString("en-CA",{month:"short",day:"numeric"})} at {slot} · {TEAM.find(t=>t.id===cons?.id)?.name}
+          </div>
+          {[{l:"Full Name *",k:"name",t:"text",p:"Your full name"},{l:"Email Address *",k:"email",t:"email",p:"your@email.com"},{l:"Phone Number",k:"phone",t:"tel",p:"+1 (416) 000-0000"}].map(fi=>(
+            <div key={fi.k} style={{marginBottom:13}}>
+              <div style={{fontFamily:B.sans,fontSize:11,letterSpacing:"0.16em",textTransform:"uppercase",color:B.gray,marginBottom:5}}>{fi.l}</div>
+              <input type={fi.t} value={form[fi.k]} onChange={e=>f(fi.k,e.target.value)} placeholder={fi.p}
+                style={{width:"100%",padding:"11px 13px",border:`1px solid ${B.border}`,fontFamily:B.sans,fontSize:15,color:B.black,background:B.white,outline:"none",boxSizing:"border-box"}}
+                onFocus={e=>e.target.style.borderColor=B.black}
+                onBlur={e=>e.target.style.borderColor=B.border}/>
+            </div>
+          ))}
+          <div style={{marginBottom:13}}>
+            <div style={{fontFamily:B.sans,fontSize:11,letterSpacing:"0.16em",textTransform:"uppercase",color:B.gray,marginBottom:8}}>Occasion</div>
+            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:6}}>
+              {["Engagement","Anniversary","Custom Gift","Just Exploring"].map(o=>(
+                <button key={o} onClick={()=>f("occasion",o)} style={{padding:"9px 8px",border:`1px solid ${form.occasion===o?B.black:B.border}`,background:form.occasion===o?B.black:B.white,color:form.occasion===o?B.white:B.black,fontFamily:B.sans,fontSize:13,cursor:"pointer",transition:"all 0.15s"}}>{o}</button>
+              ))}
+            </div>
+          </div>
+          <div style={{marginBottom:13}}>
+            <div style={{fontFamily:B.sans,fontSize:11,letterSpacing:"0.16em",textTransform:"uppercase",color:B.gray,marginBottom:8}}>Approximate Budget</div>
+            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:6}}>
+              {BUDGET_OPTS.map(o=>(
+                <button key={o} onClick={()=>f("budget",o)} style={{padding:"9px 8px",border:`1px solid ${form.budget===o?B.black:B.border}`,background:form.budget===o?B.black:B.white,color:form.budget===o?B.white:B.black,fontFamily:B.sans,fontSize:12,cursor:"pointer",transition:"all 0.15s"}}>{o}</button>
+              ))}
+            </div>
+          </div>
+          <div style={{marginBottom:14}}>
+            <div style={{fontFamily:B.sans,fontSize:11,letterSpacing:"0.16em",textTransform:"uppercase",color:B.gray,marginBottom:5}}>Notes (optional)</div>
+            <textarea value={form.notes} onChange={e=>f("notes",e.target.value)} rows={3}
+              placeholder="Style preferences, inspiration, questions..."
+              style={{width:"100%",padding:"11px 13px",border:`1px solid ${B.border}`,fontFamily:B.sans,fontSize:15,color:B.black,background:B.white,outline:"none",resize:"vertical",boxSizing:"border-box"}}/>
+          </div>
+          {/* What happens next */}
+          <div style={{padding:"11px 13px",background:B.offwhite,border:`1px solid ${B.border}`,marginBottom:16}}>
+            <div style={{fontFamily:B.sans,fontSize:12,color:B.black,marginBottom:4,fontWeight:500}}>What happens after you confirm:</div>
+            <div style={{fontFamily:B.sans,fontSize:12,color:B.gray,lineHeight:1.8}}>
+              ✓ Booking confirmed instantly<br/>
+              📧 You'll receive a confirmation email<br/>
+              📅 Gary gets an email + calendar invite<br/>
+              📞 Team will call to confirm within 2 hours
+            </div>
+          </div>
+          <div style={{display:"flex",gap:8}}>
+            <NavBtn l="← Back" fn={()=>setStep(2)}/>
+            <NextBtn l={busy?"One moment…":"Confirm Booking"} fn={submit} off={!ok[3]||busy}/>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+// ── ADMIN DASHBOARD ───────────────────────────────────────────────────────────
+function AdminDash({bookings,onStatus}) {
+  const [filter,setFilter]   = useState("all");
+  const [view,setView]       = useState("upcoming");
+  const [open,setOpen]       = useState(null);
+  const [cm,setCm]           = useState(new Date().getMonth());
+  const [cy,setCy]           = useState(new Date().getFullYear());
+  const todayStr             = new Date().toISOString().split("T")[0];
+  const list = bookings
+    .filter(b=>filter==="all"||b.consultant===filter)
+    .filter(b=>view==="upcoming"?new Date(b.date)>=new Date(todayStr):true)
+    .sort((a,b)=>new Date(a.date)-new Date(b.date));
+  const byDate={};
+  bookings.forEach(b=>{if(!byDate[b.date])byDate[b.date]=[];byDate[b.date].push(b);});
+  const dIM=getDaysInMonth(cy,cm);
+  const fD=getFirstDay(cy,cm);
+  return(
+    <div>
+      {/* KPIs */}
+      <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:1,border:`1px solid ${B.border}`,marginBottom:20}}>
+        {[
+          {k:"Today",    v:bookings.filter(b=>b.date===todayStr).length,    sub:"appts"},
+          {k:"Upcoming", v:bookings.filter(b=>new Date(b.date)>=new Date(todayStr)).length, sub:"total"},
+          {k:"Confirmed",v:bookings.filter(b=>b.status==="confirmed").length,sub:"confirmed"},
+          {k:"Pending",  v:bookings.filter(b=>b.status==="pending").length,  sub:"action needed",a:true},
+        ].map((s,i)=>(
+          <div key={i} style={{background:B.white,padding:"12px 8px",borderRight:i<3?`1px solid ${B.border}`:"none"}}>
+            <div style={{fontFamily:B.sans,fontSize:10,letterSpacing:"0.12em",textTransform:"uppercase",color:B.gray,marginBottom:4}}>{s.k}</div>
+            <div style={{fontFamily:B.serif,fontSize:24,color:s.a&&s.v>0?B.gold:B.black,lineHeight:1}}>{s.v}</div>
+            <div style={{fontFamily:B.sans,fontSize:11,color:B.gray,marginTop:2}}>{s.sub}</div>
+          </div>
+        ))}
+      </div>
+      {/* Email routing info */}
+      <div style={{border:`1px solid ${B.border}`,background:B.offwhite,padding:"11px 14px",marginBottom:16}}>
+        <div style={{fontFamily:B.sans,fontSize:11,letterSpacing:"0.16em",textTransform:"uppercase",color:B.gray,marginBottom:5}}>Email & Calendar Routing</div>
+        <div style={{fontFamily:B.sans,fontSize:13,color:B.black,lineHeight:1.8}}>
+          Every booking → <strong>garykcli@gmail.com</strong><br/>
+          📅 Calendar invite (.ics) included in Gary's email<br/>
+          📧 Confirmation copy → client's email
+        </div>
+      </div>
+      {/* Mini calendar */}
+      <div style={{border:`1px solid ${B.border}`,background:B.white,marginBottom:16}}>
+        <div style={{padding:"9px 14px",borderBottom:`1px solid ${B.border}`,display:"flex",alignItems:"center",justifyContent:"space-between"}}>
+          <button onClick={()=>{if(cm===0){setCm(11);setCy(y=>y-1);}else setCm(m=>m-1);}} style={{background:"none",border:"none",cursor:"pointer",fontSize:16,color:B.black}}>‹</button>
+          <div style={{fontFamily:B.serif,fontSize:16,color:B.black}}>{MONTHS[cm]} {cy}</div>
+          <button onClick={()=>{if(cm===11){setCm(0);setCy(y=>y+1);}else setCm(m=>m+1);}} style={{background:"none",border:"none",cursor:"pointer",fontSize:16,color:B.black}}>›</button>
+        </div>
+        <div style={{padding:"8px 10px"}}>
+          <div style={{display:"grid",gridTemplateColumns:"repeat(7,1fr)",gap:2,marginBottom:3}}>{DAYS.map(d=><div key={d} style={{fontFamily:B.sans,fontSize:10,color:B.gray,textAlign:"center"}}>{d[0]}</div>)}</div>
+          <div style={{display:"grid",gridTemplateColumns:"repeat(7,1fr)",gap:2}}>
+            {Array.from({length:fD}).map((_,i)=><div key={`e${i}`}/>)}
+            {Array.from({length:dIM}).map((_,i)=>{
+              const day=i+1;
+              const ds=`${cy}-${String(cm+1).padStart(2,"0")}-${String(day).padStart(2,"0")}`;
+              const has=byDate[ds]?.length>0;
+              const isT=ds===todayStr;
+              return(
+                <div key={day} style={{aspectRatio:"1",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",background:isT?B.offwhite:"transparent",border:isT?`1px solid ${B.gold}`:"none",position:"relative"}}>
+                  <span style={{fontFamily:B.sans,fontSize:12,color:B.black}}>{day}</span>
+                  {has&&<div style={{width:4,height:4,borderRadius:"50%",background:B.gold,position:"absolute",bottom:2}}/>}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+      {/* Filters */}
+      <div style={{display:"flex",gap:5,marginBottom:12,flexWrap:"wrap",alignItems:"center"}}>
+        <div style={{display:"flex",gap:4,flex:1,flexWrap:"wrap"}}>
+          {[{id:"all",name:"All",color:B.gray},...TEAM.filter(t=>t.id!=="any")].map(t=>(
+            <button key={t.id} onClick={()=>setFilter(t.id)}
+              style={{padding:"5px 10px",border:`1px solid ${filter===t.id?B.black:B.border}`,background:filter===t.id?B.black:B.white,color:filter===t.id?B.white:B.black,fontFamily:B.sans,fontSize:11,letterSpacing:"0.06em",textTransform:"uppercase",cursor:"pointer",display:"flex",alignItems:"center",gap:4}}>
+              {t.id!=="all"&&<div style={{width:6,height:6,borderRadius:"50%",background:t.color}}/>}
+              {t.name}
+            </button>
+          ))}
+        </div>
+        <div style={{display:"flex",gap:4}}>
+          {[["upcoming","Upcoming"],["all","All"]].map(([v,l])=>(
+            <button key={v} onClick={()=>setView(v)} style={{padding:"5px 10px",border:`1px solid ${view===v?B.black:B.border}`,background:view===v?B.offwhite:B.white,fontFamily:B.sans,fontSize:11,letterSpacing:"0.06em",textTransform:"uppercase",cursor:"pointer",color:B.black}}>{l}</button>
+          ))}
+        </div>
+      </div>
+      {/* Booking list */}
+      <Lbl c={`${list.length} appointment${list.length!==1?"s":""}`}/>
+      <div style={{border:`1px solid ${B.border}`}}>
+        {list.length===0
+          ?<div style={{padding:"32px 16px",textAlign:"center",fontFamily:B.sans,fontSize:14,color:B.gray}}>No appointments found.</div>
+          :list.map((bk,i)=>{
+            const con=TEAM.find(t=>t.id===bk.consultant);
+            const isT=bk.date===todayStr;
+            const isO=open===bk.id;
+            const cl=makeICS(bk,con?.name||"Team");
+            return(
+              <div key={bk.id} onClick={()=>setOpen(isO?null:bk.id)}
+                style={{padding:"13px 16px",borderBottom:i<list.length-1?`1px solid ${B.border}`:"none",background:isT?"rgba(201,169,110,0.04)":B.white,cursor:"pointer",borderLeft:isT?`3px solid ${B.gold}`:"3px solid transparent"}}>
+                <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:5,gap:8}}>
+                  <div style={{flex:1}}>
+                    <div style={{fontFamily:B.sans,fontSize:15,color:B.black,fontWeight:500}}>{bk.name}</div>
+                    <div style={{fontFamily:B.sans,fontSize:12,color:B.gray}}>{bk.email}{bk.phone?` · ${bk.phone}`:""}</div>
+                  </div>
+                  <Badge s={bk.status}/>
+                </div>
+                <div style={{display:"flex",gap:8,flexWrap:"wrap",alignItems:"center"}}>
+                  <span style={{fontFamily:B.sans,fontSize:13,color:B.black}}>{bk.type}</span>
+                  <span style={{color:B.lightgray}}>·</span>
+                  <span style={{fontFamily:B.sans,fontSize:13,color:B.gray}}>{new Date(bk.date+"T12:00:00").toLocaleDateString("en-CA",{month:"short",day:"numeric"})} at {bk.time}</span>
+                  <span style={{color:B.lightgray}}>·</span>
+                  <div style={{display:"flex",alignItems:"center",gap:4}}>
+                    <div style={{width:6,height:6,borderRadius:"50%",background:con?.color||B.gray}}/>
+                    <span style={{fontFamily:B.sans,fontSize:12,color:B.gray}}>{con?.name}</span>
+                  </div>
+                  {bk.budget&&<><span style={{color:B.lightgray}}>·</span><span style={{fontFamily:B.sans,fontSize:12,color:B.gray}}>{bk.budget}</span></>}
+                </div>
+                {isO&&(
+                  <div style={{marginTop:12,paddingTop:12,borderTop:`1px solid ${B.border}`}}>
+                    {bk.notes&&<div style={{fontFamily:B.sans,fontSize:13,color:B.gray,lineHeight:1.6,marginBottom:10,background:B.offwhite,padding:"9px 11px"}}><strong style={{color:B.black}}>Notes: </strong>{bk.notes}</div>}
+                    <div style={{display:"flex",gap:16,flexWrap:"wrap",marginBottom:12}}>
+                      {[["ID",bk.id],["Occasion",bk.occasion||"—"],["Duration",`${bk.duration}min`]].map(([k,v])=>(
+                        <div key={k}><div style={{fontFamily:B.sans,fontSize:10,letterSpacing:"0.1em",textTransform:"uppercase",color:B.gray,marginBottom:2}}>{k}</div><div style={{fontFamily:B.sans,fontSize:13,color:B.black}}>{v}</div></div>
+                      ))}
+                    </div>
+                    <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
+                      {bk.status!=="confirmed"&&(
+                        <button onClick={e=>{e.stopPropagation();onStatus(bk.id,"confirmed");}} style={{padding:"7px 12px",background:B.black,color:B.white,border:"none",fontFamily:B.sans,fontSize:11,letterSpacing:"0.1em",textTransform:"uppercase",cursor:"pointer"}}>Confirm</button>
+                      )}
+                      {bk.status!=="cancelled"&&(
+                        <button onClick={e=>{e.stopPropagation();onStatus(bk.id,"cancelled");}} style={{padding:"7px 12px",background:B.white,color:"#c0392b",border:"1px solid #c0392b",fontFamily:B.sans,fontSize:11,letterSpacing:"0.1em",textTransform:"uppercase",cursor:"pointer"}}>Cancel</button>
+                      )}
+                      <a href={`mailto:${bk.email}?subject=Your Lovelri Appointment`} onClick={e=>e.stopPropagation()} style={{padding:"7px 12px",background:B.white,color:B.black,border:`1px solid ${B.border}`,fontFamily:B.sans,fontSize:11,letterSpacing:"0.1em",textTransform:"uppercase",cursor:"pointer",textDecoration:"none"}}>Email Client</a>
+                      <a href={cl} download={`lovelri-${bk.id}.ics`} onClick={e=>e.stopPropagation()} style={{padding:"7px 12px",background:B.white,color:B.black,border:`1px solid ${B.border}`,fontFamily:B.sans,fontSize:11,letterSpacing:"0.1em",textTransform:"uppercase",cursor:"pointer",textDecoration:"none"}}>📅 Add to Cal</a>
+                    </div>
+                  </div>
+                )}
+              </div>
+            );
+          })}
+      </div>
+    </div>
+  );
+}
+
 // ── RING / INTAKE / CHAT DATA ─────────────────────────────────────────────────
 const IMG = {
   solitaire:"https://lovelri.com/cdn/shop/files/IMG_6932.jpg?v=1761797993&width=600",
@@ -228,10 +811,10 @@ function IntakeForm({onLead}){
   const goNext=()=>{if(ps<PREF_STEPS.length-1)setPs(p=>p+1);else{setMatches(getMatches(d));setPhase("results");}};
   const submit=async()=>{setSending(true);onLead({...d,id:Date.now(),source:"Form",status:"new",time:"Just now",style:d.style||"—"});await new Promise(r=>setTimeout(r,700));setSending(false);setPhase("done");};
   const s=PREF_STEPS[ps];
-  const PBtn=(label,onClick,disabled)=><button onClick={onClick} disabled={disabled} style={{width:"100%",padding:"12px",background:!disabled?B.black:"#e0e0da",color:!disabled?B.white:B.gray,border:"none",fontFamily:B.sans,fontSize:11,letterSpacing:"0.14em",textTransform:"uppercase",cursor:!disabled?"pointer":"not-allowed",marginTop:16}}>{label}</button>;
-  if(phase==="done")return(<div style={{textAlign:"center",padding:"32px 0"}}><div style={{fontFamily:B.serif,fontSize:22,color:B.black,marginBottom:8}}>Consultation Sent ✓</div><div style={{fontFamily:B.sans,fontSize:12,color:B.gray,marginBottom:20,lineHeight:1.6}}>Lead delivered to christinaquach98@gmail.com</div><button onClick={()=>{setPhase("prefs");setPs(0);setD({occasion:"",style:"",stone:"",timeline:"",budget:"",name:"",email:""});setMatches([]);setLiked([]);}} style={{fontFamily:B.sans,fontSize:11,letterSpacing:"0.12em",textTransform:"uppercase",padding:"10px 20px",border:`1px solid ${B.border}`,background:B.white,cursor:"pointer",color:B.black}}>Reset</button></div>);
-  if(phase==="results")return(<div><div style={{fontFamily:B.sans,fontSize:9,letterSpacing:"0.2em",textTransform:"uppercase",color:B.gray,marginBottom:6}}>Your Matches</div><div style={{fontFamily:B.serif,fontSize:20,color:B.black,marginBottom:12}}>{matches.length} rings curated for you</div><div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:8,marginBottom:16}}>{matches.map(r=>{const s2=liked.includes(r.slug);return(<div key={r.slug} onClick={()=>setLiked(l=>l.includes(r.slug)?l.filter(x=>x!==r.slug):[...l,r.slug])} style={{border:`1px solid ${s2?B.black:B.border}`,cursor:"pointer",background:B.white}}><div style={{paddingTop:"100%",position:"relative",background:B.offwhite,overflow:"hidden"}}><img src={r.img} alt={r.name} style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",objectPosition:"center 30%"}} onError={e=>e.target.style.opacity=0}/>{s2&&<div style={{position:"absolute",top:4,right:4,width:14,height:14,borderRadius:"50%",background:B.black,color:B.white,display:"flex",alignItems:"center",justifyContent:"center",fontSize:8}}>✓</div>}</div><div style={{padding:"8px"}}><div style={{fontFamily:B.serif,fontSize:12,color:B.black,marginBottom:2}}>{r.name}</div><div style={{fontFamily:B.sans,fontSize:9,color:B.gray,marginBottom:4}}>{r.price}</div><a href={r.url} target="_blank" rel="noopener noreferrer" onClick={e=>e.stopPropagation()} style={{fontFamily:B.sans,fontSize:8,letterSpacing:"0.1em",textTransform:"uppercase",color:B.black,textDecoration:"none",borderBottom:`1px solid ${B.black}`,paddingBottom:1}}>View ↗</a></div></div>);})}</div><div style={{borderTop:`1px solid ${B.border}`,paddingTop:14}}><div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10,marginBottom:10}}>{[{label:"Name *",field:"name",type:"text",ph:"Alexander"},{label:"Email *",field:"email",type:"email",ph:"your@email.com"}].map(f=>(<div key={f.field}><div style={{fontFamily:B.sans,fontSize:9,letterSpacing:"0.14em",textTransform:"uppercase",color:B.gray,marginBottom:4}}>{f.label}</div><input type={f.type} value={d[f.field]} onChange={e=>sel(f.field,e.target.value)} placeholder={f.ph} style={{width:"100%",padding:"9px 11px",border:`1px solid ${B.border}`,fontFamily:B.sans,fontSize:12,color:B.black,background:B.white,outline:"none",boxSizing:"border-box"}}/></div>))}</div>{PBtn(sending?"Sending…":"Book Consultation",submit,!d.name||!/\S+@\S+\.\S+/.test(d.email)||sending)}</div></div>);
-  return(<div><div style={{display:"flex",gap:3,marginBottom:20}}>{PREF_STEPS.map((_,i)=><div key={i} style={{flex:1,height:2,background:i<=ps?B.black:B.lightgray}}/>)}</div><div style={{fontFamily:B.sans,fontSize:9,letterSpacing:"0.2em",textTransform:"uppercase",color:B.gray,marginBottom:8}}>Step {String(ps+1).padStart(2,"0")} of 05</div><div style={{fontFamily:B.serif,fontSize:22,color:B.black,marginBottom:4,lineHeight:1.2}}>{s.q}</div><div style={{fontFamily:B.sans,fontSize:12,color:B.gray,marginBottom:16,lineHeight:1.6}}>{s.sub}</div><div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>{s.opts.map(opt=><button key={opt} onClick={()=>sel(s.key,opt)} style={{padding:"11px 10px",border:`1px solid ${d[s.key]===opt?B.black:B.border}`,background:d[s.key]===opt?B.black:B.white,color:d[s.key]===opt?B.white:B.black,fontFamily:B.sans,fontSize:11,cursor:"pointer",textAlign:"left",display:"flex",justifyContent:"space-between",alignItems:"center"}}>{opt}{d[s.key]===opt&&<span style={{fontSize:10}}>✓</span>}</button>)}</div>{PBtn(ps<PREF_STEPS.length-1?"Continue":"See My Rings",goNext,!d[s.key])}</div>);
+  const PBtn=(label,onClick,disabled)=><button onClick={onClick} disabled={disabled} style={{width:"100%",padding:"12px",background:!disabled?B.black:"#e0e0da",color:!disabled?B.white:B.gray,border:"none",fontFamily:B.sans,fontSize:13,letterSpacing:"0.14em",textTransform:"uppercase",cursor:!disabled?"pointer":"not-allowed",marginTop:16}}>{label}</button>;
+  if(phase==="done")return(<div style={{textAlign:"center",padding:"32px 0"}}><div style={{fontFamily:B.serif,fontSize:24,color:B.black,marginBottom:8}}>Consultation Sent ✓</div><div style={{fontFamily:B.sans,fontSize:14,color:B.gray,marginBottom:20,lineHeight:1.6}}>Lead delivered to christinaquach98@gmail.com</div><button onClick={()=>{setPhase("prefs");setPs(0);setD({occasion:"",style:"",stone:"",timeline:"",budget:"",name:"",email:""});setMatches([]);setLiked([]);}} style={{fontFamily:B.sans,fontSize:13,letterSpacing:"0.12em",textTransform:"uppercase",padding:"10px 20px",border:`1px solid ${B.border}`,background:B.white,cursor:"pointer",color:B.black}}>Reset</button></div>);
+  if(phase==="results")return(<div><div style={{fontFamily:B.sans,fontSize:11,letterSpacing:"0.2em",textTransform:"uppercase",color:B.gray,marginBottom:6}}>Your Matches</div><div style={{fontFamily:B.serif,fontSize:22,color:B.black,marginBottom:12}}>{matches.length} rings curated for you</div><div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:8,marginBottom:16}}>{matches.map(r=>{const s2=liked.includes(r.slug);return(<div key={r.slug} onClick={()=>setLiked(l=>l.includes(r.slug)?l.filter(x=>x!==r.slug):[...l,r.slug])} style={{border:`1px solid ${s2?B.black:B.border}`,cursor:"pointer",background:B.white}}><div style={{paddingTop:"100%",position:"relative",background:B.offwhite,overflow:"hidden"}}><img src={r.img} alt={r.name} style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",objectPosition:"center 30%"}} onError={e=>e.target.style.opacity=0}/>{s2&&<div style={{position:"absolute",top:4,right:4,width:14,height:14,borderRadius:"50%",background:B.black,color:B.white,display:"flex",alignItems:"center",justifyContent:"center",fontSize:10}}>✓</div>}</div><div style={{padding:"8px"}}><div style={{fontFamily:B.serif,fontSize:14,color:B.black,marginBottom:2}}>{r.name}</div><div style={{fontFamily:B.sans,fontSize:11,color:B.gray,marginBottom:4}}>{r.price}</div><a href={r.url} target="_blank" rel="noopener noreferrer" onClick={e=>e.stopPropagation()} style={{fontFamily:B.sans,fontSize:10,letterSpacing:"0.1em",textTransform:"uppercase",color:B.black,textDecoration:"none",borderBottom:`1px solid ${B.black}`,paddingBottom:1}}>View ↗</a></div></div>);})}</div><div style={{borderTop:`1px solid ${B.border}`,paddingTop:14}}><div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10,marginBottom:10}}>{[{label:"Name *",field:"name",type:"text",ph:"Alexander"},{label:"Email *",field:"email",type:"email",ph:"your@email.com"}].map(f=>(<div key={f.field}><div style={{fontFamily:B.sans,fontSize:11,letterSpacing:"0.14em",textTransform:"uppercase",color:B.gray,marginBottom:4}}>{f.label}</div><input type={f.type} value={d[f.field]} onChange={e=>sel(f.field,e.target.value)} placeholder={f.ph} style={{width:"100%",padding:"9px 11px",border:`1px solid ${B.border}`,fontFamily:B.sans,fontSize:14,color:B.black,background:B.white,outline:"none",boxSizing:"border-box"}}/></div>))}</div>{PBtn(sending?"Sending…":"Book Consultation",submit,!d.name||!/\S+@\S+\.\S+/.test(d.email)||sending)}</div></div>);
+  return(<div><div style={{display:"flex",gap:3,marginBottom:20}}>{PREF_STEPS.map((_,i)=><div key={i} style={{flex:1,height:2,background:i<=ps?B.black:B.lightgray}}/>)}</div><div style={{fontFamily:B.sans,fontSize:11,letterSpacing:"0.2em",textTransform:"uppercase",color:B.gray,marginBottom:8}}>Step {String(ps+1).padStart(2,"0")} of 05</div><div style={{fontFamily:B.serif,fontSize:24,color:B.black,marginBottom:4,lineHeight:1.2}}>{s.q}</div><div style={{fontFamily:B.sans,fontSize:14,color:B.gray,marginBottom:16,lineHeight:1.6}}>{s.sub}</div><div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>{s.opts.map(opt=><button key={opt} onClick={()=>sel(s.key,opt)} style={{padding:"11px 10px",border:`1px solid ${d[s.key]===opt?B.black:B.border}`,background:d[s.key]===opt?B.black:B.white,color:d[s.key]===opt?B.white:B.black,fontFamily:B.sans,fontSize:13,cursor:"pointer",textAlign:"left",display:"flex",justifyContent:"space-between",alignItems:"center"}}>{opt}{d[s.key]===opt&&<span style={{fontSize:12}}>✓</span>}</button>)}</div>{PBtn(ps<PREF_STEPS.length-1?"Continue":"See My Rings",goNext,!d[s.key])}</div>);
 }
 // ── CHAT ──────────────────────────────────────────────────────────────────────
 const CHAT_FLOW=[
@@ -248,36 +831,97 @@ function ChatWidget({onLead}){
   useEffect(()=>ref.current?.scrollIntoView({behavior:"smooth"}),[msgs,thinking]);
   const start=()=>{if(started)return;setStarted(true);setThinking(true);setTimeout(()=>{setMsgs([{role:"bot",text:CHAT_FLOW[0].bot}]);setChips(CHAT_FLOW[0].chips);setThinking(false);},500);};
   const advance=(text)=>{const nd={...cdata,[`f${step}`]:text};setCdata(nd);setMsgs(m=>[...m,{role:"user",text}]);setChips([]);setInput("");const ni=step+1;if(ni>=CHAT_FLOW.length)return;setThinking(true);setTimeout(()=>{const next=CHAT_FLOW[ni];const bt=typeof next.bot==="function"?next.bot(text):next.bot;setMsgs(m=>[...m,{role:"bot",text:bt}]);setChips(next.chips||[]);setStep(ni);setThinking(false);if(next.done){setComplete(true);onLead({id:Date.now(),name:nd.f4||"Chat Lead",email:text,occasion:nd.f0||"",budget:"",timeline:"",style:"",source:"Chat",status:"new",time:"Just now"});}},600+Math.random()*300);};
-  return(<div style={{border:`1px solid ${B.border}`,background:B.white}}><div style={{padding:"11px 14px",borderBottom:`1px solid ${B.border}`,display:"flex",alignItems:"center",gap:10}}><img src="https://lovelri.com/cdn/shop/files/LOVELRI-V2-Black.png?v=1760486718&width=200" alt="Lovelri" style={{height:12}} onError={e=>e.target.style.display="none"}/><div style={{marginLeft:"auto",display:"flex",alignItems:"center",gap:5}}><div style={{width:5,height:5,borderRadius:"50%",background:"#4caf7d",animation:"blink 1.5s infinite"}}/><span style={{fontFamily:B.sans,fontSize:9,letterSpacing:"0.1em",color:B.gray,textTransform:"uppercase"}}>Concierge Online</span></div></div><div style={{height:240,overflowY:"auto",padding:"12px 12px 6px",display:"flex",flexDirection:"column",gap:7}}>{!started&&<div style={{textAlign:"center",padding:"24px 0"}}><div style={{fontFamily:B.serif,fontSize:18,color:B.black,marginBottom:8}}>Begin your consultation</div><div style={{fontFamily:B.sans,fontSize:11,color:B.gray,marginBottom:16}}>Our concierge will guide you to your perfect ring.</div><button onClick={start} style={{fontFamily:B.sans,fontSize:10,letterSpacing:"0.14em",textTransform:"uppercase",padding:"9px 20px",background:B.black,color:B.white,border:"none",cursor:"pointer"}}>Start</button></div>}{msgs.map((m,i)=><div key={i} style={{display:"flex",justifyContent:m.role==="user"?"flex-end":"flex-start"}}><div style={{maxWidth:"80%",padding:"7px 11px",background:m.role==="user"?B.black:B.offwhite,color:m.role==="user"?B.white:B.black,fontFamily:B.sans,fontSize:12,lineHeight:1.5,borderRadius:m.role==="user"?"12px 12px 2px 12px":"12px 12px 12px 2px"}}>{m.text}</div></div>)}{thinking&&<div style={{display:"flex",gap:3,padding:"7px 11px",background:B.offwhite,width:"fit-content",borderRadius:"12px 12px 12px 2px"}}>{[0,1,2].map(i=><div key={i} style={{width:4,height:4,borderRadius:"50%",background:B.gray,animation:`bounce 1.2s ${i*0.2}s infinite`}}/>)}</div>}{complete&&<div style={{textAlign:"center",padding:"8px",background:"rgba(76,175,125,0.06)",fontFamily:B.sans,fontSize:10,color:"#2d7a54",letterSpacing:"0.06em"}}>✓ Lead → christinaquach98@gmail.com</div>}<div ref={ref}/></div>{chips.length>0&&!complete&&<div style={{padding:"4px 10px 8px",display:"flex",flexWrap:"wrap",gap:5,borderTop:`1px solid ${B.border}`}}>{chips.map((c,i)=><button key={i} onClick={()=>advance(c)} style={{padding:"5px 9px",border:`1px solid ${B.border}`,background:B.white,fontFamily:B.sans,fontSize:10,color:B.black,cursor:"pointer"}}>{c}</button>)}</div>}{started&&!complete&&CHAT_FLOW[step]?.free&&<div style={{padding:"7px 10px 10px",display:"flex",gap:7,borderTop:`1px solid ${B.border}`}}><input value={input} onChange={e=>setInput(e.target.value)} onKeyDown={e=>e.key==="Enter"&&input.trim()&&advance(input.trim())} placeholder={step===5?"your@email.com":"Your name..."} style={{flex:1,padding:"8px 10px",border:`1px solid ${B.border}`,fontFamily:B.sans,fontSize:12,color:B.black,background:B.white,outline:"none"}}/><button onClick={()=>input.trim()&&advance(input.trim())} style={{padding:"8px 12px",background:B.black,color:B.white,border:"none",fontFamily:B.sans,fontSize:11,cursor:"pointer",opacity:input.trim()?1:0.4}}>→</button></div>}</div>);
+  return(<div style={{border:`1px solid ${B.border}`,background:B.white}}><div style={{padding:"11px 14px",borderBottom:`1px solid ${B.border}`,display:"flex",alignItems:"center",gap:10}}><img src="https://lovelri.com/cdn/shop/files/LOVELRI-V2-Black.png?v=1760486718&width=200" alt="Lovelri" style={{height:12}} onError={e=>e.target.style.display="none"}/><div style={{marginLeft:"auto",display:"flex",alignItems:"center",gap:5}}><div style={{width:5,height:5,borderRadius:"50%",background:"#4caf7d",animation:"blink 1.5s infinite"}}/><span style={{fontFamily:B.sans,fontSize:11,letterSpacing:"0.1em",color:B.gray,textTransform:"uppercase"}}>Concierge Online</span></div></div><div style={{height:240,overflowY:"auto",padding:"12px 12px 6px",display:"flex",flexDirection:"column",gap:7}}>{!started&&<div style={{textAlign:"center",padding:"24px 0"}}><div style={{fontFamily:B.serif,fontSize:20,color:B.black,marginBottom:8}}>Begin your consultation</div><div style={{fontFamily:B.sans,fontSize:13,color:B.gray,marginBottom:16}}>Our concierge will guide you to your perfect ring.</div><button onClick={start} style={{fontFamily:B.sans,fontSize:12,letterSpacing:"0.14em",textTransform:"uppercase",padding:"9px 20px",background:B.black,color:B.white,border:"none",cursor:"pointer"}}>Start</button></div>}{msgs.map((m,i)=><div key={i} style={{display:"flex",justifyContent:m.role==="user"?"flex-end":"flex-start"}}><div style={{maxWidth:"80%",padding:"7px 11px",background:m.role==="user"?B.black:B.offwhite,color:m.role==="user"?B.white:B.black,fontFamily:B.sans,fontSize:14,lineHeight:1.5,borderRadius:m.role==="user"?"12px 12px 2px 12px":"12px 12px 12px 2px"}}>{m.text}</div></div>)}{thinking&&<div style={{display:"flex",gap:3,padding:"7px 11px",background:B.offwhite,width:"fit-content",borderRadius:"12px 12px 12px 2px"}}>{[0,1,2].map(i=><div key={i} style={{width:4,height:4,borderRadius:"50%",background:B.gray,animation:`bounce 1.2s ${i*0.2}s infinite`}}/>)}</div>}{complete&&<div style={{textAlign:"center",padding:"8px",background:"rgba(76,175,125,0.06)",fontFamily:B.sans,fontSize:12,color:"#2d7a54",letterSpacing:"0.06em"}}>✓ Lead → christinaquach98@gmail.com</div>}<div ref={ref}/></div>{chips.length>0&&!complete&&<div style={{padding:"4px 10px 8px",display:"flex",flexWrap:"wrap",gap:5,borderTop:`1px solid ${B.border}`}}>{chips.map((c,i)=><button key={i} onClick={()=>advance(c)} style={{padding:"5px 9px",border:`1px solid ${B.border}`,background:B.white,fontFamily:B.sans,fontSize:12,color:B.black,cursor:"pointer"}}>{c}</button>)}</div>}{started&&!complete&&CHAT_FLOW[step]?.free&&<div style={{padding:"7px 10px 10px",display:"flex",gap:7,borderTop:`1px solid ${B.border}`}}><input value={input} onChange={e=>setInput(e.target.value)} onKeyDown={e=>e.key==="Enter"&&input.trim()&&advance(input.trim())} placeholder={step===5?"your@email.com":"Your name..."} style={{flex:1,padding:"8px 10px",border:`1px solid ${B.border}`,fontFamily:B.sans,fontSize:14,color:B.black,background:B.white,outline:"none"}}/><button onClick={()=>input.trim()&&advance(input.trim())} style={{padding:"8px 12px",background:B.black,color:B.white,border:"none",fontFamily:B.sans,fontSize:13,cursor:"pointer",opacity:input.trim()?1:0.4}}>→</button></div>}</div>);
 }
 // ── SHARED UI ─────────────────────────────────────────────────────────────────
-const Label=({children,mt})=><div style={{fontFamily:B.sans,fontSize:9,letterSpacing:"0.22em",textTransform:"uppercase",color:B.gray,marginBottom:10,marginTop:mt||0}}>{children}</div>;
-const Title=({sub,children})=><div style={{marginBottom:24}}><h1 style={{fontFamily:B.serif,fontSize:28,fontWeight:400,color:B.black,lineHeight:1.15,marginBottom:sub?8:0}}>{children}</h1>{sub&&<p style={{fontFamily:B.sans,fontSize:13,color:B.gray,lineHeight:1.75,margin:0}}>{sub}</p>}</div>;
+const Label=({children,mt})=><div style={{fontFamily:B.sans,fontSize:11,letterSpacing:"0.22em",textTransform:"uppercase",color:B.gray,marginBottom:10,marginTop:mt||0}}>{children}</div>;
+const Title=({sub,children})=><div style={{marginBottom:24}}><h1 style={{fontFamily:B.serif,fontSize:30,fontWeight:400,color:B.black,lineHeight:1.15,marginBottom:sub?8:0}}>{children}</h1>{sub&&<p style={{fontFamily:B.sans,fontSize:15,color:B.gray,lineHeight:1.75,margin:0}}>{sub}</p>}</div>;
 const Card=({children,mb})=><div style={{border:`1px solid ${B.border}`,background:B.white,marginBottom:mb||16}}>{children}</div>;
 const Row=({children,last})=><div style={{padding:"13px 16px",borderBottom:last?0:`1px solid ${B.border}`}}>{children}</div>;
-const Chip=({label,bg,color})=><span style={{fontFamily:B.sans,fontSize:8,letterSpacing:"0.1em",textTransform:"uppercase",padding:"2px 7px",background:bg||"rgba(26,26,26,0.06)",color:color||B.black}}>{label}</span>;
-const Ext=({href,children})=><a href={href} target="_blank" rel="noopener noreferrer" style={{fontFamily:B.sans,fontSize:10,color:B.black,textDecoration:"none",borderBottom:`1px solid ${B.black}`,paddingBottom:1,letterSpacing:"0.06em"}}>{children} ↗</a>;
-const Check=({val})=><span style={{fontFamily:B.sans,fontSize:11,color:val?"#2d7a54":"#c0392b"}}>{val?"✓":"✗"}</span>;
+const Chip=({label,bg,color})=><span style={{fontFamily:B.sans,fontSize:10,letterSpacing:"0.1em",textTransform:"uppercase",padding:"2px 7px",background:bg||"rgba(26,26,26,0.06)",color:color||B.black}}>{label}</span>;
+const Ext=({href,children})=><a href={href} target="_blank" rel="noopener noreferrer" style={{fontFamily:B.sans,fontSize:12,color:B.black,textDecoration:"none",borderBottom:`1px solid ${B.black}`,paddingBottom:1,letterSpacing:"0.06em"}}>{children} ↗</a>;
+const Check=({val})=><span style={{fontFamily:B.sans,fontSize:13,color:val?"#2d7a54":"#c0392b"}}>{val?"✓":"✗"}</span>;
 // ── NAV ───────────────────────────────────────────────────────────────────────
 const NAV=[
   {id:"overview",    label:"Overview"},
+  {id:"bookings",    label:"Bookings"},
+  {id:"book",        label:"Book a Consult"},
+  {id:"leads",       label:"Leads"},
+  {id:"lead-magnet", label:"Lead Magnet"},
+  {id:"intake",      label:"Configurator"},
+  {id:"chat",        label:"Chat Widget"},
   {id:"audit",       label:"Site Audit"},
   {id:"competition", label:"Competition"},
   {id:"marketing",   label:"Marketing"},
   {id:"social",      label:"Social Media"},
   {id:"seo",         label:"SEO"},
-  {id:"leads",       label:"Leads"},
-  {id:"intake",      label:"Intake Form"},
-  {id:"chat",        label:"Chat Widget"},
   {id:"embed",       label:"Embed Guide"},
 ];
+
+// ── LEAD MAGNET ───────────────────────────────────────────────────────────────
+function LeadMagnet({onSubmit}) {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [sent, setSent] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const valid = name.trim().length > 0 && /\S+@\S+\.\S+/.test(email);
+  const submit = async () => {
+    if (!valid) return;
+    setBusy(true);
+    if (window.emailjs) {
+      try {
+        await window.emailjs.send("service_ood0bss", "template_zi2yxpb", {
+          to_name: "Christina",
+          to_email: "christinaquach98@gmail.com",
+          subject: "New Lead — " + name + " requested the Lab Diamond Buyer's Guide",
+          message: name + " just requested the buyer's guide.\n\nName: " + name + "\nEmail: " + email + "\nSource: Lead magnet on lovelri.com\nTime: " + new Date().toLocaleString("en-CA",{timeZone:"America/Toronto"}) + "\n\nFollow up within 24 hours.",
+          reply_to: email,
+        }, "bRAPk3VW--Jj1UcpG");
+      } catch(err) { console.error("Lead magnet email failed:", err); }
+    }
+    onSubmit({id:Date.now(), name, email, occasion:"Lead Magnet", budget:"", style:"", source:"Lead Magnet", status:"new", time:"Just now"});
+    setSent(true);
+    setBusy(false);
+  };
+  if (sent) return (
+    <Card mb={20}><div style={{padding:"34px 22px",textAlign:"center"}}>
+      <div style={{fontFamily:B.serif,fontSize:28,color:B.black,marginBottom:8}}>Check your email ✓</div>
+      <div style={{fontFamily:B.sans,fontSize:16,color:B.gray,lineHeight:1.7}}>The Lab Diamond Buyer's Guide is on its way to <strong style={{color:B.black}}>{email}</strong>.</div>
+    </div></Card>
+  );
+  return (
+    <Card mb={20}>
+      <div style={{padding:"26px 22px",background:"linear-gradient(135deg, " + B.offwhite + " 0%, " + B.white + " 100%)",borderBottom:`1px solid ${B.border}`}}>
+        <div style={{fontFamily:B.sans,fontSize:13,letterSpacing:"0.22em",textTransform:"uppercase",color:B.gold,marginBottom:8}}>Free · 24 Pages · PDF</div>
+        <div style={{fontFamily:B.serif,fontSize:28,color:B.black,marginBottom:6,lineHeight:1.2}}>The Lab Diamond<br/><em style={{fontStyle:"italic"}}>Buyer's Guide</em></div>
+        <div style={{fontFamily:B.sans,fontSize:16,color:B.gray,lineHeight:1.7}}>Everything you need to know before buying an engagement ring in Toronto. Lab vs natural, what $5K gets you, how to choose a setting, and the 7 questions to ask any jeweller.</div>
+      </div>
+      <div style={{padding:"22px"}}>
+        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:11,marginBottom:14}}>
+          {[{l:"First Name",v:name,set:setName,p:"Alexandra",t:"text"},{l:"Email",v:email,set:setEmail,p:"your@email.com",t:"email"}].map(f=>(
+            <div key={f.l}>
+              <div style={{fontFamily:B.sans,fontSize:13,letterSpacing:"0.16em",textTransform:"uppercase",color:B.gray,marginBottom:6}}>{f.l}</div>
+              <input type={f.t} value={f.v} onChange={e=>f.set(e.target.value)} placeholder={f.p} style={{width:"100%",padding:"12px 14px",border:`1px solid ${B.border}`,fontFamily:B.sans,fontSize:16,color:B.black,background:B.white,outline:"none",boxSizing:"border-box"}}/>
+            </div>
+          ))}
+        </div>
+        <button onClick={submit} disabled={!valid||busy} style={{width:"100%",padding:"15px",background:valid&&!busy?B.black:"#e0e0da",color:valid&&!busy?B.white:B.gray,border:"none",fontFamily:B.sans,fontSize:15,letterSpacing:"0.14em",textTransform:"uppercase",cursor:valid&&!busy?"pointer":"not-allowed"}}>{busy?"Sending…":"Email Me the Guide"}</button>
+        <div style={{fontFamily:B.sans,fontSize:13,color:B.gray,textAlign:"center",marginTop:10,lineHeight:1.6}}>We'll email you the guide and the occasional Lovelri update. Unsubscribe anytime.</div>
+      </div>
+    </Card>
+  );
+}
+// ─────────────────────────────────────────────────────────────────────────────
 // ── DASHBOARD ─────────────────────────────────────────────────────────────────
 function Dashboard(){
   const [active,setActive]=useState("overview");
   const [leads,setLeads]=useState(SEED_LEADS);
+  const [bookings,setBookings]=useState(STORE);
   const [menuOpen,setMenuOpen]=useState(false);
   const [expanded,setExpanded]=useState(null);
   const addLead=lead=>setLeads(l=>[{...lead,id:Date.now()},...l]);
+  const handleBookingDone=()=>setBookings([...STORE]);
+  const handleBookingStatus=(id,status)=>{ STORE = STORE.map(b=>b.id===id?{...b,status}:b); setBookings([...STORE]); };
   const newCount=leads.filter(l=>l.status==="new").length;
   const go=id=>{setActive(id);setMenuOpen(false);window.scrollTo(0,0);};
   return(
@@ -285,9 +929,9 @@ function Dashboard(){
       <div style={{background:B.white,borderBottom:`1px solid ${B.border}`,height:52,display:"flex",alignItems:"center",padding:"0 16px",gap:12,position:"sticky",top:0,zIndex:100}}>
         <img src="https://lovelri.com/cdn/shop/files/LOVELRI-V2-Black.png?v=1760486718&width=302" alt="Lovelri" style={{height:14}} onError={e=>e.target.style.display="none"}/>
         <div style={{width:1,height:18,background:B.border}}/>
-        <span style={{fontFamily:B.sans,fontSize:9,letterSpacing:"0.18em",textTransform:"uppercase",color:B.gray,flexShrink:0}}>Dashboard</span>
+        <span style={{fontFamily:B.sans,fontSize:11,letterSpacing:"0.18em",textTransform:"uppercase",color:B.gray,flexShrink:0}}>Dashboard</span>
         <div style={{marginLeft:"auto",display:"flex",alignItems:"center",gap:8}}>
-          <div style={{display:"flex",alignItems:"center",gap:5}}><div style={{width:5,height:5,borderRadius:"50%",background:"#4caf7d",animation:"blink 1.5s infinite"}}/><span style={{fontFamily:B.sans,fontSize:9,color:B.gray,textTransform:"uppercase",letterSpacing:"0.1em"}}>Live</span></div>
+          <div style={{display:"flex",alignItems:"center",gap:5}}><div style={{width:5,height:5,borderRadius:"50%",background:"#4caf7d",animation:"blink 1.5s infinite"}}/><span style={{fontFamily:B.sans,fontSize:11,color:B.gray,textTransform:"uppercase",letterSpacing:"0.1em"}}>Live</span></div>
           <button onClick={()=>setMenuOpen(o=>!o)} style={{background:menuOpen?B.black:B.white,border:`1px solid ${B.border}`,padding:"7px 9px",cursor:"pointer",display:"flex",flexDirection:"column",gap:3.5,marginLeft:4}}>
             {[0,1,2].map(i=><div key={i} style={{width:15,height:1,background:menuOpen?B.white:B.black}}/>)}
           </button>
@@ -296,21 +940,21 @@ function Dashboard(){
       {menuOpen&&(
         <div style={{position:"fixed",top:52,left:0,right:0,background:B.white,borderBottom:`1px solid ${B.border}`,zIndex:99,boxShadow:"0 8px 24px rgba(0,0,0,0.08)"}}>
           {NAV.map(n=>(
-            <button key={n.id} onClick={()=>go(n.id)} style={{width:"100%",textAlign:"left",padding:"13px 16px",border:"none",borderBottom:`1px solid ${B.border}`,background:active===n.id?B.offwhite:B.white,color:active===n.id?B.black:B.gray,fontFamily:B.sans,fontSize:12,letterSpacing:"0.04em",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
+            <button key={n.id} onClick={()=>go(n.id)} style={{width:"100%",textAlign:"left",padding:"13px 16px",border:"none",borderBottom:`1px solid ${B.border}`,background:active===n.id?B.offwhite:B.white,color:active===n.id?B.black:B.gray,fontFamily:B.sans,fontSize:14,letterSpacing:"0.04em",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
               <span>{n.label}</span>
-              {n.id==="leads"&&newCount>0&&<span style={{background:B.black,color:B.white,fontSize:9,padding:"2px 7px",borderRadius:8}}>{newCount} new</span>}
-              {active===n.id&&<span style={{fontSize:10,color:B.gray}}>●</span>}
+              {n.id==="leads"&&newCount>0&&<span style={{background:B.black,color:B.white,fontSize:11,padding:"2px 7px",borderRadius:8}}>{newCount} new</span>}
+              {active===n.id&&<span style={{fontSize:12,color:B.gray}}>●</span>}
             </button>
           ))}
           <div style={{padding:"12px 16px",display:"flex",gap:24,background:B.offwhite}}>
             {[["Leads",leads.length],["New",newCount],["Pipeline",`$${(leads.length*9.2).toFixed(0)}K`]].map(([k,v])=>(
-              <div key={k}><div style={{fontFamily:B.sans,fontSize:9,color:B.gray,letterSpacing:"0.12em",textTransform:"uppercase",marginBottom:2}}>{k}</div><div style={{fontFamily:B.serif,fontSize:18,color:B.black}}>{v}</div></div>
+              <div key={k}><div style={{fontFamily:B.sans,fontSize:11,color:B.gray,letterSpacing:"0.12em",textTransform:"uppercase",marginBottom:2}}>{k}</div><div style={{fontFamily:B.serif,fontSize:20,color:B.black}}>{v}</div></div>
             ))}
           </div>
         </div>
       )}
       <div style={{background:B.white,borderBottom:`1px solid ${B.border}`,padding:"7px 16px"}}>
-        <span style={{fontFamily:B.sans,fontSize:9,letterSpacing:"0.18em",textTransform:"uppercase",color:B.gray}}>{NAV.find(n=>n.id===active)?.label}</span>
+        <span style={{fontFamily:B.sans,fontSize:11,letterSpacing:"0.18em",textTransform:"uppercase",color:B.gray}}>{NAV.find(n=>n.id===active)?.label}</span>
       </div>
       <div style={{padding:"24px 16px 80px",maxWidth:640,margin:"0 auto",boxSizing:"border-box"}}>
         {active==="overview"&&(
@@ -320,9 +964,9 @@ function Dashboard(){
             <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:1,border:`1px solid ${B.border}`,marginBottom:24}}>
               {[{k:"Site Score",v:"65/100",sub:"Needs improvement"},{k:"Total Leads",v:leads.length,sub:"All channels"},{k:"New Leads",v:newCount,sub:"Awaiting contact",a:newCount>0},{k:"Est. Pipeline",v:`$${(leads.length*9.2).toFixed(0)}K`,sub:"CAD"},{k:"Competitors",v:COMPETITORS.length,sub:"Toronto market mapped"},{k:"High Threats",v:COMPETITORS.filter(c=>c.threat==="high").length,sub:"Need differentiation"}].map((k,i)=>(
                 <div key={i} style={{background:B.white,padding:"16px",borderRight:i%2===0?`1px solid ${B.border}`:"none",borderBottom:i<4?`1px solid ${B.border}`:"none"}}>
-                  <div style={{fontFamily:B.sans,fontSize:9,letterSpacing:"0.14em",textTransform:"uppercase",color:B.gray,marginBottom:6}}>{k.k}</div>
-                  <div style={{fontFamily:B.serif,fontSize:24,color:k.a?B.gold:B.black,lineHeight:1}}>{k.v}</div>
-                  <div style={{fontFamily:B.sans,fontSize:10,color:B.gray,marginTop:3}}>{k.sub}</div>
+                  <div style={{fontFamily:B.sans,fontSize:11,letterSpacing:"0.14em",textTransform:"uppercase",color:B.gray,marginBottom:6}}>{k.k}</div>
+                  <div style={{fontFamily:B.serif,fontSize:26,color:k.a?B.gold:B.black,lineHeight:1}}>{k.v}</div>
+                  <div style={{fontFamily:B.sans,fontSize:12,color:B.gray,marginTop:3}}>{k.sub}</div>
                 </div>
               ))}
             </div>
@@ -330,8 +974,8 @@ function Dashboard(){
             <Card mb={24}>
               {[{n:"Intake Form",s:"Ready",d:"5-step ring matcher + lead delivery to Christina.",nav:"intake"},{n:"Chat Widget",s:"Ready",d:"AI concierge conversation flow.",nav:"chat"},{n:"Lead Pipeline",s:"Live",d:"All leads from all channels in one dashboard.",nav:"leads"},{n:"Site Audit",s:"Complete",d:"Full analysis with 8-point action plan.",nav:"audit"},{n:"Competition Report",s:"Live",d:"6 Toronto competitors mapped with SKUs and strategy.",nav:"competition"},{n:"Marketing Plan",s:"Complete",d:"90-day plan, channel matrix, full gap analysis.",nav:"marketing"},{n:"Social Media Audit",s:"Complete",d:"Instagram, TikTok, WeddingWire — full strategy.",nav:"social"},{n:"SEO Strategy",s:"Complete",d:"8 priority keywords, technical fixes, 6-post blog calendar.",nav:"seo"},{n:"Embed Guide",s:"Ready",d:"One-snippet Shopify install for every tool.",nav:"embed"}].map((t,i,a)=>(
                 <div key={i} onClick={()=>t.nav&&go(t.nav)} style={{padding:"13px 16px",borderBottom:i<a.length-1?`1px solid ${B.border}`:"none",display:"flex",gap:12,alignItems:"center",cursor:t.nav?"pointer":"default",background:B.white}} onMouseEnter={e=>t.nav&&(e.currentTarget.style.background=B.offwhite)} onMouseLeave={e=>e.currentTarget.style.background=B.white}>
-                  <div style={{flex:1}}><div style={{display:"flex",alignItems:"center",gap:8,marginBottom:2}}><span style={{fontFamily:B.serif,fontSize:15,color:B.black}}>{t.n}</span><Chip label={t.s} bg={t.s==="Live"?"rgba(76,175,125,0.1)":t.s==="Planned"?"rgba(201,169,110,0.12)":"rgba(26,26,26,0.06)"} color={t.s==="Live"?"#2d7a54":t.s==="Planned"?"#8c6d3f":B.black}/></div><div style={{fontFamily:B.sans,fontSize:11,color:B.gray,lineHeight:1.5}}>{t.d}</div></div>
-                  {t.nav&&<span style={{fontFamily:B.sans,fontSize:12,color:B.gray}}>›</span>}
+                  <div style={{flex:1}}><div style={{display:"flex",alignItems:"center",gap:8,marginBottom:2}}><span style={{fontFamily:B.serif,fontSize:17,color:B.black}}>{t.n}</span><Chip label={t.s} bg={t.s==="Live"?"rgba(76,175,125,0.1)":t.s==="Planned"?"rgba(201,169,110,0.12)":"rgba(26,26,26,0.06)"} color={t.s==="Live"?"#2d7a54":t.s==="Planned"?"#8c6d3f":B.black}/></div><div style={{fontFamily:B.sans,fontSize:13,color:B.gray,lineHeight:1.5}}>{t.d}</div></div>
+                  {t.nav&&<span style={{fontFamily:B.sans,fontSize:14,color:B.gray}}>›</span>}
                 </div>
               ))}
             </Card>
@@ -340,8 +984,8 @@ function Dashboard(){
               {AUDIT_ISSUES.slice(0,4).map((issue,i)=>(
                 <Row key={i} last={i===3}>
                   <div style={{display:"flex",gap:12,alignItems:"flex-start"}}>
-                    <div style={{fontFamily:B.serif,fontSize:20,color:issue.score<30?"#c0392b":B.gold,flexShrink:0,width:28,lineHeight:1.2}}>{issue.score}</div>
-                    <div style={{flex:1}}><div style={{display:"flex",gap:8,alignItems:"center",marginBottom:3,flexWrap:"wrap"}}><span style={{fontFamily:B.sans,fontSize:12,fontWeight:500,color:B.black}}>{issue.title}</span><Chip label={issue.severity} bg={issue.severity==="critical"?"rgba(220,53,69,0.08)":"rgba(255,193,7,0.08)"} color={issue.severity==="critical"?"#c0392b":"#8c6d00"}/></div><div style={{fontFamily:B.sans,fontSize:11,color:B.gray,lineHeight:1.5}}>{issue.note}</div></div>
+                    <div style={{fontFamily:B.serif,fontSize:22,color:issue.score<30?"#c0392b":B.gold,flexShrink:0,width:28,lineHeight:1.2}}>{issue.score}</div>
+                    <div style={{flex:1}}><div style={{display:"flex",gap:8,alignItems:"center",marginBottom:3,flexWrap:"wrap"}}><span style={{fontFamily:B.sans,fontSize:14,fontWeight:500,color:B.black}}>{issue.title}</span><Chip label={issue.severity} bg={issue.severity==="critical"?"rgba(220,53,69,0.08)":"rgba(255,193,7,0.08)"} color={issue.severity==="critical"?"#c0392b":"#8c6d00"}/></div><div style={{fontFamily:B.sans,fontSize:13,color:B.gray,lineHeight:1.5}}>{issue.note}</div></div>
                   </div>
                 </Row>
               ))}
@@ -354,16 +998,16 @@ function Dashboard(){
             <Label>Overall Score</Label>
             <Card mb={24}>
               <div style={{padding:"20px 16px",borderBottom:`1px solid ${B.border}`,display:"flex",alignItems:"center",gap:20}}>
-                <div style={{fontFamily:B.serif,fontSize:52,color:B.black,lineHeight:1,flexShrink:0}}>65</div>
-                <div style={{flex:1}}><div style={{fontFamily:B.sans,fontSize:9,letterSpacing:"0.12em",textTransform:"uppercase",color:B.gray,marginBottom:6}}>/100 — Needs Improvement</div><div style={{height:4,background:B.lightgray}}><div style={{width:"65%",height:"100%",background:B.black}}/></div></div>
+                <div style={{fontFamily:B.serif,fontSize:56,color:B.black,lineHeight:1,flexShrink:0}}>65</div>
+                <div style={{flex:1}}><div style={{fontFamily:B.sans,fontSize:11,letterSpacing:"0.12em",textTransform:"uppercase",color:B.gray,marginBottom:6}}>/100 — Needs Improvement</div><div style={{height:4,background:B.lightgray}}><div style={{width:"65%",height:"100%",background:B.black}}/></div></div>
               </div>
               <div style={{padding:"14px 16px"}}>
                 <Label>All Scores</Label>
                 {[...AUDIT_STRENGTHS,...AUDIT_ISSUES].map((item,i)=>(
                   <div key={i} style={{display:"flex",alignItems:"center",gap:10,marginBottom:8}}>
-                    <div style={{width:120,fontFamily:B.sans,fontSize:10,color:B.black,flexShrink:0}}>{item.title}</div>
+                    <div style={{width:120,fontFamily:B.sans,fontSize:12,color:B.black,flexShrink:0}}>{item.title}</div>
                     <div style={{flex:1,height:3,background:B.lightgray,position:"relative"}}><div style={{position:"absolute",top:0,left:0,height:"100%",width:`${item.score}%`,background:item.score>60?B.black:item.score>40?B.gold:"#c0392b",transition:"width 1s ease"}}/></div>
-                    <div style={{width:22,fontFamily:B.serif,fontSize:14,color:B.black,textAlign:"right",flexShrink:0}}>{item.score}</div>
+                    <div style={{width:22,fontFamily:B.serif,fontSize:16,color:B.black,textAlign:"right",flexShrink:0}}>{item.score}</div>
                   </div>
                 ))}
               </div>
@@ -372,12 +1016,38 @@ function Dashboard(){
             <Card mb={24}>
               {AUDIT_ISSUES.map((issue,i,a)=>(
                 <Row key={i} last={i===a.length-1}>
-                  <div style={{display:"flex",gap:12}}><div style={{fontFamily:B.serif,fontSize:20,color:issue.score<30?"#c0392b":B.gold,flexShrink:0,width:28,lineHeight:1.2}}>{issue.score}</div><div><div style={{display:"flex",gap:8,alignItems:"center",marginBottom:3,flexWrap:"wrap"}}><span style={{fontFamily:B.sans,fontSize:12,fontWeight:500,color:B.black}}>{issue.title}</span><Chip label={issue.severity} bg={issue.severity==="critical"?"rgba(220,53,69,0.08)":"rgba(255,193,7,0.08)"} color={issue.severity==="critical"?"#c0392b":"#8c6d00"}/></div><div style={{fontFamily:B.sans,fontSize:11,color:B.gray,lineHeight:1.6}}>{issue.note}</div></div></div>
+                  <div style={{display:"flex",gap:12}}><div style={{fontFamily:B.serif,fontSize:22,color:issue.score<30?"#c0392b":B.gold,flexShrink:0,width:28,lineHeight:1.2}}>{issue.score}</div><div><div style={{display:"flex",gap:8,alignItems:"center",marginBottom:3,flexWrap:"wrap"}}><span style={{fontFamily:B.sans,fontSize:14,fontWeight:500,color:B.black}}>{issue.title}</span><Chip label={issue.severity} bg={issue.severity==="critical"?"rgba(220,53,69,0.08)":"rgba(255,193,7,0.08)"} color={issue.severity==="critical"?"#c0392b":"#8c6d00"}/></div><div style={{fontFamily:B.sans,fontSize:13,color:B.gray,lineHeight:1.6}}>{issue.note}</div></div></div>
                 </Row>
               ))}
             </Card>
             <Label>Action Plan</Label>
-            <Card>{RECS.map((rec,i,a)=>(<Row key={i} last={i===a.length-1}><div style={{display:"flex",gap:12}}><div style={{fontFamily:B.serif,fontSize:16,color:B.gold,flexShrink:0,width:22}}>{String(i+1).padStart(2,"0")}</div><div style={{fontFamily:B.sans,fontSize:12,color:B.black,lineHeight:1.6}}>{rec}</div></div></Row>))}</Card>
+            <Card>{RECS.map((rec,i,a)=>(<Row key={i} last={i===a.length-1}><div style={{display:"flex",gap:12}}><div style={{fontFamily:B.serif,fontSize:18,color:B.gold,flexShrink:0,width:22}}>{String(i+1).padStart(2,"0")}</div><div style={{fontFamily:B.sans,fontSize:14,color:B.black,lineHeight:1.6}}>{rec}</div></div></Row>))}</Card>
+          </div>
+        )}
+        {active==="bookings"&&(
+          <div style={{animation:"fadeIn 0.25s ease"}}>
+            <Title sub="Live booking pipeline. Manage today's appointments, confirm or cancel, and add to your calendar.">
+              Bookings<br/><em style={{fontStyle:"italic"}}>Operations</em>
+            </Title>
+            <AdminDash bookings={bookings} onStatus={handleBookingStatus}/>
+          </div>
+        )}
+        {active==="book"&&(
+          <div style={{animation:"fadeIn 0.25s ease"}}>
+            <Title sub="Customer-facing booking flow. Same UI shoppers see at lovelri.com — preview here.">
+              Book a<br/><em style={{fontStyle:"italic"}}>Consultation</em>
+            </Title>
+            <Card><div style={{padding:"24px 18px"}}>
+              <BookingFlow onDone={handleBookingDone}/>
+            </div></Card>
+          </div>
+        )}
+        {active==="lead-magnet"&&(
+          <div style={{animation:"fadeIn 0.25s ease"}}>
+            <Title sub="Capture emails with a free guide. Sends to christinaquach98@gmail.com via EmailJS.">
+              Lead Magnet<br/><em style={{fontStyle:"italic"}}>Email Capture</em>
+            </Title>
+            <LeadMagnet onSubmit={addLead}/>
           </div>
         )}
         {active==="competition"&&(
@@ -390,9 +1060,9 @@ function Dashboard(){
                 {k:"Lovelri Advantages",v:"4",sub:"Clear differentiators"},
               ].map((s,i)=>(
                 <div key={i} style={{background:B.white,padding:"14px 12px",borderRight:i<2?`1px solid ${B.border}`:"none"}}>
-                  <div style={{fontFamily:B.sans,fontSize:9,letterSpacing:"0.12em",textTransform:"uppercase",color:B.gray,marginBottom:4}}>{s.k}</div>
-                  <div style={{fontFamily:B.serif,fontSize:22,color:s.a?B.gold:B.black}}>{s.v}</div>
-                  <div style={{fontFamily:B.sans,fontSize:10,color:B.gray,marginTop:2}}>{s.sub}</div>
+                  <div style={{fontFamily:B.sans,fontSize:11,letterSpacing:"0.12em",textTransform:"uppercase",color:B.gray,marginBottom:4}}>{s.k}</div>
+                  <div style={{fontFamily:B.serif,fontSize:24,color:s.a?B.gold:B.black}}>{s.v}</div>
+                  <div style={{fontFamily:B.sans,fontSize:12,color:B.gray,marginTop:2}}>{s.sub}</div>
                 </div>
               ))}
             </div>
@@ -405,7 +1075,7 @@ function Dashboard(){
                 {n:"Lab Diamond First",d:"70% of Toronto buyers now choose lab diamonds. Lovelri is positioned as the lab-diamond maison — Serli & Siroan barely offer them."},
               ].map((d,i,a)=>(
                 <Row key={i} last={i===a.length-1}>
-                  <div style={{display:"flex",gap:12}}><div style={{fontFamily:B.serif,fontSize:16,color:B.gold,flexShrink:0,width:22,marginTop:1}}>{String(i+1).padStart(2,"0")}</div><div><div style={{fontFamily:B.sans,fontSize:12,fontWeight:500,color:B.black,marginBottom:3}}>{d.n}</div><div style={{fontFamily:B.sans,fontSize:11,color:B.gray,lineHeight:1.6}}>{d.d}</div></div></div>
+                  <div style={{display:"flex",gap:12}}><div style={{fontFamily:B.serif,fontSize:18,color:B.gold,flexShrink:0,width:22,marginTop:1}}>{String(i+1).padStart(2,"0")}</div><div><div style={{fontFamily:B.sans,fontSize:14,fontWeight:500,color:B.black,marginBottom:3}}>{d.n}</div><div style={{fontFamily:B.sans,fontSize:13,color:B.gray,lineHeight:1.6}}>{d.d}</div></div></div>
                 </Row>
               ))}
             </Card>
@@ -418,19 +1088,19 @@ function Dashboard(){
                   <div onClick={()=>setExpanded(isOpen?null:c.name)} style={{padding:"14px 16px",cursor:"pointer",display:"flex",gap:12,alignItems:"flex-start"}} onMouseEnter={e=>e.currentTarget.style.background=B.offwhite} onMouseLeave={e=>e.currentTarget.style.background=B.white}>
                     <div style={{flex:1}}>
                       <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:4,flexWrap:"wrap"}}>
-                        <span style={{fontFamily:B.serif,fontSize:17,color:B.black}}>{c.name}</span>
+                        <span style={{fontFamily:B.serif,fontSize:19,color:B.black}}>{c.name}</span>
                         <Chip label={t.label} bg={t.bg} color={t.color}/>
                       </div>
-                      <div style={{fontFamily:B.sans,fontSize:11,color:B.gray,lineHeight:1.5,marginBottom:6}}>{c.pitch}</div>
+                      <div style={{fontFamily:B.sans,fontSize:13,color:B.gray,lineHeight:1.5,marginBottom:6}}>{c.pitch}</div>
                       <div style={{display:"flex",gap:6,flexWrap:"wrap",alignItems:"center"}}>
-                        <span style={{fontFamily:B.sans,fontSize:10,color:B.black}}>{c.startingPrice}</span>
+                        <span style={{fontFamily:B.sans,fontSize:12,color:B.black}}>{c.startingPrice}</span>
                         <span style={{color:B.lightgray}}>·</span>
-                        <span style={{fontFamily:B.sans,fontSize:10,color:B.gray}}>{c.turnaround}</span>
+                        <span style={{fontFamily:B.sans,fontSize:12,color:B.gray}}>{c.turnaround}</span>
                         <span style={{color:B.lightgray}}>·</span>
                         <Ext href={c.url}>{c.url.replace("https://www.","").replace("https://","")}</Ext>
                       </div>
                     </div>
-                    <span style={{fontFamily:B.sans,fontSize:14,color:B.gray,flexShrink:0,marginTop:2}}>{isOpen?"▲":"▼"}</span>
+                    <span style={{fontFamily:B.sans,fontSize:16,color:B.gray,flexShrink:0,marginTop:2}}>{isOpen?"▲":"▼"}</span>
                   </div>
                   {isOpen&&(
                     <div style={{borderTop:`1px solid ${B.border}`}}>
@@ -439,14 +1109,14 @@ function Dashboard(){
                         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
                           {[["Lab Diamond",c.labDiamond],["Natural Diamond",c.naturalDiamond],["Bespoke / Custom",c.bespoke],["Online Booking",c.onlineBooking]].map(([k,v])=>(
                             <div key={k} style={{display:"flex",justifyContent:"space-between",padding:"6px 0",borderBottom:`1px solid ${B.border}`}}>
-                              <span style={{fontFamily:B.sans,fontSize:11,color:B.gray}}>{k}</span>
+                              <span style={{fontFamily:B.sans,fontSize:13,color:B.gray}}>{k}</span>
                               <Check val={v}/>
                             </div>
                           ))}
                         </div>
                         <div style={{marginTop:10,display:"flex",gap:8,flexWrap:"wrap"}}>
-                          <div><span style={{fontFamily:B.sans,fontSize:9,letterSpacing:"0.12em",textTransform:"uppercase",color:B.gray}}>Location: </span><span style={{fontFamily:B.sans,fontSize:11,color:B.black}}>{c.location}</span></div>
-                          <div><span style={{fontFamily:B.sans,fontSize:9,letterSpacing:"0.12em",textTransform:"uppercase",color:B.gray}}>Reviews: </span><span style={{fontFamily:B.sans,fontSize:11,color:B.black}}>{c.reviews}</span></div>
+                          <div><span style={{fontFamily:B.sans,fontSize:11,letterSpacing:"0.12em",textTransform:"uppercase",color:B.gray}}>Location: </span><span style={{fontFamily:B.sans,fontSize:13,color:B.black}}>{c.location}</span></div>
+                          <div><span style={{fontFamily:B.sans,fontSize:11,letterSpacing:"0.12em",textTransform:"uppercase",color:B.gray}}>Reviews: </span><span style={{fontFamily:B.sans,fontSize:13,color:B.black}}>{c.reviews}</span></div>
                         </div>
                       </div>
                       <div style={{padding:"12px 16px",borderBottom:`1px solid ${B.border}`}}>
@@ -454,7 +1124,7 @@ function Dashboard(){
                         <div style={{display:"flex",flexDirection:"column",gap:8}}>
                           {c.collections.map((col,j)=>(
                             <div key={j} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"6px 0",borderBottom:`1px solid ${B.border}`}}>
-                              <span style={{fontFamily:B.sans,fontSize:11,color:B.black}}>{col.name}</span>
+                              <span style={{fontFamily:B.sans,fontSize:13,color:B.black}}>{col.name}</span>
                               <Ext href={col.url}>View</Ext>
                             </div>
                           ))}
@@ -462,11 +1132,11 @@ function Dashboard(){
                       </div>
                       <div style={{padding:"12px 16px",borderBottom:`1px solid ${B.border}`,background:"rgba(220,53,69,0.03)"}}>
                         <Label>Why They're a Threat</Label>
-                        <div style={{fontFamily:B.sans,fontSize:12,color:B.black,lineHeight:1.6}}>{c.threatNote}</div>
+                        <div style={{fontFamily:B.sans,fontSize:14,color:B.black,lineHeight:1.6}}>{c.threatNote}</div>
                       </div>
                       <div style={{padding:"12px 16px",background:"rgba(76,175,125,0.03)"}}>
                         <Label>Lovelri's Edge</Label>
-                        <div style={{fontFamily:B.sans,fontSize:12,color:B.black,lineHeight:1.6}}>{c.lovelriEdge}</div>
+                        <div style={{fontFamily:B.sans,fontSize:14,color:B.black,lineHeight:1.6}}>{c.lovelriEdge}</div>
                       </div>
                     </div>
                   )}
@@ -483,8 +1153,8 @@ function Dashboard(){
                 {n:"Booking Trend",v:"Couples increasingly research online and expect to book a consultation digitally — not call a direct number."},
               ].map((d,i,a)=>(
                 <Row key={i} last={i===a.length-1}>
-                  <div style={{fontFamily:B.sans,fontSize:11,fontWeight:500,color:B.black,marginBottom:3}}>{d.n}</div>
-                  <div style={{fontFamily:B.sans,fontSize:11,color:B.gray,lineHeight:1.6}}>{d.v}</div>
+                  <div style={{fontFamily:B.sans,fontSize:13,fontWeight:500,color:B.black,marginBottom:3}}>{d.n}</div>
+                  <div style={{fontFamily:B.sans,fontSize:13,color:B.gray,lineHeight:1.6}}>{d.v}</div>
                 </Row>
               ))}
             </Card>
@@ -496,12 +1166,12 @@ function Dashboard(){
             <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:1,border:`1px solid ${B.border}`,marginBottom:20}}>
               {[{k:"Total",v:leads.length},{k:"New",v:newCount,a:true},{k:"Booked",v:leads.filter(l=>l.status==="booked").length}].map((s,i)=>(
                 <div key={i} style={{background:B.white,padding:"14px 12px",borderRight:i<2?`1px solid ${B.border}`:"none"}}>
-                  <div style={{fontFamily:B.sans,fontSize:9,letterSpacing:"0.12em",textTransform:"uppercase",color:B.gray,marginBottom:4}}>{s.k}</div>
-                  <div style={{fontFamily:B.serif,fontSize:22,color:s.a&&s.v>0?B.gold:B.black}}>{s.v}</div>
+                  <div style={{fontFamily:B.sans,fontSize:11,letterSpacing:"0.12em",textTransform:"uppercase",color:B.gray,marginBottom:4}}>{s.k}</div>
+                  <div style={{fontFamily:B.serif,fontSize:24,color:s.a&&s.v>0?B.gold:B.black}}>{s.v}</div>
                 </div>
               ))}
             </div>
-            <Card>{leads.map((lead,i)=>{const s=ST[lead.status]||ST.new;return(<Row key={lead.id} last={i===leads.length-1}><div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:6}}><div><div style={{fontFamily:B.sans,fontSize:13,color:B.black,fontWeight:500}}>{lead.name}</div><div style={{fontFamily:B.sans,fontSize:10,color:B.gray}}>{lead.email}</div></div><span style={{fontFamily:B.sans,fontSize:9,letterSpacing:"0.06em",padding:"3px 8px",background:s.bg,color:s.color,flexShrink:0}}>{s.label}</span></div><div style={{display:"flex",gap:8,flexWrap:"wrap"}}>{[lead.occasion,lead.style,lead.budget,lead.source].filter(Boolean).map((v,j)=>(<span key={j} style={{fontFamily:B.sans,fontSize:10,color:B.gray,background:B.offwhite,padding:"2px 8px"}}>{v}</span>))}<span style={{fontFamily:B.sans,fontSize:10,color:B.lightgray,marginLeft:"auto"}}>{lead.time}</span></div></Row>);})}</Card>
+            <Card>{leads.map((lead,i)=>{const s=ST[lead.status]||ST.new;return(<Row key={lead.id} last={i===leads.length-1}><div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:6}}><div><div style={{fontFamily:B.sans,fontSize:15,color:B.black,fontWeight:500}}>{lead.name}</div><div style={{fontFamily:B.sans,fontSize:12,color:B.gray}}>{lead.email}</div></div><span style={{fontFamily:B.sans,fontSize:11,letterSpacing:"0.06em",padding:"3px 8px",background:s.bg,color:s.color,flexShrink:0}}>{s.label}</span></div><div style={{display:"flex",gap:8,flexWrap:"wrap"}}>{[lead.occasion,lead.style,lead.budget,lead.source].filter(Boolean).map((v,j)=>(<span key={j} style={{fontFamily:B.sans,fontSize:12,color:B.gray,background:B.offwhite,padding:"2px 8px"}}>{v}</span>))}<span style={{fontFamily:B.sans,fontSize:12,color:B.lightgray,marginLeft:"auto"}}>{lead.time}</span></div></Row>);})}</Card>
           </div>
         )}
         {active==="intake"&&(
@@ -529,7 +1199,7 @@ function Dashboard(){
                 {n:"Cartier / Tiffany / Van Cleef Credibility",d:"Master jewellers trained at Cartier, Tiffany & Co., and Van Cleef & Arpels."},
                 {n:"Lifetime Warranty",d:"A lifetime manufacturer warranty is a significant purchase-decision driver."},
                 {n:"Ships Internationally",d:"Lovelri ships internationally — this opens the entire diaspora market."},
-              ].map((d,i,a)=>(<Row key={i} last={i===a.length-1}><div style={{fontFamily:B.sans,fontSize:12,fontWeight:500,color:B.black,marginBottom:3}}>{d.n}</div><div style={{fontFamily:B.sans,fontSize:11,color:B.gray,lineHeight:1.6}}>{d.d}</div></Row>))}
+              ].map((d,i,a)=>(<Row key={i} last={i===a.length-1}><div style={{fontFamily:B.sans,fontSize:14,fontWeight:500,color:B.black,marginBottom:3}}>{d.n}</div><div style={{fontFamily:B.sans,fontSize:13,color:B.gray,lineHeight:1.6}}>{d.d}</div></Row>))}
             </Card>
             <Label>Critical Marketing Gaps</Label>
             <Card mb={24}>
@@ -540,7 +1210,7 @@ function Dashboard(){
                 {n:"No Proposal Season Campaigns",sev:"high",d:"Valentine's Day, Christmas Eve, and summer proposals are the 3 peaks."},
                 {n:"No Referral Programme",sev:"high",d:"Engagement ring buyers have engaged friends who will also need rings within 1–3 years."},
                 {n:"No Press Strategy",sev:"medium",d:"BlogTO is one hit. Toronto Life, The Kit, Weddingwire editorial are zero."},
-              ].map((d,i,a)=>(<Row key={i} last={i===a.length-1}><div style={{display:"flex",gap:8,alignItems:"center",marginBottom:3,flexWrap:"wrap"}}><span style={{fontFamily:B.sans,fontSize:12,fontWeight:500,color:B.black}}>{d.n}</span><Chip label={d.sev} bg={d.sev==="critical"?"rgba(220,53,69,0.08)":"rgba(255,193,7,0.08)"} color={d.sev==="critical"?"#c0392b":"#8c6d00"}/></div><div style={{fontFamily:B.sans,fontSize:11,color:B.gray,lineHeight:1.6}}>{d.d}</div></Row>))}
+              ].map((d,i,a)=>(<Row key={i} last={i===a.length-1}><div style={{display:"flex",gap:8,alignItems:"center",marginBottom:3,flexWrap:"wrap"}}><span style={{fontFamily:B.sans,fontSize:14,fontWeight:500,color:B.black}}>{d.n}</span><Chip label={d.sev} bg={d.sev==="critical"?"rgba(220,53,69,0.08)":"rgba(255,193,7,0.08)"} color={d.sev==="critical"?"#c0392b":"#8c6d00"}/></div><div style={{fontFamily:B.sans,fontSize:13,color:B.gray,lineHeight:1.6}}>{d.d}</div></Row>))}
             </Card>
             <Label>90-Day Marketing Action Plan</Label>
             <Card>
@@ -549,7 +1219,7 @@ function Dashboard(){
                 {phase:"Days 15–30",t:"Launch Paid Acquisition",items:["Google Ads: lab diamond, custom, bespoke engagement ring Toronto","Meta Ads: retargeting warm visitors","Daily budget: $50–100/day","A/B test landing page"]},
                 {phase:"Days 31–60",t:"Build Email Engine",items:["Welcome sequence: 5 emails over 14 days","Abandoned consultation follow-up","Monthly newsletter"]},
                 {phase:"Days 61–90",t:"PR & Partnerships",items:["Pitch Toronto Life, The Kit, Weddingwire","Partner with 2–3 Toronto wedding photographers","Launch referral programme: $200/$200","Submit BlogTO Best Of"]},
-              ].map((phase,i,a)=>(<Row key={i} last={i===a.length-1}><div style={{display:"flex",gap:10,alignItems:"flex-start"}}><div style={{fontFamily:B.serif,fontSize:15,color:B.gold,flexShrink:0,width:68,marginTop:1}}>{phase.phase}</div><div><div style={{fontFamily:B.sans,fontSize:12,fontWeight:500,color:B.black,marginBottom:6}}>{phase.t}</div>{phase.items.map((item,j)=>(<div key={j} style={{display:"flex",gap:6,marginBottom:4,alignItems:"flex-start"}}><span style={{color:B.gold,flexShrink:0,marginTop:1}}>—</span><span style={{fontFamily:B.sans,fontSize:11,color:B.gray,lineHeight:1.5}}>{item}</span></div>))}</div></div></Row>))}
+              ].map((phase,i,a)=>(<Row key={i} last={i===a.length-1}><div style={{display:"flex",gap:10,alignItems:"flex-start"}}><div style={{fontFamily:B.serif,fontSize:17,color:B.gold,flexShrink:0,width:68,marginTop:1}}>{phase.phase}</div><div><div style={{fontFamily:B.sans,fontSize:14,fontWeight:500,color:B.black,marginBottom:6}}>{phase.t}</div>{phase.items.map((item,j)=>(<div key={j} style={{display:"flex",gap:6,marginBottom:4,alignItems:"flex-start"}}><span style={{color:B.gold,flexShrink:0,marginTop:1}}>—</span><span style={{fontFamily:B.sans,fontSize:13,color:B.gray,lineHeight:1.5}}>{item}</span></div>))}</div></div></Row>))}
             </Card>
           </div>
         )}
@@ -564,7 +1234,7 @@ function Dashboard(){
                 {p:"TikTok",s:"Not found",stats:"No verified presence",a:"Significant missed opportunity for ring reveals and atelier behind-the-scenes."},
                 {p:"Pinterest",s:"Not confirmed",stats:"Unknown",a:"Pinterest drives significant engagement ring discovery traffic."},
                 {p:"WeddingWire.ca",s:"Listed, no reviews",stats:"0 reviews",a:"Top-5 research source for Toronto engaged couples. Needs 10+ reviews urgently."},
-              ].map((x,i,a)=>(<Row key={i} last={i===a.length-1}><div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:4,gap:8}}><div style={{fontFamily:B.sans,fontSize:12,fontWeight:500,color:B.black}}>{x.p}</div><Chip label={x.s} bg={x.s==="Active"?"rgba(76,175,125,0.1)":x.s==="Not found"?"rgba(220,53,69,0.08)":"rgba(255,193,7,0.08)"} color={x.s==="Active"?"#2d7a54":x.s==="Not found"?"#c0392b":"#8c6d00"}/></div><div style={{fontFamily:B.sans,fontSize:10,color:B.gray,marginBottom:4,letterSpacing:"0.04em"}}>{x.stats}</div><div style={{fontFamily:B.sans,fontSize:11,color:B.gray,lineHeight:1.6}}>{x.a}</div></Row>))}
+              ].map((x,i,a)=>(<Row key={i} last={i===a.length-1}><div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:4,gap:8}}><div style={{fontFamily:B.sans,fontSize:14,fontWeight:500,color:B.black}}>{x.p}</div><Chip label={x.s} bg={x.s==="Active"?"rgba(76,175,125,0.1)":x.s==="Not found"?"rgba(220,53,69,0.08)":"rgba(255,193,7,0.08)"} color={x.s==="Active"?"#2d7a54":x.s==="Not found"?"#c0392b":"#8c6d00"}/></div><div style={{fontFamily:B.sans,fontSize:12,color:B.gray,marginBottom:4,letterSpacing:"0.04em"}}>{x.stats}</div><div style={{fontFamily:B.sans,fontSize:13,color:B.gray,lineHeight:1.6}}>{x.a}</div></Row>))}
             </Card>
             <Label>Content Calendar — Monthly Framework</Label>
             <Card>
@@ -573,7 +1243,7 @@ function Dashboard(){
                 {week:"Week 2",theme:"Client Love",posts:["Proposal reveal","She said yes ring close-up","Client testimonial","Behind-the-scenes wax-to-ring"]},
                 {week:"Week 3",theme:"Education",posts:["Lab vs natural diamond","Choosing ring shape","Reel — 5 things nobody tells you","Story poll: Oval or Round?"]},
                 {week:"Week 4",theme:"Brand Story",posts:["Maison heritage","New collection announcement","Reel — Toronto atelier tour","CTA: Book consultation"]},
-              ].map((w,i,a)=>(<Row key={i} last={i===a.length-1}><div style={{fontFamily:B.sans,fontSize:11,fontWeight:500,color:B.black,marginBottom:6,letterSpacing:"0.04em"}}>{w.week} — {w.theme}</div>{w.posts.map((p,j)=>(<div key={j} style={{display:"flex",gap:6,marginBottom:3,alignItems:"flex-start"}}><span style={{color:B.gold,flexShrink:0}}>—</span><span style={{fontFamily:B.sans,fontSize:11,color:B.gray,lineHeight:1.5}}>{p}</span></div>))}</Row>))}
+              ].map((w,i,a)=>(<Row key={i} last={i===a.length-1}><div style={{fontFamily:B.sans,fontSize:13,fontWeight:500,color:B.black,marginBottom:6,letterSpacing:"0.04em"}}>{w.week} — {w.theme}</div>{w.posts.map((p,j)=>(<div key={j} style={{display:"flex",gap:6,marginBottom:3,alignItems:"flex-start"}}><span style={{color:B.gold,flexShrink:0}}>—</span><span style={{fontFamily:B.sans,fontSize:13,color:B.gray,lineHeight:1.5}}>{p}</span></div>))}</Row>))}
             </Card>
           </div>
         )}
@@ -591,7 +1261,7 @@ function Dashboard(){
                 {kw:"Engagement ring Toronto price",intent:"Commercial",difficulty:"Medium",priority:"High"},
                 {kw:"Oval engagement ring Toronto",intent:"Commercial",difficulty:"Medium",priority:"Medium"},
                 {kw:"Hidden halo engagement ring Toronto",intent:"Commercial",difficulty:"Low",priority:"Medium"},
-              ].map((kw,i,a)=>(<Row key={i} last={i===a.length-1}><div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",gap:8,marginBottom:4}}><div style={{fontFamily:B.sans,fontSize:12,fontWeight:500,color:B.black,flex:1}}>{kw.kw}</div><Chip label={kw.priority==="#1"?"🎯 Priority #1":kw.priority} bg={kw.priority==="#1"?"rgba(201,169,110,0.15)":"rgba(26,26,26,0.06)"} color={kw.priority==="#1"?B.gold:B.black}/></div><div style={{display:"flex",gap:6}}><Chip label={kw.intent}/><Chip label={`Difficulty: ${kw.difficulty}`} bg={kw.difficulty==="Low"?"rgba(76,175,125,0.08)":kw.difficulty==="Medium"?"rgba(255,193,7,0.08)":"rgba(220,53,69,0.08)"} color={kw.difficulty==="Low"?"#2d7a54":kw.difficulty==="Medium"?"#8c6d00":"#c0392b"}/></div></Row>))}
+              ].map((kw,i,a)=>(<Row key={i} last={i===a.length-1}><div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",gap:8,marginBottom:4}}><div style={{fontFamily:B.sans,fontSize:14,fontWeight:500,color:B.black,flex:1}}>{kw.kw}</div><Chip label={kw.priority==="#1"?"🎯 Priority #1":kw.priority} bg={kw.priority==="#1"?"rgba(201,169,110,0.15)":"rgba(26,26,26,0.06)"} color={kw.priority==="#1"?B.gold:B.black}/></div><div style={{display:"flex",gap:6}}><Chip label={kw.intent}/><Chip label={`Difficulty: ${kw.difficulty}`} bg={kw.difficulty==="Low"?"rgba(76,175,125,0.08)":kw.difficulty==="Medium"?"rgba(255,193,7,0.08)":"rgba(220,53,69,0.08)"} color={kw.difficulty==="Low"?"#2d7a54":kw.difficulty==="Medium"?"#8c6d00":"#c0392b"}/></div></Row>))}
             </Card>
           </div>
         )}
@@ -599,7 +1269,7 @@ function Dashboard(){
           <div style={{animation:"fadeIn 0.25s ease"}}>
             <Title sub="All tools embed directly into the Shopify storefront. One snippet per tool — no redesign, no rebuild.">Embed on<br/><em style={{fontStyle:"italic"}}>lovelri.com</em></Title>
             {[{t:"1. Intake Form",d:"Add to any collection page or /pages/consultation."},{t:"2. Chat Widget",d:"Add to theme.liquid before </body>. Floats on every page."},{t:"3. EmailJS Setup",d:"Free. 200 emails/month. 5-minute setup."},{t:"4. Deploy to Vercel",d:"Host both tools free. One command in terminal."}].map((b,i)=>(
-              <Card key={i} mb={14}><Row><div style={{fontFamily:B.sans,fontSize:12,fontWeight:500,color:B.black,marginBottom:3}}>{b.t}</div><div style={{fontFamily:B.sans,fontSize:11,color:B.gray,lineHeight:1.6}}>{b.d}</div></Row></Card>
+              <Card key={i} mb={14}><Row><div style={{fontFamily:B.sans,fontSize:14,fontWeight:500,color:B.black,marginBottom:3}}>{b.t}</div><div style={{fontFamily:B.sans,fontSize:13,color:B.gray,lineHeight:1.6}}>{b.d}</div></Row></Card>
             ))}
           </div>
         )}
@@ -607,7 +1277,7 @@ function Dashboard(){
       <div style={{position:"fixed",bottom:0,left:0,right:0,background:B.white,borderTop:`1px solid ${B.border}`,display:"flex",zIndex:98,overflowX:"auto"}}>
         {NAV.map(n=>(
           <button key={n.id} onClick={()=>go(n.id)} style={{flex:"0 0 auto",minWidth:0,padding:"10px 8px 8px",border:"none",background:"none",cursor:"pointer",borderTop:active===n.id?`2px solid ${B.black}`:"2px solid transparent",display:"flex",flexDirection:"column",alignItems:"center",gap:2}}>
-            <span style={{fontFamily:B.sans,fontSize:8,letterSpacing:"0.04em",textTransform:"uppercase",color:active===n.id?B.black:B.gray,lineHeight:1.2,textAlign:"center",whiteSpace:"nowrap"}}>{n.label}</span>
+            <span style={{fontFamily:B.sans,fontSize:10,letterSpacing:"0.04em",textTransform:"uppercase",color:active===n.id?B.black:B.gray,lineHeight:1.2,textAlign:"center",whiteSpace:"nowrap"}}>{n.label}</span>
             {n.id==="leads"&&newCount>0&&<span style={{width:5,height:5,borderRadius:"50%",background:B.gold,display:"inline-block"}}/>}
           </button>
         ))}
@@ -621,7 +1291,7 @@ function Dashboard(){
     </div>
   );
 }
-// export default Dashboard;  // not needed in browser bundle
+// (export removed for browser bundle)
 
 
 const root = ReactDOM.createRoot(document.getElementById("root"));

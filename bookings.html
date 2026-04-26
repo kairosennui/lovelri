@@ -12,10 +12,10 @@
     display:flex;align-items:center;justify-content:center;
     min-height:100vh;
     font-family:'Helvetica Neue','Arial',sans-serif;
-    color:#6b6b6b;font-size:11px;letter-spacing:0.22em;text-transform:uppercase;
+    color:#6b6b6b;font-size:13px;letter-spacing:0.22em;text-transform:uppercase;
     flex-direction:column;gap:14px;
   }
-  .boot small{font-size:9px;color:#a8a8a4;letter-spacing:0.06em;text-transform:none;font-style:italic}
+  .boot small{font-size:11px;color:#a8a8a4;letter-spacing:0.06em;text-transform:none;font-style:italic}
 </style>
 </head>
 <body>
@@ -231,8 +231,8 @@ let STORE = [
   {id:"BK005",name:"Emma L.",   email:"emma@email.com",   phone:"+1 416 555 0505",type:"Private Consultation",  apptId:"consultation",consultant:"natalie", date:"2026-05-16",time:"1:30 PM", duration:60,status:"pending",  notes:"Botanical style",         occasion:"Engagement",budget:"$6,000–$12,000"},
 ];
 // ── SHARED UI ─────────────────────────────────────────────────────────────────
-const Lbl = ({c,mt})=><div style={{fontFamily:B.sans,fontSize:9,letterSpacing:"0.22em",textTransform:"uppercase",color:B.gray,marginBottom:10,marginTop:mt||0}}>{c}</div>;
-const Badge = ({s})=>{const m={confirmed:{bg:"rgba(76,175,125,0.1)",c:"#2d7a54",l:"Confirmed"},pending:{bg:"rgba(201,169,110,0.12)",c:"#8c6d3f",l:"Pending"},cancelled:{bg:"rgba(220,53,69,0.08)",c:"#c0392b",l:"Cancelled"}};const t=m[s]||m.pending;return <span style={{fontFamily:B.sans,fontSize:9,letterSpacing:"0.06em",padding:"3px 8px",background:t.bg,color:t.c}}>{t.l}</span>;};
+const Lbl = ({c,mt})=><div style={{fontFamily:B.sans,fontSize:11,letterSpacing:"0.22em",textTransform:"uppercase",color:B.gray,marginBottom:10,marginTop:mt||0}}>{c}</div>;
+const Badge = ({s})=>{const m={confirmed:{bg:"rgba(76,175,125,0.1)",c:"#2d7a54",l:"Confirmed"},pending:{bg:"rgba(201,169,110,0.12)",c:"#8c6d3f",l:"Pending"},cancelled:{bg:"rgba(220,53,69,0.08)",c:"#c0392b",l:"Cancelled"}};const t=m[s]||m.pending;return <span style={{fontFamily:B.sans,fontSize:11,letterSpacing:"0.06em",padding:"3px 8px",background:t.bg,color:t.c}}>{t.l}</span>;};
 // ── CUSTOMER BOOKING FLOW ─────────────────────────────────────────────────────
 function BookingFlow({onDone}) {
   const [step,setStep]   = useState(0);
@@ -271,19 +271,19 @@ function BookingFlow({onDone}) {
   };
   const dIM=getDaysInMonth(year,month);
   const fD=getFirstDay(year,month);
-  const NavBtn=({l,fn})=><button onClick={fn} style={{flex:1,padding:"12px",background:B.white,color:B.black,border:`1px solid ${B.black}`,fontFamily:B.sans,fontSize:11,letterSpacing:"0.12em",textTransform:"uppercase",cursor:"pointer"}}>{l}</button>;
-  const NextBtn=({l,fn,off})=><button onClick={fn} disabled={off} style={{flex:1,padding:"12px",background:off?"#e0e0da":B.black,color:off?B.gray:B.white,border:"none",fontFamily:B.sans,fontSize:11,letterSpacing:"0.12em",textTransform:"uppercase",cursor:off?"not-allowed":"pointer"}}>{l}</button>;
+  const NavBtn=({l,fn})=><button onClick={fn} style={{flex:1,padding:"12px",background:B.white,color:B.black,border:`1px solid ${B.black}`,fontFamily:B.sans,fontSize:13,letterSpacing:"0.12em",textTransform:"uppercase",cursor:"pointer"}}>{l}</button>;
+  const NextBtn=({l,fn,off})=><button onClick={fn} disabled={off} style={{flex:1,padding:"12px",background:off?"#e0e0da":B.black,color:off?B.gray:B.white,border:"none",fontFamily:B.sans,fontSize:13,letterSpacing:"0.12em",textTransform:"uppercase",cursor:off?"not-allowed":"pointer"}}>{l}</button>;
   // ── CONFIRMATION ──
   if(step===4) {
     const bk = STORE[0]; // most recent
     return(
       <div style={{padding:"32px 0",textAlign:"center"}}>
-        <div style={{width:52,height:52,border:`1px solid ${B.black}`,borderRadius:"50%",display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,margin:"0 auto 20px"}}>✓</div>
-        <div style={{fontFamily:B.sans,fontSize:9,letterSpacing:"0.25em",textTransform:"uppercase",color:B.gray,marginBottom:10}}>Booking Confirmed</div>
-        <div style={{fontFamily:B.serif,fontSize:26,fontWeight:400,color:B.black,marginBottom:8,lineHeight:1.2}}>
+        <div style={{width:52,height:52,border:`1px solid ${B.black}`,borderRadius:"50%",display:"flex",alignItems:"center",justifyContent:"center",fontSize:22,margin:"0 auto 20px"}}>✓</div>
+        <div style={{fontFamily:B.sans,fontSize:11,letterSpacing:"0.25em",textTransform:"uppercase",color:B.gray,marginBottom:10}}>Booking Confirmed</div>
+        <div style={{fontFamily:B.serif,fontSize:28,fontWeight:400,color:B.black,marginBottom:8,lineHeight:1.2}}>
           See you soon,<br/><em>{form.name.split(" ")[0]}.</em>
         </div>
-        <div style={{fontFamily:B.sans,fontSize:12,color:B.gray,lineHeight:1.8,marginBottom:24}}>
+        <div style={{fontFamily:B.sans,fontSize:14,color:B.gray,lineHeight:1.8,marginBottom:24}}>
           Confirmation sent to <strong style={{color:B.black}}>{form.email}</strong><br/>
           Our team has been notified at <strong style={{color:B.black}}>garykcli@gmail.com</strong>
         </div>
@@ -297,24 +297,24 @@ function BookingFlow({onDone}) {
             ["Location", appt?.id==="virtual"?"Video Call — link coming by email":"320 Bay Street, Toronto ON M5H 4A6"],
           ].map(([k,v])=>(
             <div key={k} style={{display:"flex",justifyContent:"space-between",gap:12,padding:"6px 0",borderBottom:`1px solid ${B.border}`}}>
-              <span style={{fontFamily:B.sans,fontSize:11,color:B.gray,flexShrink:0}}>{k}</span>
-              <span style={{fontFamily:B.sans,fontSize:11,color:B.black,textAlign:"right"}}>{v}</span>
+              <span style={{fontFamily:B.sans,fontSize:13,color:B.gray,flexShrink:0}}>{k}</span>
+              <span style={{fontFamily:B.sans,fontSize:13,color:B.black,textAlign:"right"}}>{v}</span>
             </div>
           ))}
         </div>
         {/* Calendar add button — works on iPhone and Android */}
         {calLink && (
           <a href={calLink} download={`lovelri-booking-${bk.id}.ics`} style={{textDecoration:"none",display:"block",marginBottom:12}}>
-            <div style={{padding:"14px",background:B.black,color:B.white,fontFamily:B.sans,fontSize:11,letterSpacing:"0.12em",textTransform:"uppercase",textAlign:"center"}}>
+            <div style={{padding:"14px",background:B.black,color:B.white,fontFamily:B.sans,fontSize:13,letterSpacing:"0.12em",textTransform:"uppercase",textAlign:"center"}}>
               📅 Add to My Calendar
             </div>
           </a>
         )}
-        <div style={{fontFamily:B.sans,fontSize:11,color:B.gray,lineHeight:1.6,marginBottom:20}}>
+        <div style={{fontFamily:B.sans,fontSize:13,color:B.gray,lineHeight:1.6,marginBottom:20}}>
           Need to reschedule? Call <strong style={{color:B.black}}>+1 437-433-3799</strong>
         </div>
         <button onClick={()=>{setStep(0);setAppt(null);setCons(null);setDate(null);setSlot(null);setForm({name:"",email:"",phone:"",occasion:"",budget:"",notes:""});setCalLink(null);}}
-          style={{fontFamily:B.sans,fontSize:10,letterSpacing:"0.1em",textTransform:"uppercase",background:"none",border:"none",color:B.gray,cursor:"pointer",textDecoration:"underline"}}>
+          style={{fontFamily:B.sans,fontSize:12,letterSpacing:"0.1em",textTransform:"uppercase",background:"none",border:"none",color:B.gray,cursor:"pointer",textDecoration:"underline"}}>
           Book Another
         </button>
       </div>
@@ -327,7 +327,7 @@ function BookingFlow({onDone}) {
         {["Type","Consultant","Date & Time","Details"].map((s,i)=>(
           <div key={i} style={{flex:1}}>
             <div style={{height:2,background:i<=step?B.black:B.lightgray,marginBottom:4,transition:"background 0.3s"}}/>
-            <div style={{fontFamily:B.sans,fontSize:8,letterSpacing:"0.08em",textTransform:"uppercase",color:i===step?B.black:B.gray}}>{s}</div>
+            <div style={{fontFamily:B.sans,fontSize:10,letterSpacing:"0.08em",textTransform:"uppercase",color:i===step?B.black:B.gray}}>{s}</div>
           </div>
         ))}
       </div>
@@ -335,17 +335,17 @@ function BookingFlow({onDone}) {
       {step===0&&(
         <div>
           <Lbl c="What brings you in?"/>
-          <div style={{fontFamily:B.serif,fontSize:22,color:B.black,marginBottom:4,lineHeight:1.2}}>Choose your appointment</div>
-          <div style={{fontFamily:B.sans,fontSize:12,color:B.gray,marginBottom:20,lineHeight:1.6}}>320 Bay Street, Toronto — or virtually from anywhere.</div>
+          <div style={{fontFamily:B.serif,fontSize:24,color:B.black,marginBottom:4,lineHeight:1.2}}>Choose your appointment</div>
+          <div style={{fontFamily:B.sans,fontSize:14,color:B.gray,marginBottom:20,lineHeight:1.6}}>320 Bay Street, Toronto — or virtually from anywhere.</div>
           <div style={{display:"flex",flexDirection:"column",gap:8,marginBottom:20}}>
             {APPT_TYPES.map(t=>(
               <div key={t.id} onClick={()=>setAppt(t)} style={{border:`1px solid ${appt?.id===t.id?B.black:B.border}`,background:appt?.id===t.id?B.black:B.white,padding:"13px 16px",cursor:"pointer",transition:"all 0.15s",display:"flex",gap:14,alignItems:"center"}}>
-                <div style={{fontSize:17,flexShrink:0}}>{t.icon}</div>
+                <div style={{fontSize:19,flexShrink:0}}>{t.icon}</div>
                 <div style={{flex:1}}>
-                  <div style={{fontFamily:B.serif,fontSize:15,color:appt?.id===t.id?B.white:B.black,marginBottom:2}}>{t.label}</div>
-                  <div style={{fontFamily:B.sans,fontSize:11,color:appt?.id===t.id?"rgba(255,255,255,0.65)":B.gray}}>{t.desc}</div>
+                  <div style={{fontFamily:B.serif,fontSize:17,color:appt?.id===t.id?B.white:B.black,marginBottom:2}}>{t.label}</div>
+                  <div style={{fontFamily:B.sans,fontSize:13,color:appt?.id===t.id?"rgba(255,255,255,0.65)":B.gray}}>{t.desc}</div>
                 </div>
-                <div style={{fontFamily:B.sans,fontSize:10,color:appt?.id===t.id?"rgba(255,255,255,0.5)":B.gray,flexShrink:0}}>{t.duration}min</div>
+                <div style={{fontFamily:B.sans,fontSize:12,color:appt?.id===t.id?"rgba(255,255,255,0.5)":B.gray,flexShrink:0}}>{t.duration}min</div>
               </div>
             ))}
           </div>
@@ -356,17 +356,17 @@ function BookingFlow({onDone}) {
       {step===1&&(
         <div>
           <Lbl c="Who would you like to meet?"/>
-          <div style={{fontFamily:B.serif,fontSize:22,color:B.black,marginBottom:4,lineHeight:1.2}}>Choose your consultant</div>
-          <div style={{fontFamily:B.sans,fontSize:12,color:B.gray,marginBottom:20,lineHeight:1.6}}>Each member of our team brings decades of expertise.</div>
+          <div style={{fontFamily:B.serif,fontSize:24,color:B.black,marginBottom:4,lineHeight:1.2}}>Choose your consultant</div>
+          <div style={{fontFamily:B.sans,fontSize:14,color:B.gray,marginBottom:20,lineHeight:1.6}}>Each member of our team brings decades of expertise.</div>
           <div style={{display:"flex",flexDirection:"column",gap:8,marginBottom:20}}>
             {TEAM.map(t=>(
               <div key={t.id} onClick={()=>setCons(t)} style={{border:`1px solid ${cons?.id===t.id?B.black:B.border}`,background:cons?.id===t.id?B.black:B.white,padding:"13px 16px",cursor:"pointer",transition:"all 0.15s",display:"flex",gap:14,alignItems:"center"}}>
-                <div style={{width:34,height:34,borderRadius:"50%",background:t.color,display:"flex",alignItems:"center",justifyContent:"center",fontFamily:B.serif,fontSize:15,color:B.white,flexShrink:0}}>{t.name[0]}</div>
+                <div style={{width:34,height:34,borderRadius:"50%",background:t.color,display:"flex",alignItems:"center",justifyContent:"center",fontFamily:B.serif,fontSize:17,color:B.white,flexShrink:0}}>{t.name[0]}</div>
                 <div style={{flex:1}}>
-                  <div style={{fontFamily:B.serif,fontSize:15,color:cons?.id===t.id?B.white:B.black}}>{t.name}</div>
-                  <div style={{fontFamily:B.sans,fontSize:11,color:cons?.id===t.id?"rgba(255,255,255,0.6)":B.gray}}>{t.role}</div>
+                  <div style={{fontFamily:B.serif,fontSize:17,color:cons?.id===t.id?B.white:B.black}}>{t.name}</div>
+                  <div style={{fontFamily:B.sans,fontSize:13,color:cons?.id===t.id?"rgba(255,255,255,0.6)":B.gray}}>{t.role}</div>
                 </div>
-                {cons?.id===t.id&&<span style={{color:B.white,fontSize:13}}>✓</span>}
+                {cons?.id===t.id&&<span style={{color:B.white,fontSize:15}}>✓</span>}
               </div>
             ))}
           </div>
@@ -380,14 +380,14 @@ function BookingFlow({onDone}) {
       {step===2&&(
         <div>
           <Lbl c="When would you like to come in?"/>
-          <div style={{fontFamily:B.serif,fontSize:22,color:B.black,marginBottom:20,lineHeight:1.2}}>Select a date & time</div>
+          <div style={{fontFamily:B.serif,fontSize:24,color:B.black,marginBottom:20,lineHeight:1.2}}>Select a date & time</div>
           <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:10}}>
-            <button onClick={()=>{if(month===0){setMonth(11);setYear(y=>y-1);}else setMonth(m=>m-1);setDate(null);setSlot(null);}} style={{background:"none",border:`1px solid ${B.border}`,padding:"5px 12px",cursor:"pointer",fontFamily:B.sans,fontSize:13,color:B.black}}>‹</button>
-            <div style={{fontFamily:B.serif,fontSize:15,color:B.black}}>{MONTHS[month]} {year}</div>
-            <button onClick={()=>{if(month===11){setMonth(0);setYear(y=>y+1);}else setMonth(m=>m+1);setDate(null);setSlot(null);}} style={{background:"none",border:`1px solid ${B.border}`,padding:"5px 12px",cursor:"pointer",fontFamily:B.sans,fontSize:13,color:B.black}}>›</button>
+            <button onClick={()=>{if(month===0){setMonth(11);setYear(y=>y-1);}else setMonth(m=>m-1);setDate(null);setSlot(null);}} style={{background:"none",border:`1px solid ${B.border}`,padding:"5px 12px",cursor:"pointer",fontFamily:B.sans,fontSize:15,color:B.black}}>‹</button>
+            <div style={{fontFamily:B.serif,fontSize:17,color:B.black}}>{MONTHS[month]} {year}</div>
+            <button onClick={()=>{if(month===11){setMonth(0);setYear(y=>y+1);}else setMonth(m=>m+1);setDate(null);setSlot(null);}} style={{background:"none",border:`1px solid ${B.border}`,padding:"5px 12px",cursor:"pointer",fontFamily:B.sans,fontSize:15,color:B.black}}>›</button>
           </div>
           <div style={{display:"grid",gridTemplateColumns:"repeat(7,1fr)",gap:2,marginBottom:4}}>
-            {DAYS.map(d=><div key={d} style={{fontFamily:B.sans,fontSize:9,color:B.gray,textAlign:"center",letterSpacing:"0.06em"}}>{d}</div>)}
+            {DAYS.map(d=><div key={d} style={{fontFamily:B.sans,fontSize:11,color:B.gray,textAlign:"center",letterSpacing:"0.06em"}}>{d}</div>)}
           </div>
           <div style={{display:"grid",gridTemplateColumns:"repeat(7,1fr)",gap:2,marginBottom:20}}>
             {Array.from({length:fD}).map((_,i)=><div key={`e${i}`}/>)}
@@ -401,7 +401,7 @@ function BookingFlow({onDone}) {
                   style={{aspectRatio:"1",display:"flex",alignItems:"center",justifyContent:"center",cursor:off?"default":"pointer",background:sel?B.black:"transparent",border:isT?`1px solid ${B.gold}`:"1px solid transparent",transition:"background 0.1s"}}
                   onMouseEnter={e=>{if(!off&&!sel)e.currentTarget.style.background=B.offwhite;}}
                   onMouseLeave={e=>{if(!sel)e.currentTarget.style.background="transparent";}}>
-                  <span style={{fontFamily:B.sans,fontSize:12,color:sel?B.white:off?B.lightgray:isT?B.gold:B.black}}>{day}</span>
+                  <span style={{fontFamily:B.sans,fontSize:14,color:sel?B.white:off?B.lightgray:isT?B.gold:B.black}}>{day}</span>
                 </div>
               );
             })}
@@ -412,12 +412,12 @@ function BookingFlow({onDone}) {
               {slots.length>0
                 ?<div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:6}}>
                   {slots.map(s=>(
-                    <button key={s} onClick={()=>setSlot(s)} style={{padding:"9px 4px",border:`1px solid ${slot===s?B.black:B.border}`,background:slot===s?B.black:B.white,color:slot===s?B.white:B.black,fontFamily:B.sans,fontSize:11,cursor:"pointer",transition:"all 0.15s"}}>
+                    <button key={s} onClick={()=>setSlot(s)} style={{padding:"9px 4px",border:`1px solid ${slot===s?B.black:B.border}`,background:slot===s?B.black:B.white,color:slot===s?B.white:B.black,fontFamily:B.sans,fontSize:13,cursor:"pointer",transition:"all 0.15s"}}>
                       {s}
                     </button>
                   ))}
                 </div>
-                :<div style={{fontFamily:B.sans,fontSize:12,color:B.gray,textAlign:"center",padding:"16px 0"}}>No availability — try another date.</div>
+                :<div style={{fontFamily:B.sans,fontSize:14,color:B.gray,textAlign:"center",padding:"16px 0"}}>No availability — try another date.</div>
               }
             </div>
           )}
@@ -431,45 +431,45 @@ function BookingFlow({onDone}) {
       {step===3&&(
         <div>
           <Lbl c="Almost there"/>
-          <div style={{fontFamily:B.serif,fontSize:22,color:B.black,marginBottom:4,lineHeight:1.2}}>Your details</div>
-          <div style={{fontFamily:B.sans,fontSize:12,color:B.gray,marginBottom:20,lineHeight:1.6}}>
+          <div style={{fontFamily:B.serif,fontSize:24,color:B.black,marginBottom:4,lineHeight:1.2}}>Your details</div>
+          <div style={{fontFamily:B.sans,fontSize:14,color:B.gray,marginBottom:20,lineHeight:1.6}}>
             {appt?.label} · {date?.toLocaleDateString("en-CA",{month:"short",day:"numeric"})} at {slot} · {TEAM.find(t=>t.id===cons?.id)?.name}
           </div>
           {[{l:"Full Name *",k:"name",t:"text",p:"Your full name"},{l:"Email Address *",k:"email",t:"email",p:"your@email.com"},{l:"Phone Number",k:"phone",t:"tel",p:"+1 (416) 000-0000"}].map(fi=>(
             <div key={fi.k} style={{marginBottom:13}}>
-              <div style={{fontFamily:B.sans,fontSize:9,letterSpacing:"0.16em",textTransform:"uppercase",color:B.gray,marginBottom:5}}>{fi.l}</div>
+              <div style={{fontFamily:B.sans,fontSize:11,letterSpacing:"0.16em",textTransform:"uppercase",color:B.gray,marginBottom:5}}>{fi.l}</div>
               <input type={fi.t} value={form[fi.k]} onChange={e=>f(fi.k,e.target.value)} placeholder={fi.p}
-                style={{width:"100%",padding:"11px 13px",border:`1px solid ${B.border}`,fontFamily:B.sans,fontSize:13,color:B.black,background:B.white,outline:"none",boxSizing:"border-box"}}
+                style={{width:"100%",padding:"11px 13px",border:`1px solid ${B.border}`,fontFamily:B.sans,fontSize:15,color:B.black,background:B.white,outline:"none",boxSizing:"border-box"}}
                 onFocus={e=>e.target.style.borderColor=B.black}
                 onBlur={e=>e.target.style.borderColor=B.border}/>
             </div>
           ))}
           <div style={{marginBottom:13}}>
-            <div style={{fontFamily:B.sans,fontSize:9,letterSpacing:"0.16em",textTransform:"uppercase",color:B.gray,marginBottom:8}}>Occasion</div>
+            <div style={{fontFamily:B.sans,fontSize:11,letterSpacing:"0.16em",textTransform:"uppercase",color:B.gray,marginBottom:8}}>Occasion</div>
             <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:6}}>
               {["Engagement","Anniversary","Custom Gift","Just Exploring"].map(o=>(
-                <button key={o} onClick={()=>f("occasion",o)} style={{padding:"9px 8px",border:`1px solid ${form.occasion===o?B.black:B.border}`,background:form.occasion===o?B.black:B.white,color:form.occasion===o?B.white:B.black,fontFamily:B.sans,fontSize:11,cursor:"pointer",transition:"all 0.15s"}}>{o}</button>
+                <button key={o} onClick={()=>f("occasion",o)} style={{padding:"9px 8px",border:`1px solid ${form.occasion===o?B.black:B.border}`,background:form.occasion===o?B.black:B.white,color:form.occasion===o?B.white:B.black,fontFamily:B.sans,fontSize:13,cursor:"pointer",transition:"all 0.15s"}}>{o}</button>
               ))}
             </div>
           </div>
           <div style={{marginBottom:13}}>
-            <div style={{fontFamily:B.sans,fontSize:9,letterSpacing:"0.16em",textTransform:"uppercase",color:B.gray,marginBottom:8}}>Approximate Budget</div>
+            <div style={{fontFamily:B.sans,fontSize:11,letterSpacing:"0.16em",textTransform:"uppercase",color:B.gray,marginBottom:8}}>Approximate Budget</div>
             <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:6}}>
               {BUDGET_OPTS.map(o=>(
-                <button key={o} onClick={()=>f("budget",o)} style={{padding:"9px 8px",border:`1px solid ${form.budget===o?B.black:B.border}`,background:form.budget===o?B.black:B.white,color:form.budget===o?B.white:B.black,fontFamily:B.sans,fontSize:10,cursor:"pointer",transition:"all 0.15s"}}>{o}</button>
+                <button key={o} onClick={()=>f("budget",o)} style={{padding:"9px 8px",border:`1px solid ${form.budget===o?B.black:B.border}`,background:form.budget===o?B.black:B.white,color:form.budget===o?B.white:B.black,fontFamily:B.sans,fontSize:12,cursor:"pointer",transition:"all 0.15s"}}>{o}</button>
               ))}
             </div>
           </div>
           <div style={{marginBottom:14}}>
-            <div style={{fontFamily:B.sans,fontSize:9,letterSpacing:"0.16em",textTransform:"uppercase",color:B.gray,marginBottom:5}}>Notes (optional)</div>
+            <div style={{fontFamily:B.sans,fontSize:11,letterSpacing:"0.16em",textTransform:"uppercase",color:B.gray,marginBottom:5}}>Notes (optional)</div>
             <textarea value={form.notes} onChange={e=>f("notes",e.target.value)} rows={3}
               placeholder="Style preferences, inspiration, questions..."
-              style={{width:"100%",padding:"11px 13px",border:`1px solid ${B.border}`,fontFamily:B.sans,fontSize:13,color:B.black,background:B.white,outline:"none",resize:"vertical",boxSizing:"border-box"}}/>
+              style={{width:"100%",padding:"11px 13px",border:`1px solid ${B.border}`,fontFamily:B.sans,fontSize:15,color:B.black,background:B.white,outline:"none",resize:"vertical",boxSizing:"border-box"}}/>
           </div>
           {/* What happens next */}
           <div style={{padding:"11px 13px",background:B.offwhite,border:`1px solid ${B.border}`,marginBottom:16}}>
-            <div style={{fontFamily:B.sans,fontSize:10,color:B.black,marginBottom:4,fontWeight:500}}>What happens after you confirm:</div>
-            <div style={{fontFamily:B.sans,fontSize:10,color:B.gray,lineHeight:1.8}}>
+            <div style={{fontFamily:B.sans,fontSize:12,color:B.black,marginBottom:4,fontWeight:500}}>What happens after you confirm:</div>
+            <div style={{fontFamily:B.sans,fontSize:12,color:B.gray,lineHeight:1.8}}>
               ✓ Booking confirmed instantly<br/>
               📧 You'll receive a confirmation email<br/>
               📅 Gary gets an email + calendar invite<br/>
@@ -512,16 +512,16 @@ function AdminDash({bookings,onStatus}) {
           {k:"Pending",  v:bookings.filter(b=>b.status==="pending").length,  sub:"action needed",a:true},
         ].map((s,i)=>(
           <div key={i} style={{background:B.white,padding:"12px 8px",borderRight:i<3?`1px solid ${B.border}`:"none"}}>
-            <div style={{fontFamily:B.sans,fontSize:8,letterSpacing:"0.12em",textTransform:"uppercase",color:B.gray,marginBottom:4}}>{s.k}</div>
-            <div style={{fontFamily:B.serif,fontSize:22,color:s.a&&s.v>0?B.gold:B.black,lineHeight:1}}>{s.v}</div>
-            <div style={{fontFamily:B.sans,fontSize:9,color:B.gray,marginTop:2}}>{s.sub}</div>
+            <div style={{fontFamily:B.sans,fontSize:10,letterSpacing:"0.12em",textTransform:"uppercase",color:B.gray,marginBottom:4}}>{s.k}</div>
+            <div style={{fontFamily:B.serif,fontSize:24,color:s.a&&s.v>0?B.gold:B.black,lineHeight:1}}>{s.v}</div>
+            <div style={{fontFamily:B.sans,fontSize:11,color:B.gray,marginTop:2}}>{s.sub}</div>
           </div>
         ))}
       </div>
       {/* Email routing info */}
       <div style={{border:`1px solid ${B.border}`,background:B.offwhite,padding:"11px 14px",marginBottom:16}}>
-        <div style={{fontFamily:B.sans,fontSize:9,letterSpacing:"0.16em",textTransform:"uppercase",color:B.gray,marginBottom:5}}>Email & Calendar Routing</div>
-        <div style={{fontFamily:B.sans,fontSize:11,color:B.black,lineHeight:1.8}}>
+        <div style={{fontFamily:B.sans,fontSize:11,letterSpacing:"0.16em",textTransform:"uppercase",color:B.gray,marginBottom:5}}>Email & Calendar Routing</div>
+        <div style={{fontFamily:B.sans,fontSize:13,color:B.black,lineHeight:1.8}}>
           Every booking → <strong>garykcli@gmail.com</strong><br/>
           📅 Calendar invite (.ics) included in Gary's email<br/>
           📧 Confirmation copy → client's email
@@ -530,12 +530,12 @@ function AdminDash({bookings,onStatus}) {
       {/* Mini calendar */}
       <div style={{border:`1px solid ${B.border}`,background:B.white,marginBottom:16}}>
         <div style={{padding:"9px 14px",borderBottom:`1px solid ${B.border}`,display:"flex",alignItems:"center",justifyContent:"space-between"}}>
-          <button onClick={()=>{if(cm===0){setCm(11);setCy(y=>y-1);}else setCm(m=>m-1);}} style={{background:"none",border:"none",cursor:"pointer",fontSize:14,color:B.black}}>‹</button>
-          <div style={{fontFamily:B.serif,fontSize:14,color:B.black}}>{MONTHS[cm]} {cy}</div>
-          <button onClick={()=>{if(cm===11){setCm(0);setCy(y=>y+1);}else setCm(m=>m+1);}} style={{background:"none",border:"none",cursor:"pointer",fontSize:14,color:B.black}}>›</button>
+          <button onClick={()=>{if(cm===0){setCm(11);setCy(y=>y-1);}else setCm(m=>m-1);}} style={{background:"none",border:"none",cursor:"pointer",fontSize:16,color:B.black}}>‹</button>
+          <div style={{fontFamily:B.serif,fontSize:16,color:B.black}}>{MONTHS[cm]} {cy}</div>
+          <button onClick={()=>{if(cm===11){setCm(0);setCy(y=>y+1);}else setCm(m=>m+1);}} style={{background:"none",border:"none",cursor:"pointer",fontSize:16,color:B.black}}>›</button>
         </div>
         <div style={{padding:"8px 10px"}}>
-          <div style={{display:"grid",gridTemplateColumns:"repeat(7,1fr)",gap:2,marginBottom:3}}>{DAYS.map(d=><div key={d} style={{fontFamily:B.sans,fontSize:8,color:B.gray,textAlign:"center"}}>{d[0]}</div>)}</div>
+          <div style={{display:"grid",gridTemplateColumns:"repeat(7,1fr)",gap:2,marginBottom:3}}>{DAYS.map(d=><div key={d} style={{fontFamily:B.sans,fontSize:10,color:B.gray,textAlign:"center"}}>{d[0]}</div>)}</div>
           <div style={{display:"grid",gridTemplateColumns:"repeat(7,1fr)",gap:2}}>
             {Array.from({length:fD}).map((_,i)=><div key={`e${i}`}/>)}
             {Array.from({length:dIM}).map((_,i)=>{
@@ -545,7 +545,7 @@ function AdminDash({bookings,onStatus}) {
               const isT=ds===todayStr;
               return(
                 <div key={day} style={{aspectRatio:"1",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",background:isT?B.offwhite:"transparent",border:isT?`1px solid ${B.gold}`:"none",position:"relative"}}>
-                  <span style={{fontFamily:B.sans,fontSize:10,color:B.black}}>{day}</span>
+                  <span style={{fontFamily:B.sans,fontSize:12,color:B.black}}>{day}</span>
                   {has&&<div style={{width:4,height:4,borderRadius:"50%",background:B.gold,position:"absolute",bottom:2}}/>}
                 </div>
               );
@@ -558,7 +558,7 @@ function AdminDash({bookings,onStatus}) {
         <div style={{display:"flex",gap:4,flex:1,flexWrap:"wrap"}}>
           {[{id:"all",name:"All",color:B.gray},...TEAM.filter(t=>t.id!=="any")].map(t=>(
             <button key={t.id} onClick={()=>setFilter(t.id)}
-              style={{padding:"5px 10px",border:`1px solid ${filter===t.id?B.black:B.border}`,background:filter===t.id?B.black:B.white,color:filter===t.id?B.white:B.black,fontFamily:B.sans,fontSize:9,letterSpacing:"0.06em",textTransform:"uppercase",cursor:"pointer",display:"flex",alignItems:"center",gap:4}}>
+              style={{padding:"5px 10px",border:`1px solid ${filter===t.id?B.black:B.border}`,background:filter===t.id?B.black:B.white,color:filter===t.id?B.white:B.black,fontFamily:B.sans,fontSize:11,letterSpacing:"0.06em",textTransform:"uppercase",cursor:"pointer",display:"flex",alignItems:"center",gap:4}}>
               {t.id!=="all"&&<div style={{width:6,height:6,borderRadius:"50%",background:t.color}}/>}
               {t.name}
             </button>
@@ -566,7 +566,7 @@ function AdminDash({bookings,onStatus}) {
         </div>
         <div style={{display:"flex",gap:4}}>
           {[["upcoming","Upcoming"],["all","All"]].map(([v,l])=>(
-            <button key={v} onClick={()=>setView(v)} style={{padding:"5px 10px",border:`1px solid ${view===v?B.black:B.border}`,background:view===v?B.offwhite:B.white,fontFamily:B.sans,fontSize:9,letterSpacing:"0.06em",textTransform:"uppercase",cursor:"pointer",color:B.black}}>{l}</button>
+            <button key={v} onClick={()=>setView(v)} style={{padding:"5px 10px",border:`1px solid ${view===v?B.black:B.border}`,background:view===v?B.offwhite:B.white,fontFamily:B.sans,fontSize:11,letterSpacing:"0.06em",textTransform:"uppercase",cursor:"pointer",color:B.black}}>{l}</button>
           ))}
         </div>
       </div>
@@ -574,7 +574,7 @@ function AdminDash({bookings,onStatus}) {
       <Lbl c={`${list.length} appointment${list.length!==1?"s":""}`}/>
       <div style={{border:`1px solid ${B.border}`}}>
         {list.length===0
-          ?<div style={{padding:"32px 16px",textAlign:"center",fontFamily:B.sans,fontSize:12,color:B.gray}}>No appointments found.</div>
+          ?<div style={{padding:"32px 16px",textAlign:"center",fontFamily:B.sans,fontSize:14,color:B.gray}}>No appointments found.</div>
           :list.map((bk,i)=>{
             const con=TEAM.find(t=>t.id===bk.consultant);
             const isT=bk.date===todayStr;
@@ -585,39 +585,39 @@ function AdminDash({bookings,onStatus}) {
                 style={{padding:"13px 16px",borderBottom:i<list.length-1?`1px solid ${B.border}`:"none",background:isT?"rgba(201,169,110,0.04)":B.white,cursor:"pointer",borderLeft:isT?`3px solid ${B.gold}`:"3px solid transparent"}}>
                 <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:5,gap:8}}>
                   <div style={{flex:1}}>
-                    <div style={{fontFamily:B.sans,fontSize:13,color:B.black,fontWeight:500}}>{bk.name}</div>
-                    <div style={{fontFamily:B.sans,fontSize:10,color:B.gray}}>{bk.email}{bk.phone?` · ${bk.phone}`:""}</div>
+                    <div style={{fontFamily:B.sans,fontSize:15,color:B.black,fontWeight:500}}>{bk.name}</div>
+                    <div style={{fontFamily:B.sans,fontSize:12,color:B.gray}}>{bk.email}{bk.phone?` · ${bk.phone}`:""}</div>
                   </div>
                   <Badge s={bk.status}/>
                 </div>
                 <div style={{display:"flex",gap:8,flexWrap:"wrap",alignItems:"center"}}>
-                  <span style={{fontFamily:B.sans,fontSize:11,color:B.black}}>{bk.type}</span>
+                  <span style={{fontFamily:B.sans,fontSize:13,color:B.black}}>{bk.type}</span>
                   <span style={{color:B.lightgray}}>·</span>
-                  <span style={{fontFamily:B.sans,fontSize:11,color:B.gray}}>{new Date(bk.date+"T12:00:00").toLocaleDateString("en-CA",{month:"short",day:"numeric"})} at {bk.time}</span>
+                  <span style={{fontFamily:B.sans,fontSize:13,color:B.gray}}>{new Date(bk.date+"T12:00:00").toLocaleDateString("en-CA",{month:"short",day:"numeric"})} at {bk.time}</span>
                   <span style={{color:B.lightgray}}>·</span>
                   <div style={{display:"flex",alignItems:"center",gap:4}}>
                     <div style={{width:6,height:6,borderRadius:"50%",background:con?.color||B.gray}}/>
-                    <span style={{fontFamily:B.sans,fontSize:10,color:B.gray}}>{con?.name}</span>
+                    <span style={{fontFamily:B.sans,fontSize:12,color:B.gray}}>{con?.name}</span>
                   </div>
-                  {bk.budget&&<><span style={{color:B.lightgray}}>·</span><span style={{fontFamily:B.sans,fontSize:10,color:B.gray}}>{bk.budget}</span></>}
+                  {bk.budget&&<><span style={{color:B.lightgray}}>·</span><span style={{fontFamily:B.sans,fontSize:12,color:B.gray}}>{bk.budget}</span></>}
                 </div>
                 {isO&&(
                   <div style={{marginTop:12,paddingTop:12,borderTop:`1px solid ${B.border}`}}>
-                    {bk.notes&&<div style={{fontFamily:B.sans,fontSize:11,color:B.gray,lineHeight:1.6,marginBottom:10,background:B.offwhite,padding:"9px 11px"}}><strong style={{color:B.black}}>Notes: </strong>{bk.notes}</div>}
+                    {bk.notes&&<div style={{fontFamily:B.sans,fontSize:13,color:B.gray,lineHeight:1.6,marginBottom:10,background:B.offwhite,padding:"9px 11px"}}><strong style={{color:B.black}}>Notes: </strong>{bk.notes}</div>}
                     <div style={{display:"flex",gap:16,flexWrap:"wrap",marginBottom:12}}>
                       {[["ID",bk.id],["Occasion",bk.occasion||"—"],["Duration",`${bk.duration}min`]].map(([k,v])=>(
-                        <div key={k}><div style={{fontFamily:B.sans,fontSize:8,letterSpacing:"0.1em",textTransform:"uppercase",color:B.gray,marginBottom:2}}>{k}</div><div style={{fontFamily:B.sans,fontSize:11,color:B.black}}>{v}</div></div>
+                        <div key={k}><div style={{fontFamily:B.sans,fontSize:10,letterSpacing:"0.1em",textTransform:"uppercase",color:B.gray,marginBottom:2}}>{k}</div><div style={{fontFamily:B.sans,fontSize:13,color:B.black}}>{v}</div></div>
                       ))}
                     </div>
                     <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
                       {bk.status!=="confirmed"&&(
-                        <button onClick={e=>{e.stopPropagation();onStatus(bk.id,"confirmed");}} style={{padding:"7px 12px",background:B.black,color:B.white,border:"none",fontFamily:B.sans,fontSize:9,letterSpacing:"0.1em",textTransform:"uppercase",cursor:"pointer"}}>Confirm</button>
+                        <button onClick={e=>{e.stopPropagation();onStatus(bk.id,"confirmed");}} style={{padding:"7px 12px",background:B.black,color:B.white,border:"none",fontFamily:B.sans,fontSize:11,letterSpacing:"0.1em",textTransform:"uppercase",cursor:"pointer"}}>Confirm</button>
                       )}
                       {bk.status!=="cancelled"&&(
-                        <button onClick={e=>{e.stopPropagation();onStatus(bk.id,"cancelled");}} style={{padding:"7px 12px",background:B.white,color:"#c0392b",border:"1px solid #c0392b",fontFamily:B.sans,fontSize:9,letterSpacing:"0.1em",textTransform:"uppercase",cursor:"pointer"}}>Cancel</button>
+                        <button onClick={e=>{e.stopPropagation();onStatus(bk.id,"cancelled");}} style={{padding:"7px 12px",background:B.white,color:"#c0392b",border:"1px solid #c0392b",fontFamily:B.sans,fontSize:11,letterSpacing:"0.1em",textTransform:"uppercase",cursor:"pointer"}}>Cancel</button>
                       )}
-                      <a href={`mailto:${bk.email}?subject=Your Lovelri Appointment`} onClick={e=>e.stopPropagation()} style={{padding:"7px 12px",background:B.white,color:B.black,border:`1px solid ${B.border}`,fontFamily:B.sans,fontSize:9,letterSpacing:"0.1em",textTransform:"uppercase",cursor:"pointer",textDecoration:"none"}}>Email Client</a>
-                      <a href={cl} download={`lovelri-${bk.id}.ics`} onClick={e=>e.stopPropagation()} style={{padding:"7px 12px",background:B.white,color:B.black,border:`1px solid ${B.border}`,fontFamily:B.sans,fontSize:9,letterSpacing:"0.1em",textTransform:"uppercase",cursor:"pointer",textDecoration:"none"}}>📅 Add to Cal</a>
+                      <a href={`mailto:${bk.email}?subject=Your Lovelri Appointment`} onClick={e=>e.stopPropagation()} style={{padding:"7px 12px",background:B.white,color:B.black,border:`1px solid ${B.border}`,fontFamily:B.sans,fontSize:11,letterSpacing:"0.1em",textTransform:"uppercase",cursor:"pointer",textDecoration:"none"}}>Email Client</a>
+                      <a href={cl} download={`lovelri-${bk.id}.ics`} onClick={e=>e.stopPropagation()} style={{padding:"7px 12px",background:B.white,color:B.black,border:`1px solid ${B.border}`,fontFamily:B.sans,fontSize:11,letterSpacing:"0.1em",textTransform:"uppercase",cursor:"pointer",textDecoration:"none"}}>📅 Add to Cal</a>
                     </div>
                   </div>
                 )}
@@ -645,10 +645,10 @@ function App() {
       <div style={{background:B.white,borderBottom:`1px solid ${B.border}`,height:52,display:"flex",alignItems:"center",padding:"0 20px",gap:12,position:"sticky",top:0,zIndex:100}}>
         <img src="https://lovelri.com/cdn/shop/files/LOVELRI-V2-Black.png?v=1760486718&width=302" alt="Lovelri" style={{height:14}} onError={e=>e.target.style.display="none"}/>
         <div style={{width:1,height:18,background:B.border}}/>
-        <span style={{fontFamily:B.sans,fontSize:9,letterSpacing:"0.18em",textTransform:"uppercase",color:B.gray}}>{mode==="book"?"Book a Consultation":"Bookings Admin"}</span>
+        <span style={{fontFamily:B.sans,fontSize:11,letterSpacing:"0.18em",textTransform:"uppercase",color:B.gray}}>{mode==="book"?"Book a Consultation":"Bookings Admin"}</span>
         <div style={{marginLeft:"auto",display:"flex",gap:1}}>
           {[["book","Book"],["admin","Admin ⚙"]].map(([m,l])=>(
-            <button key={m} onClick={()=>setMode(m)} style={{padding:"6px 14px",border:`1px solid ${B.border}`,background:mode===m?B.black:B.white,color:mode===m?B.white:B.gray,fontFamily:B.sans,fontSize:10,letterSpacing:"0.08em",textTransform:"uppercase",cursor:"pointer",transition:"all 0.15s"}}>{l}</button>
+            <button key={m} onClick={()=>setMode(m)} style={{padding:"6px 14px",border:`1px solid ${B.border}`,background:mode===m?B.black:B.white,color:mode===m?B.white:B.gray,fontFamily:B.sans,fontSize:12,letterSpacing:"0.08em",textTransform:"uppercase",cursor:"pointer",transition:"all 0.15s"}}>{l}</button>
           ))}
         </div>
       </div>
@@ -656,9 +656,9 @@ function App() {
         {mode==="book"&&(
           <div>
             <div style={{textAlign:"center",marginBottom:28,paddingBottom:24,borderBottom:`1px solid ${B.border}`}}>
-              <div style={{fontFamily:B.sans,fontSize:9,letterSpacing:"0.25em",textTransform:"uppercase",color:B.gray,marginBottom:10}}>320 Bay Street · Toronto</div>
-              <h1 style={{fontFamily:B.serif,fontSize:30,fontWeight:400,color:B.black,marginBottom:8,lineHeight:1.15}}>Begin Your<br/><em style={{fontStyle:"italic"}}>Lovelri Journey</em></h1>
-              <p style={{fontFamily:B.sans,fontSize:13,color:B.gray,lineHeight:1.75,maxWidth:360,margin:"0 auto"}}>Private consultations with our master jewellers, trained at Cartier, Tiffany & Co., and Van Cleef & Arpels.</p>
+              <div style={{fontFamily:B.sans,fontSize:11,letterSpacing:"0.25em",textTransform:"uppercase",color:B.gray,marginBottom:10}}>320 Bay Street · Toronto</div>
+              <h1 style={{fontFamily:B.serif,fontSize:32,fontWeight:400,color:B.black,marginBottom:8,lineHeight:1.15}}>Begin Your<br/><em style={{fontStyle:"italic"}}>Lovelri Journey</em></h1>
+              <p style={{fontFamily:B.sans,fontSize:15,color:B.gray,lineHeight:1.75,maxWidth:360,margin:"0 auto"}}>Private consultations with our master jewellers, trained at Cartier, Tiffany & Co., and Van Cleef & Arpels.</p>
             </div>
             <BookingFlow onDone={handleDone}/>
           </div>
@@ -667,8 +667,8 @@ function App() {
           <div>
             <div style={{marginBottom:24}}>
               <Lbl c="Sales Team"/>
-              <h1 style={{fontFamily:B.serif,fontSize:28,fontWeight:400,color:B.black,lineHeight:1.15,marginBottom:4}}>Bookings<br/><em style={{fontStyle:"italic"}}>Dashboard</em></h1>
-              <p style={{fontFamily:B.sans,fontSize:12,color:B.gray,lineHeight:1.7}}>Tap any booking to expand, confirm, cancel, or add to your calendar.</p>
+              <h1 style={{fontFamily:B.serif,fontSize:30,fontWeight:400,color:B.black,lineHeight:1.15,marginBottom:4}}>Bookings<br/><em style={{fontStyle:"italic"}}>Dashboard</em></h1>
+              <p style={{fontFamily:B.sans,fontSize:14,color:B.gray,lineHeight:1.7}}>Tap any booking to expand, confirm, cancel, or add to your calendar.</p>
             </div>
             <AdminDash bookings={bookings} onStatus={handleStatus}/>
           </div>
