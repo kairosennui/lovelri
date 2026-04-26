@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Lovelri · Photo Downloader</title>
+<style>
+  *{box-sizing:border-box}
+  body{margin:0;font-family:'Helvetica Neue',Arial,sans-serif;background:#fafaf8;color:#1a1a1a;min-height:100vh;padding:32px 18px}
+  .wrap{max-width:540px;margin:0 auto;background:#fff;border:1px solid #d8d8d2;padding:32px 26px}
+  .lbl{font-size:11px;letter-spacing:0.22em;text-transform:uppercase;color:#6b6b6b;margin:0 0 8px}
+  h1{font-family:'Cormorant Garamond',Georgia,serif;font-weight:400;font-size:28px;line-height:1.2;margin:0 0 14px}
+  h1 em{font-style:italic;color:#c9a96e}
+  p{font-size:14px;color:#6b6b6b;line-height:1.7;margin:0 0 14px}
+  .btn{display:block;width:100%;padding:18px;border:0;background:#1a1a1a;color:#fff;font:inherit;font-size:13px;letter-spacing:0.14em;text-transform:uppercase;cursor:pointer;margin-top:18px}
+  .btn:disabled{background:#e0e0da;color:#6b6b6b;cursor:not-allowed}
+  .btn.ok{background:#2d7a54}
+  .btn.fail{background:#c0392b}
+  ol{padding-left:18px;color:#6b6b6b;font-size:13px;line-height:1.8;margin:14px 0}
+  ol li{margin-bottom:5px}
+  code{font-family:'SF Mono',Consolas,monospace;font-size:12px;background:#fafaf8;padding:1px 6px;border:1px solid #e8e8e4}
+  .status{margin-top:14px;font-size:12px;color:#6b6b6b;line-height:1.6;min-height:18px}
+  .progress{height:3px;background:#e8e8e4;margin-top:14px}
+  .progress div{height:100%;background:#1a1a1a;width:0%;transition:width 0.2s}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="lbl">Lovelri · One-time setup</div>
+  <h1>Ring Photo<br><em>Downloader</em></h1>
+  <p>This page fetches all 34 ring photos from <code>lovelri.com</code> and saves them directly into the <code>rings/</code> folder beside this file.</p>
+  <ol>
+    <li>Click the button below.</li>
+    <li>When the folder picker opens, navigate to and select <code>rings/</code>.</li>
+    <li>Approve any "save changes" permission Chrome asks for.</li>
+    <li>Watch the counter. When it says ✓ Saved 34 photos, you're done.</li>
+  </ol>
+
+  <button id="go" class="btn">⬇ Save all 34 ring photos</button>
+  <div class="progress"><div id="bar"></div></div>
+  <div class="status" id="status">Ready when you are.</div>
+</div>
+
+<script>
+const RINGS = [
+  {slug:"sicily-lotus-ring",       img:"https://lovelri.com/cdn/shop/files/9_b16b54f0-a3ba-4e25-902f-9ed006a168e0.png?width=1200"},
+  {slug:"dolomites-ring",          img:"https://lovelri.com/cdn/shop/files/3_e6350445-9e43-4ec1-aca6-d630c81696de.png?width=1200"},
+  {slug:"sicily-ring-marquise",    img:"https://lovelri.com/cdn/shop/files/3_3c911e08-1638-4afe-b073-0b029cc552a6.png?width=1200"},
+  {slug:"hawaii-ring",             img:"https://lovelri.com/cdn/shop/files/3_17cfcfad-77f6-40b8-9115-fd446f0d544d.png?width=1200"},
+  {slug:"portland",                img:"https://lovelri.com/cdn/shop/files/1_cc6fabf1-3658-4995-937e-ca4d8c8c99c1.png?width=1200"},
+  {slug:"mt-fuji-ring",            img:"https://lovelri.com/cdn/shop/files/9_0e71ed72-a53e-47de-b26a-c3383b7eabf8.png?width=1200"},
+  {slug:"thunder-bay-ring",        img:"https://lovelri.com/cdn/shop/files/Thunder_Bay_Diamond_Ring.png?width=1200"},
+  {slug:"switzerland",             img:"https://lovelri.com/cdn/shop/files/3_1e174d61-4c2c-406a-a16f-7748b6514f43.png?width=1200"},
+  {slug:"verona-ring",             img:"https://lovelri.com/cdn/shop/files/1_bcfd5dda-a8c6-41c0-841f-ba7fe093e866.png?width=1200"},
+  {slug:"sydney-ring",             img:"https://lovelri.com/cdn/shop/files/2_81601cba-2c3d-46ee-beb1-a8909e4c7b55.png?width=1200"},
+  {slug:"tahiti-ring",             img:""},
+  {slug:"lake-como-ring",          img:""},
+  {slug:"victoria",                img:""},
+  {slug:"versailles",              img:""},
+  {slug:"ontario",                 img:""},
+  {slug:"madrid",                  img:""},
+  {slug:"vancouver",               img:""},
+  {slug:"amalfi-coast",            img:"https://lovelri.com/cdn/shop/files/3_2f76c7f7-0f91-418a-919a-8bacfc803c32.png?width=1200"},
+  {slug:"nara-ring",               img:"https://lovelri.com/cdn/shop/files/3_a30fbf60-03c9-4568-9628-b7df23671391.png?width=1200"},
+  {slug:"capri-ring",              img:"https://lovelri.com/cdn/shop/files/3_8cf789ee-ea34-4ec8-984d-79f20b5ff1ba.png?width=1200"},
+  {slug:"england",                 img:"https://lovelri.com/cdn/shop/files/4_f4729535-b9a7-4bee-8837-e7d3d977f8c0.png?width=1200"},
+  {slug:"osaka-ring",              img:"https://lovelri.com/cdn/shop/files/2_a49b43c7-bbca-4e5d-9582-e3ce0d3cb557.png?width=1200"},
+  {slug:"lab-diamonds-mississauga",img:"https://lovelri.com/cdn/shop/files/4_1b1ff320-a96d-43a5-a59d-9cd175e8ae33.png?width=1200"},
+  {slug:"kyoto",                   img:"https://lovelri.com/cdn/shop/files/NT_01.3_312844d0-9a4e-4c98-852c-77a919b334f3.png?width=1200"},
+  {slug:"san-francisco-ring",      img:"https://lovelri.com/cdn/shop/files/1_73046a93-e194-40ed-a641-1b241a366672.png?width=1200"},
+  {slug:"kingston",                img:""},
+  {slug:"halifax",                 img:""},
+  {slug:"fiji-ring",               img:""},
+  {slug:"lake-louise-ring",        img:""},
+  {slug:"edmonton",                img:""},
+  {slug:"florence",                img:""},
+  {slug:"burlington-ring",         img:""},
+  {slug:"aspen-ring",              img:""},
+  {slug:"whistler",                img:""}
+];
+
+// For rings with no hardcoded image URL, we'll fetch the product page and find the image
+async function resolveImageUrl(slug) {
+  const res = await fetch("https://lovelri.com/products/" + slug);
+  const html = await res.text();
+  // Match og:image meta tag — Shopify exposes the main product image there
+  const m = html.match(/<meta[^>]+property="og:image"[^>]+content="([^"]+)"/i);
+  if (!m) return null;
+  return m[1].replace(/^\/\//, "https://").split("?")[0] + "?width=1200";
+}
+
+const btn = document.getElementById('go');
+const bar = document.getElementById('bar');
+const status = document.getElementById('status');
+
+btn.onclick = async () => {
+  btn.disabled = true;
+  btn.textContent = 'Pick the rings/ folder…';
+  let dirHandle;
+  try {
+    dirHandle = await window.showDirectoryPicker({ mode: 'readwrite', startIn: 'documents' });
+  } catch (e) {
+    btn.disabled = false;
+    btn.textContent = '⬇ Save all 34 ring photos';
+    status.textContent = 'Folder pick cancelled.';
+    return;
+  }
+  let saved = 0, failed = 0;
+  for (let i = 0; i < RINGS.length; i++) {
+    const r = RINGS[i];
+    btn.textContent = `Saving ${i+1}/${RINGS.length}…`;
+    bar.style.width = ((i / RINGS.length) * 100) + '%';
+    try {
+      let url = r.img;
+      if (!url) url = await resolveImageUrl(r.slug);
+      if (!url) { failed++; continue; }
+      const resp = await fetch(url);
+      if (!resp.ok) { failed++; continue; }
+      const blob = await resp.blob();
+      const t = blob.type || '';
+      const ext = t.includes('png') ? 'png' : t.includes('webp') ? 'webp' : 'jpg';
+      const fh = await dirHandle.getFileHandle(r.slug + '.' + ext, { create: true });
+      const w = await fh.createWritable();
+      await w.write(blob);
+      await w.close();
+      saved++;
+      status.textContent = `Saved: ${r.slug}.${ext}`;
+    } catch (e) {
+      failed++;
+      status.textContent = `Failed ${r.slug}: ${e.message}`;
+    }
+  }
+  bar.style.width = '100%';
+  btn.classList.add(failed > 0 ? 'fail' : 'ok');
+  btn.textContent = `✓ Saved ${saved}${failed>0 ? ` (${failed} failed)`: ''}`;
+  status.innerHTML = `Done. <strong>${saved} of ${RINGS.length}</strong> photos saved into the folder you picked. You can close this page.`;
+};
+</script>
+</body>
+</html>
