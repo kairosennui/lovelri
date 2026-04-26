@@ -32,12 +32,19 @@ function doPost(e) {
     const lastCol = Math.max(1, sheet.getLastColumn());
     const headers = sheet.getRange(1, 1, 1, lastCol).getValues()[0];
     // If header row is empty, seed it from the item's keys
+    // Sheets treats strings starting with =, +, or - as formulas. Escape them
+    // by prepending an apostrophe so phone numbers like "+1 416 555 0000" land
+    // as text instead of evaluating to #ERROR!.
+    function safe(v) {
+      if (typeof v === 'string' && /^[=+\-]/.test(v)) return "'" + v;
+      return v === undefined ? '' : v;
+    }
     if (headers.every(h => !h)) {
       const keys = Object.keys(item);
       sheet.getRange(1, 1, 1, keys.length).setValues([keys]);
-      sheet.appendRow(keys.map(k => item[k] !== undefined ? item[k] : ''));
+      sheet.appendRow(keys.map(k => safe(item[k])));
     } else {
-      const row = headers.map(h => item[h] !== undefined ? item[h] : '');
+      const row = headers.map(h => safe(item[h]));
       sheet.appendRow(row);
     }
     return jsonResponse({ ok: true });
