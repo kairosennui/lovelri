@@ -151,16 +151,16 @@ const THREAT = {
 // ── TEAM ─────────────────────────────────────────────────────────────────────
 const TEAM = [
   { id:"any",       name:"Any Sales",      role:"First available",         color:"#c9a96e" },
-  { id:"tony",      name:"Tony",           role:"Founder & Sales Lead",    color:"#2d7a54" },
-  { id:"christina", name:"Christina",      role:"Sales",                   color:"#3a5fb0" },
-  { id:"jen",       name:"Jen",            role:"Sales",                   color:"#8c6d3f" },
-  { id:"natalie",   name:"Natalie",        role:"Sales",                   color:"#6b4c8c" },
+  { id:"tony",      name:"Tony",           role:"Founder & Sales Lead",    color:"#2d7a54", pin:"1234" },
+  { id:"christina", name:"Christina",      role:"Sales",                   color:"#3a5fb0", pin:"1998" },
+  { id:"jen",       name:"Jen",            role:"Sales",                   color:"#8c6d3f", pin:"1234" },
+  { id:"natalie",   name:"Natalie",        role:"Sales",                   color:"#6b4c8c", pin:"1234" },
 ];
 // ── APPOINTMENT TYPES ─────────────────────────────────────────────────────────
 const APPT_TYPES = [
-  { id:"consultation", label:"Private Consultation",  duration:60, desc:"Meet a master jeweller in our King Street Showroom and explore the collection.", icon:"💍" },
+  { id:"consultation", label:"Private Consultation",  duration:60, desc:"Meet a master jeweller at our 320 Bay Street showroom and explore the collection.", icon:"💍" },
   { id:"virtual",      label:"Virtual Consultation",  duration:45, desc:"Video call from anywhere in the world.", icon:"◻" },
-  { id:"custom",       label:"Custom Design Session", duration:90, desc:"Design your ring from scratch — the full bespoke process. King Street Showroom.", icon:"✦" },
+  { id:"custom",       label:"Custom Design Session", duration:90, desc:"Design your ring from scratch — the full bespoke process. 320 Bay Street.", icon:"✦" },
   { id:"review",       label:"Design Review",          duration:30, desc:"Review your 3D rendering and approve the final design.", icon:"○" },
 ];
 const BUDGET_OPTS = ["Under $3,500","$3,500–$6,000","$6,000–$12,000","$12,000–$25,000","$25,000+","Prefer not to say"];
@@ -195,7 +195,7 @@ function makeICS(booking, consultantName) {
   const em = (min+booking.duration)%60;
   const dtStart = `${y}${pad(m)}${pad(d)}T${pad(h)}${pad(min)}00`;
   const dtEnd   = `${y}${pad(m)}${pad(d)}T${pad(eh)}${pad(em)}00`;
-  const loc = booking.apptId==="virtual" ? "Virtual — Video Call" : "King Street Showroom\\, Toronto";
+  const loc = booking.apptId==="virtual" ? "Virtual — Video Call" : "320 Bay Street\\, Toronto\\, ON M5H 4A6";
   const desc = `Client: ${booking.name}\\nEmail: ${booking.email}\\nPhone: ${booking.phone||"—"}\\nOccasion: ${booking.occasion||"—"}\\nBudget: ${booking.budget||"—"}\\nNotes: ${booking.notes||"—"}\\nBooking ID: ${booking.id}`;
   const ics = [
     "BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//Lovelri//Bookings//EN","CALSCALE:GREGORIAN",
@@ -232,7 +232,7 @@ function makeCalLinks(booking) {
   const title = `Lovelri ${booking.type} — ${booking.name}`;
   const loc = booking.apptId === "virtual"
     ? "Virtual Video Call (Lovelri)"
-    : "King Street Showroom, Toronto";
+    : "320 Bay Street, Toronto ON M5H 4A6";
   const lines = [
     `Lovelri Booking ${booking.id}`,
     `Client: ${booking.name}`,
@@ -254,7 +254,7 @@ function makeCalLinks(booking) {
 async function sendEmails(booking) {
   const con = TEAM.find(t=>t.id===booking.consultant);
   const apptDate = new Date(booking.date+"T12:00:00").toLocaleDateString("en-CA",{weekday:"long",month:"long",day:"numeric",year:"numeric"});
-  const loc = booking.apptId==="virtual" ? "Virtual — send video call link before appointment" : "King Street Showroom, Toronto";
+  const loc = booking.apptId==="virtual" ? "Virtual — send video call link before appointment" : "320 Bay Street, Toronto ON M5H 4A6";
   const calURL = makeICS(booking, con?.name||"Team");
   const cal = makeCalLinks(booking);
   const teamMsg = [
@@ -309,7 +309,7 @@ async function sendEmails(booking) {
     "",
     "With warmth,",
     "The Lovelri Team",
-    "lovelri.com · King Street Showroom, Toronto, Toronto",
+    "lovelri.com · 320 Bay Street, Toronto ON M5H 4A6, Toronto",
   ].join("\n");
   if (!window.emailjs) return;
   try {
@@ -465,7 +465,7 @@ function BookingFlow({onDone, prefill, bookings = []}) {
             ["With", TEAM.find(t=>t.id===cons?.id)?.name],
             ["Date", date?.toLocaleDateString("en-CA",{weekday:"long",month:"long",day:"numeric"})],
             ["Time", slot],
-            ["Location", appt?.id==="virtual"?"Video Call — link coming by email":"King Street Showroom, Toronto"],
+            ["Location", appt?.id==="virtual"?"Video Call — link coming by email":"320 Bay Street, Toronto ON M5H 4A6"],
           ].map(([k,v])=>(
             <div key={k} style={{display:"flex",justifyContent:"space-between",gap:12,padding:"6px 0",borderBottom:`1px solid ${B.border}`}}>
               <span style={{fontFamily:B.sans,fontSize:13,color:B.gray,flexShrink:0}}>{k}</span>
@@ -514,7 +514,7 @@ function BookingFlow({onDone, prefill, bookings = []}) {
         <div>
           <Lbl c="What brings you in?"/>
           <div style={{fontFamily:B.serif,fontSize:24,color:B.black,marginBottom:4,lineHeight:1.2}}>Choose your appointment</div>
-          <div style={{fontFamily:B.sans,fontSize:14,color:B.gray,marginBottom:20,lineHeight:1.6}}>King Street Showroom, Toronto, Toronto — or virtually from anywhere.</div>
+          <div style={{fontFamily:B.sans,fontSize:14,color:B.gray,marginBottom:20,lineHeight:1.6}}>320 Bay Street, Toronto ON M5H 4A6, Toronto — or virtually from anywhere.</div>
           <div style={{display:"flex",flexDirection:"column",gap:8,marginBottom:20}}>
             {(prefill ? APPT_TYPES.filter(t => t.id === "consultation" || t.id === "virtual") : APPT_TYPES).map(t=>(
               <div key={t.id} onClick={()=>setAppt(t)} style={{border:`1px solid ${appt?.id===t.id?B.black:B.border}`,background:appt?.id===t.id?B.black:B.white,padding:"13px 16px",cursor:"pointer",transition:"all 0.15s",display:"flex",gap:14,alignItems:"center"}}>
@@ -674,6 +674,7 @@ function AdminDash({bookings,onStatus}) {
   const [statusFilter,setStatusFilter] = useState(null);
   const todayStr             = new Date().toISOString().split("T")[0];
   const list = bookings
+    .filter(b=>b.source !== "Block") // hide blocks from booking list
     .filter(b=>filter==="all"||b.consultant===filter)
     .filter(b=>statusFilter?b.status===statusFilter:true)
     .filter(b=>dateFilter?b.date===dateFilter:(view==="upcoming"?new Date(b.date)>=new Date(todayStr):true))
@@ -1008,8 +1009,159 @@ const NAV=[
   {id:"social",      label:"Social Media"},
   {id:"seo",         label:"SEO"},
   {id:"embed",       label:"Embed Guide"},
+  {id:"portal",      label:"Sales Portal"},
 ];
 
+
+// ── SALES PORTAL ──────────────────────────────────────────────────────────────
+// Password-protected per-rep portal. Each rep logs in with their pin to see
+// their schedule and block off times. Blocks are stored as bookings with
+// source="Block" so they auto-disappear from the customer booking flow.
+function SalesPortal({ bookings, salesAuth, setSalesAuth, onAddBlock, onRemoveBlock }) {
+  const [pickedRep, setPickedRep] = useState("");
+  const [pin, setPin] = useState("");
+  const [err, setErr] = useState("");
+  const [blockDate, setBlockDate] = useState("");
+  const [blockTime, setBlockTime] = useState("");
+  const [blockReason, setBlockReason] = useState("");
+
+  const tryLogin = () => {
+    const rep = TEAM.find(t => t.id === pickedRep);
+    if (!rep) { setErr("Pick your name."); return; }
+    if (!rep.pin || rep.pin !== pin) { setErr("Incorrect pin."); return; }
+    setSalesAuth(rep.id);
+    setPin(""); setErr("");
+  };
+
+  if (!salesAuth) {
+    return (
+      <div style={{animation:"fadeIn 0.27s ease"}}>
+        <Title sub="Private — your name + pin gets you in. Pin is 1998 for Christina. Other reps default to 1234 (change in code).">Sales<br/><em style={{fontStyle:"italic"}}>Portal</em></Title>
+        <Card>
+          <div style={{padding:"24px 22px"}}>
+            <div style={{fontFamily:B.sans,fontSize:11,letterSpacing:"0.18em",textTransform:"uppercase",color:B.gray,marginBottom:6}}>Sign In</div>
+            <div style={{fontFamily:B.serif,fontSize:20,color:B.black,marginBottom:18,lineHeight:1.2}}>Welcome back.</div>
+            <div style={{fontFamily:B.sans,fontSize:11,letterSpacing:"0.16em",textTransform:"uppercase",color:B.gray,marginBottom:6}}>Your name</div>
+            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:6,marginBottom:14}}>
+              {TEAM.filter(t => t.id !== "any").map(t => (
+                <button key={t.id} onClick={()=>setPickedRep(t.id)} style={{padding:"11px 12px",border:`1px solid ${pickedRep===t.id ? B.black : B.border}`,background:pickedRep===t.id ? B.black : B.white,color:pickedRep===t.id ? B.white : B.black,fontFamily:B.sans,fontSize:13,cursor:"pointer",display:"flex",alignItems:"center",gap:9,textAlign:"left"}}>
+                  <div style={{width:9,height:9,borderRadius:"50%",background:t.color}}/>
+                  {t.name}
+                </button>
+              ))}
+            </div>
+            <div style={{fontFamily:B.sans,fontSize:11,letterSpacing:"0.16em",textTransform:"uppercase",color:B.gray,marginBottom:6}}>Pin</div>
+            <input type="password" value={pin} onChange={e=>{setPin(e.target.value); setErr("");}} onKeyDown={e=>e.key==="Enter" && tryLogin()} placeholder="••••" style={{width:"100%",padding:"12px 13px",border:`1px solid ${B.border}`,fontFamily:B.sans,fontSize:14,color:B.black,outline:"none",letterSpacing:"0.4em",boxSizing:"border-box",marginBottom:14}}/>
+            {err && <div style={{fontFamily:B.sans,fontSize:12,color:"#c0392b",marginBottom:11}}>{err}</div>}
+            <button onClick={tryLogin} style={{width:"100%",padding:"14px",background:B.black,color:B.white,border:"none",fontFamily:B.sans,fontSize:13,letterSpacing:"0.16em",textTransform:"uppercase",cursor:"pointer"}}>Sign In</button>
+          </div>
+        </Card>
+      </div>
+    );
+  }
+
+  // Authed view
+  const me = TEAM.find(t => t.id === salesAuth);
+  const todayStr = new Date().toISOString().split("T")[0];
+  const myBookings = bookings.filter(b => b.consultant === salesAuth && b.status === "confirmed");
+  const myBlocks = myBookings.filter(b => b.source === "Block");
+  const myAppts = myBookings.filter(b => b.source !== "Block").sort((a,b) => new Date(a.date) - new Date(b.date));
+
+  const submitBlock = () => {
+    if (!blockDate || !blockTime) return;
+    onAddBlock({
+      id: "BLK-" + Date.now(),
+      name: "BLOCKED · " + me.name,
+      email: "",
+      phone: "",
+      type: "Time Block",
+      apptId: "block",
+      consultant: salesAuth,
+      date: blockDate,
+      time: blockTime,
+      duration: 30,
+      status: "confirmed",
+      notes: blockReason || "(no reason given)",
+      occasion: "",
+      budget: "",
+      source: "Block",
+    });
+    setBlockDate(""); setBlockTime(""); setBlockReason("");
+  };
+
+  return (
+    <div style={{animation:"fadeIn 0.27s ease"}}>
+      <div style={{display:"flex",alignItems:"flex-start",justifyContent:"space-between",gap:12,marginBottom:22}}>
+        <div>
+          <div style={{fontFamily:B.sans,fontSize:11,letterSpacing:"0.22em",textTransform:"uppercase",color:B.gold,marginBottom:6}}>Signed in</div>
+          <h1 style={{fontFamily:B.serif,fontSize:30,fontWeight:400,color:B.black,lineHeight:1.15,margin:0}}>{me.name}<br/><em style={{fontStyle:"italic",fontSize:18,color:B.gray}}>Schedule & Time Blocks</em></h1>
+        </div>
+        <button onClick={()=>setSalesAuth(null)} style={{fontFamily:B.sans,fontSize:11,letterSpacing:"0.14em",textTransform:"uppercase",padding:"9px 14px",background:"none",border:`1px solid ${B.border}`,color:B.gray,cursor:"pointer",flexShrink:0}}>Sign Out</button>
+      </div>
+
+      <Lbl c={`Your appointments — ${myAppts.length} upcoming`}/>
+      <Card mb={22}>
+        {myAppts.length === 0 ? (
+          <div style={{padding:"32px 16px",textAlign:"center",fontFamily:B.sans,fontSize:13,color:B.gray}}>No appointments scheduled.</div>
+        ) : myAppts.map((bk,i)=>(
+          <Row key={bk.id} last={i===myAppts.length-1}>
+            <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",gap:11}}>
+              <div>
+                <div style={{fontFamily:B.sans,fontSize:14,color:B.black,fontWeight:500,marginBottom:3}}>{bk.name}</div>
+                <div style={{fontFamily:B.sans,fontSize:12,color:B.gray,marginBottom:5}}>{bk.email}{bk.phone ? " · " + bk.phone : ""}</div>
+                <div style={{fontFamily:B.sans,fontSize:13,color:B.black}}>{bk.type} · {bk.date} at {bk.time}</div>
+              </div>
+              <Badge s={bk.status}/>
+            </div>
+          </Row>
+        ))}
+      </Card>
+
+      <Lbl c="Block off a time"/>
+      <Card mb={18}>
+        <div style={{padding:"18px 16px"}}>
+          <div style={{fontFamily:B.sans,fontSize:12,color:B.gray,lineHeight:1.7,marginBottom:14}}>Use this when you're booked for personal reasons, lunch, or out of office. Customers won't see this slot in the booking flow.</div>
+          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:9,marginBottom:11}}>
+            <div>
+              <div style={{fontFamily:B.sans,fontSize:11,letterSpacing:"0.16em",textTransform:"uppercase",color:B.gray,marginBottom:5}}>Date</div>
+              <input type="date" value={blockDate} min={todayStr} onChange={e=>setBlockDate(e.target.value)} style={{width:"100%",padding:"11px 12px",border:`1px solid ${B.border}`,fontFamily:B.sans,fontSize:14,color:B.black,outline:"none",boxSizing:"border-box"}}/>
+            </div>
+            <div>
+              <div style={{fontFamily:B.sans,fontSize:11,letterSpacing:"0.16em",textTransform:"uppercase",color:B.gray,marginBottom:5}}>Time</div>
+              <select value={blockTime} onChange={e=>setBlockTime(e.target.value)} style={{width:"100%",padding:"11px 12px",border:`1px solid ${B.border}`,fontFamily:B.sans,fontSize:14,color:B.black,outline:"none",boxSizing:"border-box",background:B.white}}>
+                <option value="">Pick a slot…</option>
+                {SLOTS.map(s => <option key={s} value={s}>{s}</option>)}
+              </select>
+            </div>
+          </div>
+          <div style={{marginBottom:13}}>
+            <div style={{fontFamily:B.sans,fontSize:11,letterSpacing:"0.16em",textTransform:"uppercase",color:B.gray,marginBottom:5}}>Reason (optional)</div>
+            <input type="text" value={blockReason} onChange={e=>setBlockReason(e.target.value)} placeholder="Lunch, doctor, off-site, etc." style={{width:"100%",padding:"11px 12px",border:`1px solid ${B.border}`,fontFamily:B.sans,fontSize:14,color:B.black,outline:"none",boxSizing:"border-box"}}/>
+          </div>
+          <button onClick={submitBlock} disabled={!blockDate || !blockTime} style={{width:"100%",padding:"13px",background:!blockDate || !blockTime ? "#e0e0da" : B.black,color:!blockDate || !blockTime ? B.gray : B.white,border:"none",fontFamily:B.sans,fontSize:13,letterSpacing:"0.14em",textTransform:"uppercase",cursor:!blockDate || !blockTime ? "not-allowed" : "pointer"}}>Block This Slot</button>
+        </div>
+      </Card>
+
+      <Lbl c={`Your blocks — ${myBlocks.length} active`}/>
+      <Card>
+        {myBlocks.length === 0 ? (
+          <div style={{padding:"28px 16px",textAlign:"center",fontFamily:B.sans,fontSize:13,color:B.gray}}>No blocks set.</div>
+        ) : myBlocks.map((bl,i)=>(
+          <Row key={bl.id} last={i===myBlocks.length-1}>
+            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",gap:11}}>
+              <div>
+                <div style={{fontFamily:B.sans,fontSize:14,color:B.black,fontWeight:500}}>{bl.date} at {bl.time}</div>
+                <div style={{fontFamily:B.sans,fontSize:12,color:B.gray}}>{bl.notes}</div>
+              </div>
+              <button onClick={()=>onRemoveBlock(bl.id)} style={{fontFamily:B.sans,fontSize:11,letterSpacing:"0.1em",textTransform:"uppercase",padding:"7px 11px",background:B.white,border:`1px solid ${B.border}`,color:"#c0392b",cursor:"pointer"}}>Remove</button>
+            </div>
+          </Row>
+        ))}
+      </Card>
+    </div>
+  );
+}
+// ──────────────────────────────────────────────────────────────────────────────
 // ── LEAD MAGNET ───────────────────────────────────────────────────────────────
 function LeadMagnet({onSubmit}) {
   const [name, setName] = useState("");
@@ -1178,6 +1330,7 @@ function Dashboard(){
   const [active,setActive]=useState("overview");
   const [refreshedAt] = useState(() => new Date());
   const [leadStatusFilter,setLeadStatusFilter] = useState(null);
+  const [salesAuth,setSalesAuth] = useState(null); // id of authed rep, or null
   const [prefill,setPrefill]=useState(null);
   const [leads,setLeads]=useState(()=>{
     try { const s=JSON.parse(localStorage.getItem("lovelri_leads")); if(Array.isArray(s)&&s.length>0) return s; } catch(e){}
@@ -1254,6 +1407,8 @@ function Dashboard(){
     }
   };
   const handleBookingStatus=(id,status)=>{ STORE = STORE.map(b=>b.id===id?{...b,status}:b); setBookings([...STORE]); };
+  const addBlock=(blk)=>{ STORE = [blk,...STORE]; setBookings([...STORE]); pushToSheet("Bookings", blk); };
+  const removeBlock=(id)=>{ STORE = STORE.map(b => b.id===id ? {...b, status: "cancelled"} : b); setBookings([...STORE]); const t = STORE.find(b => b.id===id); if (t) pushToSheet("Bookings", t); };
   const newCount=leads.filter(l=>l.status==="new").length;
   const go=id=>{setActive(id);setMenuOpen(false);window.scrollTo(0,0);};
   return(
@@ -1675,6 +1830,9 @@ function Dashboard(){
             </div>
           );
         })()}
+        {active==="portal"&&(
+          <SalesPortal bookings={bookings} salesAuth={salesAuth} setSalesAuth={setSalesAuth} onAddBlock={addBlock} onRemoveBlock={removeBlock}/>
+        )}
         {active==="intake"&&(
           <div style={{animation:"fadeIn 0.25s ease"}}>
             <Title sub="5-step ring quiz → matched ring photos + links → contact capture → instant lead email to Christina.">Ring Preference<br/><em style={{fontStyle:"italic"}}>Intake Form</em></Title>
