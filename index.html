@@ -1,18 +1,8 @@
 <!doctype html>
 <html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Lovelri · Tony&#39;s Hub</title>
-<style>
-  *{box-sizing:border-box}
-  html,body{margin:0;padding:0;background:#fafaf8}
-  #root{min-height:100vh}
-  .boot{display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:'Helvetica Neue','Arial',sans-serif;color:#6b6b6b;font-size:13px;letter-spacing:0.22em;text-transform:uppercase;flex-direction:column;gap:14px}
-  .boot small{font-size:11px;color:#a8a8a4;letter-spacing:0.06em;text-transform:none;font-style:italic}
-</style>
-</head>
-<body>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Lovelri · Tony&#39;s Hub</title>
+<style>*{box-sizing:border-box}html,body{margin:0;padding:0;background:#fafaf8}#root{min-height:100vh}.boot{display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:'Helvetica Neue','Arial',sans-serif;color:#6b6b6b;font-size:13px;letter-spacing:0.22em;text-transform:uppercase;flex-direction:column;gap:14px}.boot small{font-size:11px;color:#a8a8a4;letter-spacing:0.06em;text-transform:none;font-style:italic}</style>
+</head><body>
 <div id="root"><div class="boot">Loading Tony&#39;s Hub<small>compiling JSX in your browser… ~1s</small></div></div>
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
@@ -472,9 +462,10 @@ function BookingFlow({onDone, prefill}) {
     <div>
       {/* Progress */}
       <div style={{display:"flex",gap:3,marginBottom:20}}>
-      {prefill && form.name && (
+      {prefill && (
         <div style={{padding:"11px 14px",marginBottom:14,background:"rgba(201,169,110,0.12)",border:`1px solid ${B.gold}`,fontFamily:B.sans,fontSize:13,color:B.black,lineHeight:1.5}}>
-          <strong>Booking on behalf of {form.name}.</strong> Pre-filled with their info — pick the appointment type, consultant, date and time.
+          {form.name ? (<><strong>Booking on behalf of {form.name}.</strong> Pre-filled with their info — pick the appointment type, consultant, date and time.</>)
+                     : (<><strong>Continuing from your ring quiz.</strong> Your selections are noted — pick a time and we'll have everything ready.</>)}
         </div>
       )}
       
@@ -794,40 +785,40 @@ const IMG = {
   botanical:"https://lovelri.com/cdn/shop/files/DSC01183.jpg?v=1760480002&width=600",
 };
 const RINGS = [
-  {name:"Sicily Lotus Ring",slug:"sicily-lotus-ring",styles:["Botanical","Halo"],budgetMax:8000,price:"From $3,703",img:"./rings/sicily-lotus-ring.png",remote:IMG.botanical,url:"https://lovelri.com/products/sicily-lotus-ring",collection:"Botanical"},
-  {name:"Dolomites Ring",slug:"dolomites-ring",styles:["Pavé","Modern"],budgetMax:8000,price:"From $3,703",img:"./rings/dolomites-ring.png",remote:IMG.pave,url:"https://lovelri.com/products/dolomites-ring",collection:"Pavé"},
-  {name:"Sicily Marquise",slug:"sicily-ring-marquise",styles:["Modern","Solitaire"],budgetMax:6000,price:"From $3,098",img:"./rings/sicily-ring-marquise.png",remote:IMG.modern,url:"https://lovelri.com/products/sicily-ring-marquise",collection:"Modern"},
-  {name:"Hawaii Ring",slug:"hawaii-ring",styles:["Side Stones","Botanical"],budgetMax:8000,price:"From $3,703",img:"./rings/hawaii-ring.png",remote:IMG.botanical,url:"https://lovelri.com/products/hawaii-ring",collection:"Botanical"},
-  {name:"Portland Ring",slug:"portland",styles:["Solitaire","Botanical"],budgetMax:6000,price:"From $2,934",img:"./rings/portland.png",remote:IMG.botanical,url:"https://lovelri.com/products/portland",collection:"Botanical"},
-  {name:"Mt. Fuji Ring",slug:"mt-fuji-ring",styles:["Modern","Solitaire"],budgetMax:6000,price:"From $2,997",img:"./rings/mt-fuji-ring.png",remote:IMG.modern,url:"https://lovelri.com/products/mt-fuji-ring",collection:"Modern"},
-  {name:"Thunder Bay Ring",slug:"thunder-bay-ring",styles:["Side Stones","Cathedral"],budgetMax:8000,price:"From $3,500",img:"./rings/thunder-bay-ring.png",remote:IMG.sides,url:"https://lovelri.com/products/thunder-bay-ring",collection:"Side Stones"},
-  {name:"Switzerland Ring",slug:"switzerland",styles:["Cathedral","Side Stones"],budgetMax:8000,price:"From $3,635",img:"./rings/switzerland.png",remote:IMG.cathedral,url:"https://lovelri.com/products/switzerland",collection:"Cathedral"},
-  {name:"Verona Ring",slug:"verona-ring",styles:["Side Stones","Cathedral"],budgetMax:8000,price:"From $3,828",img:"./rings/verona-ring.png",remote:IMG.sides,url:"https://lovelri.com/products/verona-ring",collection:"Side Stones"},
-  {name:"Sydney Ring",slug:"sydney-ring",styles:["Cathedral"],budgetMax:6000,price:"From $2,999",img:"./rings/sydney-ring.png",remote:IMG.cathedral,url:"https://lovelri.com/products/sydney-ring",collection:"Cathedral"},
-  {name:"Tahiti Ring",slug:"tahiti-ring",styles:["Solitaire","Modern"],budgetMax:6000,price:"From $2,997",img:"./rings/tahiti-ring.png",remote:IMG.modern,url:"https://lovelri.com/products/tahiti-ring",collection:"Modern"},
-  {name:"Lake Como Ring",slug:"lake-como-ring",styles:["Modern","Pavé"],budgetMax:6000,price:"From $3,131",img:"./rings/lake-como-ring.png",remote:IMG.modern,url:"https://lovelri.com/products/lake-como-ring",collection:"Modern"},
-  {name:"Victoria Ring",slug:"victoria",styles:["Halo"],budgetMax:6000,price:"From $3,131",img:"./rings/victoria.png",remote:IMG.halo,url:"https://lovelri.com/products/victoria",collection:"Halo"},
-  {name:"Versailles Ring",slug:"versailles",styles:["Pavé","Halo"],budgetMax:8000,price:"From $3,703",img:"./rings/versailles.png",remote:IMG.pave,url:"https://lovelri.com/products/versailles",collection:"Pavé"},
-  {name:"Ontario Ring",slug:"ontario",styles:["Side Stones","Solitaire"],budgetMax:6000,price:"From $2,957",img:"./rings/ontario.png",remote:IMG.sides,url:"https://lovelri.com/products/ontario",collection:"Side Stones"},
-  {name:"Madrid Ring",slug:"madrid",styles:["Modern","Solitaire"],budgetMax:6000,price:"From $2,934",img:"./rings/madrid.png",remote:IMG.modern,url:"https://lovelri.com/products/madrid",collection:"Modern"},
-  {name:"Vancouver Ring",slug:"vancouver",styles:["Side Stones","Cathedral"],budgetMax:8000,price:"From $3,500",img:"./rings/vancouver.png",remote:IMG.sides,url:"https://lovelri.com/products/vancouver",collection:"Side Stones"},
-  {name:"Amalfi Coast Ring",slug:"amalfi-coast",styles:["Modern"],budgetMax:6000,price:"From $2,934",img:"./rings/amalfi-coast.png",remote:IMG.modern,url:"https://lovelri.com/products/amalfi-coast",collection:"Modern"},
-  {name:"Nara Ring",slug:"nara-ring",styles:["Side Stones","Solitaire"],budgetMax:6000,price:"From $2,957",img:"./rings/nara-ring.png",remote:IMG.sides,url:"https://lovelri.com/products/nara-ring",collection:"Side Stones"},
-  {name:"Capri Ring",slug:"capri-ring",styles:["Modern"],budgetMax:6000,price:"From $2,997",img:"./rings/capri-ring.png",remote:IMG.modern,url:"https://lovelri.com/products/capri-ring",collection:"Modern"},
-  {name:"England Ring",slug:"england",styles:["Halo","Side Stones"],budgetMax:6000,price:"From $3,131",img:"./rings/england.png",remote:IMG.halo,url:"https://lovelri.com/products/england",collection:"Halo"},
-  {name:"Osaka Ring",slug:"osaka-ring",styles:["Modern","Solitaire"],budgetMax:6000,price:"From $2,938",img:"./rings/osaka-ring.png",remote:IMG.modern,url:"https://lovelri.com/products/osaka-ring",collection:"Modern"},
-  {name:"Mississauga Ring",slug:"lab-diamonds-mississauga",styles:["Solitaire"],budgetMax:6000,price:"From $2,621",img:"./rings/lab-diamonds-mississauga.png",remote:IMG.solitaire,url:"https://lovelri.com/products/lab-diamonds-mississauga",collection:"Solitaire"},
-  {name:"Kyoto Ring",slug:"kyoto",styles:["Modern","Pavé"],budgetMax:6000,price:"From $3,098",img:"./rings/kyoto.png",remote:IMG.modern,url:"https://lovelri.com/products/kyoto",collection:"Modern"},
-  {name:"San Francisco Ring",slug:"san-francisco-ring",styles:["Side Stones"],budgetMax:6000,price:"From $3,391",img:"./rings/san-francisco-ring.png",remote:IMG.sides,url:"https://lovelri.com/products/san-francisco-ring",collection:"Side Stones"},
-  {name:"Kingston Ring",slug:"kingston",styles:["Side Stones","Cathedral"],budgetMax:6000,price:"From $3,131",img:"./rings/kingston.png",remote:IMG.sides,url:"https://lovelri.com/products/kingston",collection:"Side Stones"},
-  {name:"Halifax Ring",slug:"halifax",styles:["Side Stones"],budgetMax:8000,price:"From $3,728",img:"./rings/halifax.png",remote:IMG.sides,url:"https://lovelri.com/products/halifax",collection:"Side Stones"},
-  {name:"Fiji Ring",slug:"fiji-ring",styles:["Solitaire","Modern"],budgetMax:6000,price:"From $2,938",img:"./rings/fiji-ring.png",remote:IMG.solitaire,url:"https://lovelri.com/products/fiji-ring",collection:"Solitaire"},
-  {name:"Lake Louise Ring",slug:"lake-louise-ring",styles:["Botanical"],budgetMax:6000,price:"From $2,766",img:"./rings/lake-louise-ring.png",remote:IMG.botanical,url:"https://lovelri.com/products/lake-louise-ring",collection:"Botanical"},
-  {name:"Edmonton Ring",slug:"edmonton",styles:["Solitaire"],budgetMax:6000,price:"From $2,938",img:"./rings/edmonton.png",remote:IMG.solitaire,url:"https://lovelri.com/products/edmonton",collection:"Solitaire"},
-  {name:"Florence Ring",slug:"florence",styles:["Botanical","Halo"],budgetMax:6000,price:"From $3,131",img:"./rings/florence.png",remote:IMG.botanical,url:"https://lovelri.com/products/florence",collection:"Botanical"},
-  {name:"Burlington Ring",slug:"burlington-ring",styles:["Solitaire","Side Stones"],budgetMax:6000,price:"From $2,997",img:"./rings/burlington-ring.png",remote:IMG.solitaire,url:"https://lovelri.com/products/burlington-ring",collection:"Solitaire"},
-  {name:"Aspen Ring",slug:"aspen-ring",styles:["Solitaire"],budgetMax:6000,price:"From $2,938",img:"./rings/aspen-ring.png",remote:IMG.solitaire,url:"https://lovelri.com/products/aspen-ring",collection:"Solitaire"},
-  {name:"Whistler Ring",slug:"whistler",styles:["Solitaire"],budgetMax:6000,price:"From $3,198",img:"./rings/whistler.png",remote:IMG.solitaire,url:"https://lovelri.com/products/whistler",collection:"Solitaire"},
+  {name:"Sicily Lotus Ring",slug:"sicily-lotus-ring",styles:["Botanical","Halo"],budgetMax:8000,price:"From $3,703",img:"./rings/sicily-lotus-ring.png",remote:IMG.botanical,url:"https://lovelri.com/products/sicily-lotus-ring",collection:"Botanical",shapes:["Oval","Radiant","Emerald","Round","Marquise","Pear","Cushion"]},
+  {name:"Dolomites Ring",slug:"dolomites-ring",styles:["Pavé","Modern"],budgetMax:8000,price:"From $3,703",img:"./rings/dolomites-ring.png",remote:IMG.pave,url:"https://lovelri.com/products/dolomites-ring",collection:"Pavé",shapes:["Round","Oval","Cushion","Radiant","Emerald","Pear","Marquise","Princess"]},
+  {name:"Sicily Marquise",slug:"sicily-ring-marquise",styles:["Modern","Solitaire"],budgetMax:6000,price:"From $3,098",img:"./rings/sicily-ring-marquise.png",remote:IMG.modern,url:"https://lovelri.com/products/sicily-ring-marquise",collection:"Modern",shapes:["Marquise"]},
+  {name:"Hawaii Ring",slug:"hawaii-ring",styles:["Side Stones","Botanical"],budgetMax:8000,price:"From $3,703",img:"./rings/hawaii-ring.png",remote:IMG.botanical,url:"https://lovelri.com/products/hawaii-ring",collection:"Botanical",shapes:["Round","Oval","Cushion","Radiant","Emerald","Pear","Marquise","Princess"]},
+  {name:"Portland Ring",slug:"portland",styles:["Solitaire","Botanical"],budgetMax:6000,price:"From $2,934",img:"./rings/portland.png",remote:IMG.botanical,url:"https://lovelri.com/products/portland",collection:"Botanical",shapes:["Oval","Round","Cushion","Radiant","Emerald"]},
+  {name:"Mt. Fuji Ring",slug:"mt-fuji-ring",styles:["Modern","Solitaire"],budgetMax:6000,price:"From $2,997",img:"./rings/mt-fuji-ring.png",remote:IMG.modern,url:"https://lovelri.com/products/mt-fuji-ring",collection:"Modern",shapes:["Round","Oval","Radiant","Emerald","Marquise","Pear"]},
+  {name:"Thunder Bay Ring",slug:"thunder-bay-ring",styles:["Side Stones","Cathedral"],budgetMax:8000,price:"From $3,500",img:"./rings/thunder-bay-ring.png",remote:IMG.sides,url:"https://lovelri.com/products/thunder-bay-ring",collection:"Side Stones",shapes:["Oval","Cushion","Round","Radiant","Emerald","Marquise"]},
+  {name:"Switzerland Ring",slug:"switzerland",styles:["Cathedral","Side Stones"],budgetMax:8000,price:"From $3,635",img:"./rings/switzerland.png",remote:IMG.cathedral,url:"https://lovelri.com/products/switzerland",collection:"Cathedral",shapes:["Emerald","Radiant"]},
+  {name:"Verona Ring",slug:"verona-ring",styles:["Side Stones","Cathedral"],budgetMax:8000,price:"From $3,828",img:"./rings/verona-ring.png",remote:IMG.sides,url:"https://lovelri.com/products/verona-ring",collection:"Side Stones",shapes:["Oval","Round","Marquise","Cushion","Radiant","Pear"]},
+  {name:"Sydney Ring",slug:"sydney-ring",styles:["Cathedral"],budgetMax:6000,price:"From $2,999",img:"./rings/sydney-ring.png",remote:IMG.cathedral,url:"https://lovelri.com/products/sydney-ring",collection:"Cathedral",shapes:["Cushion","Oval","Round","Radiant","Emerald","Marquise"]},
+  {name:"Tahiti Ring",slug:"tahiti-ring",styles:["Solitaire","Modern"],budgetMax:6000,price:"From $2,997",img:"./rings/tahiti-ring.png",remote:IMG.modern,url:"https://lovelri.com/products/tahiti-ring",collection:"Modern",shapes:["Oval","Round","Radiant","Emerald","Cushion"]},
+  {name:"Lake Como Ring",slug:"lake-como-ring",styles:["Modern","Pavé"],budgetMax:6000,price:"From $3,131",img:"./rings/lake-como-ring.png",remote:IMG.modern,url:"https://lovelri.com/products/lake-como-ring",collection:"Modern",shapes:["Radiant","Emerald","Round","Oval","Marquise","Pear","Cushion"]},
+  {name:"Victoria Ring",slug:"victoria",styles:["Halo"],budgetMax:6000,price:"From $3,131",img:"./rings/victoria.png",remote:IMG.halo,url:"https://lovelri.com/products/victoria",collection:"Halo",shapes:["Oval","Round","Cushion","Radiant","Pear","Marquise"]},
+  {name:"Versailles Ring",slug:"versailles",styles:["Pavé","Halo"],budgetMax:8000,price:"From $3,703",img:"./rings/versailles.png",remote:IMG.pave,url:"https://lovelri.com/products/versailles",collection:"Pavé",shapes:["Oval","Round","Marquise","Pear","Cushion","Radiant"]},
+  {name:"Ontario Ring",slug:"ontario",styles:["Side Stones","Solitaire"],budgetMax:6000,price:"From $2,957",img:"./rings/ontario.png",remote:IMG.sides,url:"https://lovelri.com/products/ontario",collection:"Side Stones",shapes:["Round","Oval","Marquise","Pear","Radiant","Emerald"]},
+  {name:"Madrid Ring",slug:"madrid",styles:["Modern","Solitaire"],budgetMax:6000,price:"From $2,934",img:"./rings/madrid.png",remote:IMG.modern,url:"https://lovelri.com/products/madrid",collection:"Modern",shapes:["Round","Oval","Cushion","Radiant","Emerald","Marquise","Pear"]},
+  {name:"Vancouver Ring",slug:"vancouver",styles:["Side Stones","Cathedral"],budgetMax:8000,price:"From $3,500",img:"./rings/vancouver.png",remote:IMG.sides,url:"https://lovelri.com/products/vancouver",collection:"Side Stones",shapes:["Pear","Radiant","Emerald","Round","Oval"]},
+  {name:"Amalfi Coast Ring",slug:"amalfi-coast",styles:["Modern"],budgetMax:6000,price:"From $2,934",img:"./rings/amalfi-coast.png",remote:IMG.modern,url:"https://lovelri.com/products/amalfi-coast",collection:"Modern",shapes:["Round","Oval","Cushion","Radiant","Emerald","Marquise","Pear"]},
+  {name:"Nara Ring",slug:"nara-ring",styles:["Side Stones","Solitaire"],budgetMax:6000,price:"From $2,957",img:"./rings/nara-ring.png",remote:IMG.sides,url:"https://lovelri.com/products/nara-ring",collection:"Side Stones",shapes:["Round","Oval","Radiant","Emerald","Pear"]},
+  {name:"Capri Ring",slug:"capri-ring",styles:["Modern"],budgetMax:6000,price:"From $2,997",img:"./rings/capri-ring.png",remote:IMG.modern,url:"https://lovelri.com/products/capri-ring",collection:"Modern",shapes:["Emerald","Radiant","Round","Oval","Cushion","Pear","Marquise"]},
+  {name:"England Ring",slug:"england",styles:["Halo","Side Stones"],budgetMax:6000,price:"From $3,131",img:"./rings/england.png",remote:IMG.halo,url:"https://lovelri.com/products/england",collection:"Halo",shapes:["Pear","Marquise","Princess"]},
+  {name:"Osaka Ring",slug:"osaka-ring",styles:["Modern","Solitaire"],budgetMax:6000,price:"From $2,938",img:"./rings/osaka-ring.png",remote:IMG.modern,url:"https://lovelri.com/products/osaka-ring",collection:"Modern",shapes:["Round","Oval","Radiant","Emerald","Marquise","Pear"]},
+  {name:"Mississauga Ring",slug:"lab-diamonds-mississauga",styles:["Solitaire"],budgetMax:6000,price:"From $2,621",img:"./rings/lab-diamonds-mississauga.png",remote:IMG.solitaire,url:"https://lovelri.com/products/lab-diamonds-mississauga",collection:"Solitaire",shapes:["Round","Oval","Cushion"]},
+  {name:"Kyoto Ring",slug:"kyoto",styles:["Modern","Pavé"],budgetMax:6000,price:"From $3,098",img:"./rings/kyoto.png",remote:IMG.modern,url:"https://lovelri.com/products/kyoto",collection:"Modern",shapes:["Round","Oval","Cushion","Radiant","Emerald","Pear","Marquise"]},
+  {name:"San Francisco Ring",slug:"san-francisco-ring",styles:["Side Stones"],budgetMax:6000,price:"From $3,391",img:"./rings/san-francisco-ring.png",remote:IMG.sides,url:"https://lovelri.com/products/san-francisco-ring",collection:"Side Stones",shapes:["Round","Oval","Radiant","Emerald","Marquise","Pear"]},
+  {name:"Kingston Ring",slug:"kingston",styles:["Side Stones","Cathedral"],budgetMax:6000,price:"From $3,131",img:"./rings/kingston.png",remote:IMG.sides,url:"https://lovelri.com/products/kingston",collection:"Side Stones",shapes:["Marquise","Round","Oval","Cushion","Radiant","Emerald","Pear"]},
+  {name:"Halifax Ring",slug:"halifax",styles:["Side Stones"],budgetMax:8000,price:"From $3,728",img:"./rings/halifax.png",remote:IMG.sides,url:"https://lovelri.com/products/halifax",collection:"Side Stones",shapes:["Round","Oval","Cushion","Radiant","Emerald","Pear","Marquise"]},
+  {name:"Fiji Ring",slug:"fiji-ring",styles:["Solitaire","Modern"],budgetMax:6000,price:"From $2,938",img:"./rings/fiji-ring.png",remote:IMG.solitaire,url:"https://lovelri.com/products/fiji-ring",collection:"Solitaire",shapes:["Radiant","Emerald","Princess","Round","Oval","Pear","Marquise"]},
+  {name:"Lake Louise Ring",slug:"lake-louise-ring",styles:["Botanical"],budgetMax:6000,price:"From $2,766",img:"./rings/lake-louise-ring.png",remote:IMG.botanical,url:"https://lovelri.com/products/lake-louise-ring",collection:"Botanical",shapes:["Radiant","Emerald","Pear","Cushion","Round","Oval","Marquise"]},
+  {name:"Edmonton Ring",slug:"edmonton",styles:["Solitaire"],budgetMax:6000,price:"From $2,938",img:"./rings/edmonton.png",remote:IMG.solitaire,url:"https://lovelri.com/products/edmonton",collection:"Solitaire",shapes:["Round","Oval","Cushion","Radiant","Emerald","Pear","Marquise","Princess"]},
+  {name:"Florence Ring",slug:"florence",styles:["Botanical","Halo"],budgetMax:6000,price:"From $3,131",img:"./rings/florence.png",remote:IMG.botanical,url:"https://lovelri.com/products/florence",collection:"Botanical",shapes:["Oval","Round","Cushion","Radiant","Emerald","Pear","Marquise"]},
+  {name:"Burlington Ring",slug:"burlington-ring",styles:["Solitaire","Side Stones"],budgetMax:6000,price:"From $2,997",img:"./rings/burlington-ring.png",remote:IMG.solitaire,url:"https://lovelri.com/products/burlington-ring",collection:"Solitaire",shapes:["Radiant","Emerald","Princess","Round","Oval","Cushion","Marquise","Pear"]},
+  {name:"Aspen Ring",slug:"aspen-ring",styles:["Solitaire"],budgetMax:6000,price:"From $2,938",img:"./rings/aspen-ring.png",remote:IMG.solitaire,url:"https://lovelri.com/products/aspen-ring",collection:"Solitaire",shapes:["Pear"]},
+  {name:"Whistler Ring",slug:"whistler",styles:["Solitaire"],budgetMax:6000,price:"From $3,198",img:"./rings/whistler.png",remote:IMG.solitaire,url:"https://lovelri.com/products/whistler",collection:"Solitaire",shapes:["Pear"]},
 ];
 const STYLE_MAP={"Solitaire":["Solitaire"],"Halo / Hidden Halo":["Halo","Hidden Halo"],"Vintage / Cathedral":["Cathedral"],"Modern / Pavé":["Modern","Pavé"],"Botanical / Nature":["Botanical"],"Side Stones":["Side Stones"]};
 const BUDGET_MAP={"$3,500–$6,000":6000,"$6,000–$12,000":12000,"$12,000–$25,000":25000,"$25,000+":999999};
@@ -848,7 +839,7 @@ const PREF_STEPS=[
   {key:"timeline",q:"When do you need it?",              sub:"Custom pieces take 4–8 weeks.",          opts:["Within 4 weeks","1–3 months","3–6 months","Just exploring"]},
   {key:"budget",  q:"What's your investment range?",     sub:"Pieces start from $2,700 CAD.",          opts:["$3,500–$6,000","$6,000–$12,000","$12,000–$25,000","$25,000+"]},
 ];
-function IntakeForm({onLead}){
+function IntakeForm({onLead, onBookFromConfig}){
   const [phase,setPhase]=useState("prefs");
   const [ps,setPs]=useState(0);
   const [d,setD]=useState({occasion:"",style:"",stone:"",timeline:"",budget:"",name:"",email:""});
@@ -857,11 +848,34 @@ function IntakeForm({onLead}){
   const [sending,setSending]=useState(false);
   const sel=(f,v)=>setD(x=>({...x,[f]:v}));
   const goNext=()=>{if(ps<PREF_STEPS.length-1)setPs(p=>p+1);else{setMatches(getMatches(d));setPhase("results");}};
-  const submit=async()=>{setSending(true);onLead({...d,id:Date.now(),source:"Form",status:"new",time:"Just now",style:d.style||"—"});await new Promise(r=>setTimeout(r,700));setSending(false);setPhase("done");};
+  const submit=async()=>{setSending(true);onLead({...d,id:Date.now(),source:"Form",status:"new",time:"Just now",style:d.style||"—",shape:shapeFilter||"Open to suggestions",metal:metalPref||"Open to suggestions"});await new Promise(r=>setTimeout(r,700));setSending(false);setPhase("done");};
   const s=PREF_STEPS[ps];
   const PBtn=(label,onClick,disabled)=><button onClick={onClick} disabled={disabled} style={{width:"100%",padding:"12px",background:!disabled?B.black:"#e0e0da",color:!disabled?B.white:B.gray,border:"none",fontFamily:B.sans,fontSize:13,letterSpacing:"0.14em",textTransform:"uppercase",cursor:!disabled?"pointer":"not-allowed",marginTop:16}}>{label}</button>;
+  const [shapeFilter,setShapeFilter]=useState(null);
+  const [metalPref,setMetalPref]=useState(null);
+  const filteredMatches = shapeFilter ? matches.filter(r => Array.isArray(r.shapes) && r.shapes.includes(shapeFilter)) : matches;
+  const SHAPE_OPTS = ["Round","Oval","Cushion","Princess","Pear","Marquise","Emerald","Radiant"];
+  const METAL_OPTS = ["Yellow Gold","White Gold","Rose Gold","Platinum"];
   if(phase==="done")return(<div style={{textAlign:"center",padding:"32px 0"}}><div style={{fontFamily:B.serif,fontSize:24,color:B.black,marginBottom:8}}>Consultation Sent ✓</div><div style={{fontFamily:B.sans,fontSize:14,color:B.gray,marginBottom:20,lineHeight:1.6}}>Lead delivered to christinaquach98@gmail.com</div><button onClick={()=>{setPhase("prefs");setPs(0);setD({occasion:"",style:"",stone:"",timeline:"",budget:"",name:"",email:""});setMatches([]);setLiked([]);}} style={{fontFamily:B.sans,fontSize:13,letterSpacing:"0.12em",textTransform:"uppercase",padding:"10px 20px",border:`1px solid ${B.border}`,background:B.white,cursor:"pointer",color:B.black}}>Reset</button></div>);
-  if(phase==="results")return(<div><div style={{fontFamily:B.sans,fontSize:11,letterSpacing:"0.2em",textTransform:"uppercase",color:B.gray,marginBottom:6}}>Your Matches</div><div style={{fontFamily:B.serif,fontSize:22,color:B.black,marginBottom:12}}>{matches.length} rings curated for you</div><div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:8,marginBottom:16}}>{matches.map(r=>{const s2=liked.includes(r.slug);return(<div key={r.slug} onClick={()=>setLiked(l=>l.includes(r.slug)?l.filter(x=>x!==r.slug):[...l,r.slug])} style={{border:`1px solid ${s2?B.black:B.border}`,cursor:"pointer",background:B.white}}><div style={{paddingTop:"100%",position:"relative",background:B.offwhite,overflow:"hidden"}}><img src={r.img} alt={r.name} style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",objectPosition:"center 30%"}} onError={e=>{ if(!e.target.dataset.fb && r.remote){ e.target.dataset.fb="1"; e.target.src=r.remote; } else { e.target.style.display="none"; e.target.parentElement.innerHTML = `<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:#fafaf8;color:#c9a96e;font-family:'Cormorant Garamond',Georgia,serif;font-size:13px;text-align:center;padding:8px;">${r.name}</div>`;} }}/>{s2&&<div style={{position:"absolute",top:4,right:4,width:14,height:14,borderRadius:"50%",background:B.black,color:B.white,display:"flex",alignItems:"center",justifyContent:"center",fontSize:10}}>✓</div>}</div><div style={{padding:"8px"}}><div style={{fontFamily:B.serif,fontSize:14,color:B.black,marginBottom:2}}>{r.name}</div><div style={{fontFamily:B.sans,fontSize:11,color:B.gray,marginBottom:4}}>{r.price}</div><a href={r.url} target="_blank" rel="noopener noreferrer" onClick={e=>e.stopPropagation()} style={{fontFamily:B.sans,fontSize:10,letterSpacing:"0.1em",textTransform:"uppercase",color:B.black,textDecoration:"none",borderBottom:`1px solid ${B.black}`,paddingBottom:1}}>View ↗</a></div></div>);})}</div><div style={{borderTop:`1px solid ${B.border}`,paddingTop:14}}><div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10,marginBottom:10}}>{[{label:"Name *",field:"name",type:"text",ph:"Alexander"},{label:"Email *",field:"email",type:"email",ph:"your@email.com"}].map(f=>(<div key={f.field}><div style={{fontFamily:B.sans,fontSize:11,letterSpacing:"0.14em",textTransform:"uppercase",color:B.gray,marginBottom:4}}>{f.label}</div><input type={f.type} value={d[f.field]} onChange={e=>sel(f.field,e.target.value)} placeholder={f.ph} style={{width:"100%",padding:"9px 11px",border:`1px solid ${B.border}`,fontFamily:B.sans,fontSize:14,color:B.black,background:B.white,outline:"none",boxSizing:"border-box"}}/></div>))}</div>{PBtn(sending?"Sending…":"Book Consultation",submit,!d.name||!/\S+@\S+\.\S+/.test(d.email)||sending)}</div></div>);
+  if(phase==="results")return(<div><div style={{fontFamily:B.sans,fontSize:11,letterSpacing:"0.2em",textTransform:"uppercase",color:B.gray,marginBottom:6}}>Your Matches</div><div style={{fontFamily:B.serif,fontSize:22,color:B.black,marginBottom:8}}>{filteredMatches.length} ring{filteredMatches.length===1?"":"s"} curated for you</div>
+            <div style={{marginBottom:12}}>
+              <div style={{fontFamily:B.sans,fontSize:11,letterSpacing:"0.18em",textTransform:"uppercase",color:B.gray,marginBottom:7}}>Shape</div>
+              <div style={{display:"flex",flexWrap:"wrap",gap:5,marginBottom:11}}>
+                <button onClick={()=>setShapeFilter(null)} style={{padding:"6px 10px",border:`1px solid ${!shapeFilter?B.black:B.border}`,background:!shapeFilter?B.black:B.white,color:!shapeFilter?B.white:B.black,fontFamily:B.sans,fontSize:11,cursor:"pointer"}}>All</button>
+                {SHAPE_OPTS.map(s=>(<button key={s} onClick={()=>setShapeFilter(s===shapeFilter?null:s)} style={{padding:"6px 10px",border:`1px solid ${shapeFilter===s?B.black:B.border}`,background:shapeFilter===s?B.black:B.white,color:shapeFilter===s?B.white:B.black,fontFamily:B.sans,fontSize:11,cursor:"pointer"}}>{s}</button>))}
+              </div>
+              <div style={{fontFamily:B.sans,fontSize:11,letterSpacing:"0.18em",textTransform:"uppercase",color:B.gray,marginBottom:7}}>Metal preference (optional)</div>
+              <div style={{display:"flex",flexWrap:"wrap",gap:5}}>
+                <button onClick={()=>setMetalPref(null)} style={{padding:"6px 10px",border:`1px solid ${!metalPref?B.gold:B.border}`,background:!metalPref?"rgba(201,169,110,0.12)":B.white,color:!metalPref?B.gold:B.black,fontFamily:B.sans,fontSize:11,cursor:"pointer"}}>Open</button>
+                {METAL_OPTS.map(m=>(<button key={m} onClick={()=>setMetalPref(m===metalPref?null:m)} style={{padding:"6px 10px",border:`1px solid ${metalPref===m?B.gold:B.border}`,background:metalPref===m?"rgba(201,169,110,0.12)":B.white,color:metalPref===m?B.gold:B.black,fontFamily:B.sans,fontSize:11,cursor:"pointer"}}>{m}</button>))}
+              </div>
+            </div>
+            <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:8,marginBottom:16}}>{filteredMatches.length===0?<div style={{gridColumn:"1/-1",fontFamily:B.sans,fontSize:13,color:B.gray,textAlign:"center",padding:"22px 0",border:`1px dashed ${B.border}`}}>No rings match that shape — try another or click All.</div>:filteredMatches.map(r=>{const s2=liked.includes(r.slug);return(<div key={r.slug} onClick={()=>setLiked(l=>l.includes(r.slug)?l.filter(x=>x!==r.slug):[...l,r.slug])} style={{border:`1px solid ${s2?B.black:B.border}`,cursor:"pointer",background:B.white}}><div style={{paddingTop:"100%",position:"relative",background:B.offwhite,overflow:"hidden"}}><img src={r.img} alt={r.name} style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",objectPosition:"center 30%"}} onError={e=>{ if(!e.target.dataset.fb && r.remote){ e.target.dataset.fb="1"; e.target.src=r.remote; } else { e.target.style.display="none"; e.target.parentElement.innerHTML = `<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:#fafaf8;color:#c9a96e;font-family:'Cormorant Garamond',Georgia,serif;font-size:13px;text-align:center;padding:8px;">${r.name}</div>`;} }}/>{s2&&<div style={{position:"absolute",top:4,right:4,width:14,height:14,borderRadius:"50%",background:B.black,color:B.white,display:"flex",alignItems:"center",justifyContent:"center",fontSize:10}}>✓</div>}</div><div style={{padding:"8px"}}><div style={{fontFamily:B.serif,fontSize:14,color:B.black,marginBottom:2}}>{r.name}</div><div style={{fontFamily:B.sans,fontSize:11,color:B.gray,marginBottom:4}}>{r.price}</div><a href={r.url} target="_blank" rel="noopener noreferrer" onClick={e=>e.stopPropagation()} style={{fontFamily:B.sans,fontSize:10,letterSpacing:"0.1em",textTransform:"uppercase",color:B.black,textDecoration:"none",borderBottom:`1px solid ${B.black}`,paddingBottom:1}}>View ↗</a></div></div>);})}</div><div style={{borderTop:`1px solid ${B.border}`,paddingTop:18,marginTop:8}}>
+              <div style={{fontFamily:B.sans,fontSize:11,letterSpacing:"0.2em",textTransform:"uppercase",color:B.gray,marginBottom:8}}>Final step</div>
+              <div style={{fontFamily:B.serif,fontSize:18,color:B.black,marginBottom:10,lineHeight:1.3}}>Book a consultation to see these in person.</div>
+              <div style={{fontFamily:B.sans,fontSize:12,color:B.gray,lineHeight:1.7,marginBottom:14}}>Pick a time that works for you. We'll have your selections ready and walk you through each piece.</div>
+              <button onClick={()=>onBookFromConfig({...d, shape: shapeFilter, metal: metalPref})} style={{width:"100%",padding:"15px",background:B.black,color:B.white,border:"none",fontFamily:B.sans,fontSize:13,letterSpacing:"0.16em",textTransform:"uppercase",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",gap:10}}>📅 Book a Consultation <span style={{opacity:0.6}}>→</span></button>
+            </div></div>);
   return(<div><div style={{display:"flex",gap:3,marginBottom:20}}>{PREF_STEPS.map((_,i)=><div key={i} style={{flex:1,height:2,background:i<=ps?B.black:B.lightgray}}/>)}</div><div style={{fontFamily:B.sans,fontSize:11,letterSpacing:"0.2em",textTransform:"uppercase",color:B.gray,marginBottom:8}}>Step {String(ps+1).padStart(2,"0")} of 05</div><div style={{fontFamily:B.serif,fontSize:24,color:B.black,marginBottom:4,lineHeight:1.2}}>{s.q}</div><div style={{fontFamily:B.sans,fontSize:14,color:B.gray,marginBottom:16,lineHeight:1.6}}>{s.sub}</div><div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>{s.opts.map(opt=><button key={opt} onClick={()=>sel(s.key,opt)} style={{padding:"11px 10px",border:`1px solid ${d[s.key]===opt?B.black:B.border}`,background:d[s.key]===opt?B.black:B.white,color:d[s.key]===opt?B.white:B.black,fontFamily:B.sans,fontSize:13,cursor:"pointer",textAlign:"left",display:"flex",justifyContent:"space-between",alignItems:"center"}}>{opt}{d[s.key]===opt&&<span style={{fontSize:12}}>✓</span>}</button>)}</div>{PBtn(ps<PREF_STEPS.length-1?"Continue":"See My Rings",goNext,!d[s.key])}</div>);
 }
 // ── CHAT ──────────────────────────────────────────────────────────────────────
@@ -1105,6 +1119,14 @@ function Dashboard(){
     setLeads(l=>[enriched, ...l]);
     pushToSheet("Leads", enriched);
   };
+  const bookFromConfig=(quizData)=>{
+    setPrefill({
+      occasion: quizData.occasion || "",
+      budget: quizData.budget || "",
+      notes: `From configurator → Style: ${quizData.style||"—"} · Stone: ${quizData.stone||"—"} · Timeline: ${quizData.timeline||"—"} · Shape: ${quizData.shape||"Open to suggestions"} · Metal: ${quizData.metal||"Open to suggestions"}`,
+    });
+    go("book");
+  };
   const bookLead=lead=>{
     setPrefill({
       name: lead.name || "",
@@ -1117,7 +1139,20 @@ function Dashboard(){
     setLeads(ls => ls.map(l => l.id===lead.id ? {...l, status:"booked"} : l));
     go("book");
   };
-  const handleBookingDone=()=>setBookings([...STORE]);
+  const handleBookingDone=(bk)=>{
+    setBookings([...STORE]);
+    // Every completed booking = an SQL. Push a matching lead row for the pipeline view.
+    if (bk) {
+      const lead = {
+        id: bk.id, name: bk.name, email: bk.email, phone: bk.phone,
+        occasion: bk.occasion || "", budget: bk.budget || "",
+        style: "", source: prefill ? "Configurator → Booked" : "Direct Booking",
+        status: "booked", time: "Just now", notes: bk.notes || ""
+      };
+      setLeads(l => [lead, ...l]);
+      pushToSheet("Leads", lead);
+    }
+  };
   const handleBookingStatus=(id,status)=>{ STORE = STORE.map(b=>b.id===id?{...b,status}:b); setBookings([...STORE]); };
   const newCount=leads.filter(l=>l.status==="new").length;
   const go=id=>{setActive(id);setMenuOpen(false);window.scrollTo(0,0);};
@@ -1470,7 +1505,7 @@ function Dashboard(){
           <div style={{animation:"fadeIn 0.25s ease"}}>
             <Title sub="5-step ring quiz → matched ring photos + links → contact capture → instant lead email to Christina.">Ring Preference<br/><em style={{fontStyle:"italic"}}>Intake Form</em></Title>
             <Label>Live — Try It</Label>
-            <Card><div style={{padding:"20px 16px"}}><IntakeForm onLead={addLead}/></div></Card>
+            <Card><div style={{padding:"20px 16px"}}><IntakeForm onLead={addLead} onBookFromConfig={bookFromConfig}/></div></Card>
           </div>
         )}
         {active==="chat"&&(
@@ -1583,10 +1618,8 @@ function Dashboard(){
     </div>
   );
 }
-// (export removed for browser bundle)
+// (export removed)
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(<Dashboard />);
-</script>
-</body>
-</html>
+</script></body></html>
