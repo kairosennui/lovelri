@@ -170,7 +170,18 @@ const MONTHS = ["January","February","March","April","May","June","July","August
 const DAYS = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
 function getDaysInMonth(y,m){return new Date(y,m+1,0).getDate();}
 function getFirstDay(y,m){return new Date(y,m,1).getDay();}
-function getSlots(date,cid){const s=date.getDate()+date.getMonth()*31+(cid==="tony"?7:cid==="christina"?13:cid==="jen"?17:cid==="natalie"?11:3);return SLOTS.filter((_,i)=>((s*(i+1))%5)!==0&&!(i>=5&&i<=6));}
+function getSlots(date, cid, bookings) {
+  const s = date.getDate() + date.getMonth()*31 + (cid==="tony"?7:cid==="christina"?13:cid==="jen"?17:cid==="natalie"?11:3);
+  const baseSlots = SLOTS.filter((_,i) => ((s*(i+1)) % 5) !== 0 && !(i>=5 && i<=6));
+  if (!cid || !Array.isArray(bookings)) return baseSlots;
+  const dateStr = `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,"0")}-${String(date.getDate()).padStart(2,"0")}`;
+  const taken = new Set(
+    bookings
+      .filter(b => b.date === dateStr && b.status === "confirmed" && (cid === "any" || b.consultant === cid))
+      .map(b => b.time)
+  );
+  return baseSlots.filter(slot => !taken.has(slot));
+}
 // ── ICS CALENDAR GENERATOR ────────────────────────────────────────────────────
 // Creates a .ics file Gary can tap to add appointment to Apple/Google Calendar
 // Includes 1hr and 15min reminders
@@ -367,7 +378,7 @@ let STORE = [
 const Lbl = ({c,mt})=><div style={{fontFamily:B.sans,fontSize:11,letterSpacing:"0.22em",textTransform:"uppercase",color:B.gray,marginBottom:10,marginTop:mt||0}}>{c}</div>;
 const Badge = ({s})=>{const m={confirmed:{bg:"rgba(76,175,125,0.1)",c:"#2d7a54",l:"Confirmed"},pending:{bg:"rgba(201,169,110,0.12)",c:"#8c6d3f",l:"Pending"},cancelled:{bg:"rgba(220,53,69,0.08)",c:"#c0392b",l:"Cancelled"}};const t=m[s]||m.pending;return <span style={{fontFamily:B.sans,fontSize:11,letterSpacing:"0.06em",padding:"3px 8px",background:t.bg,color:t.c}}>{t.l}</span>;};
 // ── CUSTOMER BOOKING FLOW ─────────────────────────────────────────────────────
-function BookingFlow({onDone, prefill}) {
+function BookingFlow({onDone, prefill, bookings = []}) {
   const [step,setStep]   = useState(0);
   const [appt,setAppt]   = useState(null);
   const [cons,setCons]   = useState(null);
@@ -382,7 +393,7 @@ function BookingFlow({onDone, prefill}) {
   const [busy,setBusy]   = useState(false);
   const [calLink,setCalLink] = useState(null);
   const today = new Date(); today.setHours(0,0,0,0);
-  const slots = date ? getSlots(date,cons?.id) : [];
+  const slots = date ? getSlots(date, cons?.id, bookings) : [];
   const f = (k,v)=>setForm(x=>({...x,[k]:v}));
   const ok = [!!appt, !!cons, !!date&&!!slot, !!form.name&&/\S+@\S+\.\S+/.test(form.email)];
   const submit = async () => {
@@ -631,15 +642,18 @@ function BookingFlow({onDone, prefill}) {
 }
 // ── ADMIN DASHBOARD ───────────────────────────────────────────────────────────
 function AdminDash({bookings,onStatus}) {
-  const [filter,setFilter]   = useState("all");
-  const [view,setView]       = useState("upcoming");
-  const [open,setOpen]       = useState(null);
-  const [cm,setCm]           = useState(new Date().getMonth());
-  const [cy,setCy]           = useState(new Date().getFullYear());
+  const [filter,setFilter]     = useState("all");
+  const [view,setView]         = useState("upcoming");
+  const [open,setOpen]         = useState(null);
+  const [cm,setCm]             = useState(new Date().getMonth());
+  const [cy,setCy]             = useState(new Date().getFullYear());
+  const [dateFilter,setDateFilter]     = useState(null);
+  const [statusFilter,setStatusFilter] = useState(null);
   const todayStr             = new Date().toISOString().split("T")[0];
   const list = bookings
     .filter(b=>filter==="all"||b.consultant===filter)
-    .filter(b=>view==="upcoming"?new Date(b.date)>=new Date(todayStr):true)
+    .filter(b=>statusFilter?b.status===statusFilter:true)
+    .filter(b=>dateFilter?b.date===dateFilter:(view==="upcoming"?new Date(b.date)>=new Date(todayStr):true))
     .sort((a,b)=>new Date(a.date)-new Date(b.date));
   const byDate={};
   bookings.forEach(b=>{if(!byDate[b.date])byDate[b.date]=[];byDate[b.date].push(b);});
@@ -650,12 +664,16 @@ function AdminDash({bookings,onStatus}) {
       {/* KPIs */}
       <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:1,border:`1px solid ${B.border}`,marginBottom:20}}>
         {[
-          {k:"Today",    v:bookings.filter(b=>b.date===todayStr).length,    sub:"appts"},
-          {k:"Upcoming", v:bookings.filter(b=>new Date(b.date)>=new Date(todayStr)).length, sub:"total"},
-          {k:"Confirmed",v:bookings.filter(b=>b.status==="confirmed").length,sub:"confirmed"},
-          {k:"Pending",  v:bookings.filter(b=>b.status==="pending").length,  sub:"action needed",a:true},
+          {k:"Today",    v:bookings.filter(b=>b.date===todayStr).length,    sub:"appts",        onTap:()=>{setDateFilter(todayStr);setStatusFilter(null);setView("all");}},
+          {k:"Upcoming", v:bookings.filter(b=>new Date(b.date)>=new Date(todayStr)).length, sub:"total",  onTap:()=>{setDateFilter(null);setStatusFilter(null);setView("upcoming");}},
+          {k:"Confirmed",v:bookings.filter(b=>b.status==="confirmed").length,sub:"confirmed",   onTap:()=>{setStatusFilter("confirmed");setDateFilter(null);setView("all");}},
+          {k:"Pending",  v:bookings.filter(b=>b.status==="pending").length,  sub:"action needed",a:true,  onTap:()=>{setStatusFilter("pending");setDateFilter(null);setView("all");}},
         ].map((s,i)=>(
-          <div key={i} style={{background:B.white,padding:"12px 8px",borderRight:i<3?`1px solid ${B.border}`:"none"}}>
+          <div key={i}
+            onClick={s.onTap}
+            style={{background:B.white,padding:"12px 8px",borderRight:i<3?`1px solid ${B.border}`:"none",cursor:"pointer",transition:"background 0.15s"}}
+            onMouseEnter={e=>{ e.currentTarget.style.background=B.offwhite; }}
+            onMouseLeave={e=>{ e.currentTarget.style.background=B.white; }}>
             <div style={{fontFamily:B.sans,fontSize:10,letterSpacing:"0.12em",textTransform:"uppercase",color:B.gray,marginBottom:4}}>{s.k}</div>
             <div style={{fontFamily:B.serif,fontSize:24,color:s.a&&s.v>0?B.gold:B.black,lineHeight:1}}>{s.v}</div>
             <div style={{fontFamily:B.sans,fontSize:11,color:B.gray,marginTop:2}}>{s.sub}</div>
@@ -715,6 +733,14 @@ function AdminDash({bookings,onStatus}) {
         </div>
       </div>
       {/* Booking list */}
+      {(dateFilter || statusFilter) && (
+        <div style={{display:"flex",gap:6,flexWrap:"wrap",alignItems:"center",marginBottom:11,padding:"9px 11px",background:"rgba(201,169,110,0.08)",border:`1px solid ${B.gold}`}}>
+          <span style={{fontFamily:B.sans,fontSize:11,letterSpacing:"0.14em",textTransform:"uppercase",color:B.gold,marginRight:5}}>Filters</span>
+          {dateFilter && (<span onClick={()=>setDateFilter(null)} style={{fontFamily:B.sans,fontSize:12,padding:"3px 9px",background:B.black,color:B.white,cursor:"pointer"}}>Date: {dateFilter} ×</span>)}
+          {statusFilter && (<span onClick={()=>setStatusFilter(null)} style={{fontFamily:B.sans,fontSize:12,padding:"3px 9px",background:B.black,color:B.white,cursor:"pointer"}}>Status: {statusFilter} ×</span>)}
+          <button onClick={()=>{setDateFilter(null);setStatusFilter(null);}} style={{marginLeft:"auto",fontFamily:B.sans,fontSize:11,letterSpacing:"0.06em",background:"none",border:"none",color:B.gray,cursor:"pointer",textDecoration:"underline"}}>Clear all</button>
+        </div>
+      )}
       <Lbl c={`${list.length} appointment${list.length!==1?"s":""}`}/>
       <div style={{border:`1px solid ${B.border}`}}>
         {list.length===0
@@ -1319,7 +1345,7 @@ function Dashboard(){
               Book a<br/><em style={{fontStyle:"italic"}}>Consultation</em>
             </Title>
             <Card><div style={{padding:"24px 18px"}}>
-              <BookingFlow onDone={(bk)=>{handleBookingDone(bk); setPrefill(null);}} prefill={prefill}/>
+              <BookingFlow onDone={(bk)=>{handleBookingDone(bk); setPrefill(null);}} prefill={prefill} bookings={bookings}/>
             </div></Card>
           </div>
         )}
