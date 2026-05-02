@@ -344,7 +344,7 @@ function loadRingImage(url) {
 }
 
 // ── HAND-TRACKING + RENDER LOOP ─────────────────────────────────────────────
-function startTracking({ videoEl, canvasEl, getOptions, onStatus, onBucket }) {
+function startTracking({ videoEl, canvasEl, getOptions, onStatus, onBucket, facingMode }) {
   if (!window.Hands || !window.Camera) {
     onStatus("MediaPipe failed to load. Check your network connection and reload.");
     return () => {};
@@ -370,13 +370,14 @@ function startTracking({ videoEl, canvasEl, getOptions, onStatus, onBucket }) {
   let lastResults = null;
   hands.onResults((res) => { lastResults = res; });
 
-  // Explicit facingMode "user" requests the front camera (selfie cam).
+  // facingMode "user" = front (selfie) camera, "environment" = back camera.
   // MediaPipe Camera utility passes this to navigator.mediaDevices.getUserMedia.
+  const activeFacingMode = facingMode || "user";
   const camera = new window.Camera(videoEl, {
     onFrame: async () => { await hands.send({ image: videoEl }); },
     width:  isMobile ? 640 : 1280,
     height: isMobile ? 480 : 720,
-    facingMode: "user",
+    facingMode: activeFacingMode,
   });
 
   let stopped = false;
@@ -390,17 +391,29 @@ function startTracking({ videoEl, canvasEl, getOptions, onStatus, onBucket }) {
     const w = canvasEl.width = videoEl.videoWidth || 1280;
     const h = canvasEl.height = videoEl.videoHeight || 720;
 
-    // Mirror the video for selfie-style display
-    ctx.save();
-    ctx.scale(-1, 1);
-    ctx.drawImage(videoEl, -w, 0, w, h);
-    ctx.restore();
+    // Mirror the video for selfie-style display when using the front
+    // camera. With the back ("environment") camera, what the user sees is
+    // already in real-world orientation, so we draw it as-is.
+    const mirror = activeFacingMode === "user";
+    if (mirror) {
+      ctx.save();
+      ctx.scale(-1, 1);
+      ctx.drawImage(videoEl, -w, 0, w, h);
+      ctx.restore();
+    } else {
+      ctx.drawImage(videoEl, 0, 0, w, h);
+    }
 
     const opts = getOptions();
     const lm = lastResults && lastResults.multiHandLandmarks && lastResults.multiHandLandmarks[0];
     if (lm) {
       // 2D screen coords (x mirrored to match the mirrored video)
-      const px = (p) => ({ x: (1 - p.x) * w, y: p.y * h });
+      // Coordinate mapping: when the front camera is mirrored on the canvas,
+      // landmark x must also be mirrored to land on the right pixel. With the
+      // back camera (no mirror), use raw coordinates.
+      const px = mirror
+        ? (p) => ({ x: (1 - p.x) * w, y: p.y * h })
+        : (p) => ({ x: p.x * w, y: p.y * h });
       const L0 = px(lm[0]);    // Wrist
       const L5 = px(lm[5]);    // Index MCP
       const L9 = px(lm[9]);    // Middle MCP
@@ -553,6 +566,10 @@ function App() {
   // Tap the drawer handle to expand/collapse.
   const [panelOpen, setPanelOpen] = useState(false);
 
+  // Camera facing mode: "user" = front (selfie), "environment" = back. Toggled
+  // via a flip button on the camera stage. Re-runs startTracking on change.
+  const [facingMode, setFacingMode] = useState("user");
+
   const filteredRings = useMemo(
     () => shape === "All" ? RINGS : RINGS.filter(r => r.shapes.includes(shape)),
     [shape]
@@ -650,9 +667,10 @@ function App() {
       getOptions: () => optsRef.current,
       onStatus: setStatus,
       onBucket: setBucket,
+      facingMode,
     });
     return stop;
-  }, [hasStarted, isTouch]);
+  }, [hasStarted, isTouch, facingMode]);
 
   const snapshot = useCallback(() => {
     if (!canvasRef.current) return;
@@ -836,9 +854,34 @@ function App() {
             {isPilot && status === "ready" && (
               <div style={S.bucketPill}>{bucketLabel}</div>
             )}
+
+            {/* Camera flip button — top-right of the stage. Toggles between
+                front (selfie) and back (environment) camera. The startTracking
+                useEffect re-runs and reinitialises MediaPipe with the new
+                facingMode. */}
+            {status === "ready" && (
+              <button
+                onClick={() => setFacingMode(m => m === "user" ? "environment" : "user")}
+                title={facingMode === "user" ? "Switch to back camera" : "Switch to front camera"}
+                aria-label="Flip camera"
+                style={{
+                  position:"absolute", top:14, right:14,
+                  width:42, height:42, borderRadius:"50%",
+                  background:"rgba(26,26,26,0.55)", color:"#fff",
+                  border:"none", cursor:"pointer",
+                  display:"flex", alignItems:"center", justifyContent:"center",
+                  fontSize:20, lineHeight:1, padding:0,
+                  backdropFilter:"blur(8px)", WebkitBackdropFilter:"blur(8px)",
+                  zIndex:5,
+                }}
+              >
+                ↻
+              </button>
+            )}
+
             <div style={S.overlay}>
               <div style={S.overlayPill}>
-                {status === "ready" ? "● Tracking" :
+                {status === "ready" ? `● ${facingMode === "user" ? "Front" : "Back"} cam` :
                  status === "starting" ? "Starting camera…" :
                  status.startsWith("camera-error") ? "Camera blocked — allow access and reload" :
                  (isTouch && !hasStarted) ? "Tap to start" :
