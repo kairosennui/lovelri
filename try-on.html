@@ -1,0 +1,582 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Lovelri · Virtual Try-On</title>
+<style>
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:#fafaf8;overscroll-behavior:none}
+  #root{min-height:100vh}
+  .boot{
+    display:flex;align-items:center;justify-content:center;
+    min-height:100vh;
+    font-family:'Helvetica Neue','Arial',sans-serif;
+    color:#6b6b6b;font-size:13px;letter-spacing:0.22em;text-transform:uppercase;
+    flex-direction:column;gap:14px;
+  }
+  .boot small{font-size:11px;color:#a8a8a4;letter-spacing:0.06em;text-transform:none;font-style:italic}
+  /* Hide the raw video element — we paint frames into the canvas. */
+  video.hidden-source{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
+  /* Pretty scrollbar inside the ring picker */
+  .ring-rail::-webkit-scrollbar{height:6px}
+  .ring-rail::-webkit-scrollbar-thumb{background:#d8d8d2;border-radius:3px}
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+<div id="root"><div class="boot">Loading Lovelri Try-On<small>warming up the camera and hand tracker…</small></div></div>
+
+<!-- React + Babel from CDN, matching the rest of the site's no-build-step approach -->
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+<!-- MediaPipe Hands (Google's hand-tracking model) -->
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+
+<script type="text/babel" data-presets="env,react">
+const { useState, useEffect, useRef, useMemo, useCallback } = React;
+
+// ─────────────────────────────────────────────────────────────────────────────
+// LOVELRI VIRTUAL TRY-ON
+// Live camera + MediaPipe Hands → PNG ring overlay positioned on the ring finger
+// ─────────────────────────────────────────────────────────────────────────────
+// ── DESIGN TOKENS (matched to bookings.html) ─────────────────────────────────
+const B = {
+  white:"#ffffff", offwhite:"#fafaf8", black:"#1a1a1a",
+  gray:"#6b6b6b", lightgray:"#e8e8e4", border:"#d8d8d2",
+  gold:"#c9a96e", goldDark:"#8c6d3f",
+  serif:"'Cormorant Garamond','Georgia',serif",
+  sans:"'Helvetica Neue','Arial',sans-serif",
+};
+
+// ── RING CATALOG (mirrored from index.html so this page is self-contained) ──
+const IMG = {
+  solitaire:"https://lovelri.com/cdn/shop/files/IMG_6932.jpg?v=1761797993&width=600",
+  halo:     "https://lovelri.com/cdn/shop/files/IMG_3316_2.jpg?v=1761798094&width=600",
+  cathedral:"https://lovelri.com/cdn/shop/files/DSC00642.jpg?v=1761797135&width=600",
+  sides:    "https://lovelri.com/cdn/shop/files/DSC01046.jpg?v=1761797278&width=600",
+  pave:     "https://lovelri.com/cdn/shop/files/FullSizeRender_2.jpg?v=1763229617&width=600",
+  modern:   "https://lovelri.com/cdn/shop/files/DSC01081.jpg?v=1761797119&width=600",
+  botanical:"https://lovelri.com/cdn/shop/files/DSC01183.jpg?v=1760480002&width=600",
+};
+const RINGS = [
+  {name:"Sicily Lotus Ring",slug:"sicily-lotus-ring",img:"./rings/sicily-lotus-ring.png",remote:IMG.botanical,collection:"Botanical",shapes:["Oval","Radiant","Emerald","Round","Marquise","Pear","Cushion"],price:"From $3,703",url:"https://lovelri.com/products/sicily-lotus-ring"},
+  {name:"Dolomites Ring",slug:"dolomites-ring",img:"./rings/dolomites-ring.png",remote:IMG.pave,collection:"Pavé",shapes:["Round","Oval","Cushion","Radiant","Emerald","Pear","Marquise","Princess"],price:"From $3,703",url:"https://lovelri.com/products/dolomites-ring"},
+  {name:"Sicily Marquise",slug:"sicily-ring-marquise",img:"./rings/sicily-ring-marquise.png",remote:IMG.modern,collection:"Modern",shapes:["Marquise"],price:"From $3,098",url:"https://lovelri.com/products/sicily-ring-marquise"},
+  {name:"Hawaii Ring",slug:"hawaii-ring",img:"./rings/hawaii-ring.png",remote:IMG.botanical,collection:"Botanical",shapes:["Round","Oval","Cushion","Radiant","Emerald","Pear","Marquise","Princess"],price:"From $3,703",url:"https://lovelri.com/products/hawaii-ring"},
+  {name:"Portland Ring",slug:"portland",img:"./rings/portland.png",remote:IMG.botanical,collection:"Botanical",shapes:["Oval","Round","Cushion","Radiant","Emerald"],price:"From $2,934",url:"https://lovelri.com/products/portland"},
+  {name:"Mt. Fuji Ring",slug:"mt-fuji-ring",img:"./rings/mt-fuji-ring.png",remote:IMG.modern,collection:"Modern",shapes:["Round","Oval","Radiant","Emerald","Marquise","Pear"],price:"From $2,997",url:"https://lovelri.com/products/mt-fuji-ring"},
+  {name:"Thunder Bay Ring",slug:"thunder-bay-ring",img:"./rings/thunder-bay-ring.png",remote:IMG.sides,collection:"Side Stones",shapes:["Oval","Cushion","Round","Radiant","Emerald","Marquise"],price:"From $3,500",url:"https://lovelri.com/products/thunder-bay-ring"},
+  {name:"Switzerland Ring",slug:"switzerland",img:"./rings/switzerland.png",remote:IMG.cathedral,collection:"Cathedral",shapes:["Emerald","Radiant"],price:"From $3,635",url:"https://lovelri.com/products/switzerland"},
+  {name:"Verona Ring",slug:"verona-ring",img:"./rings/verona-ring.png",remote:IMG.sides,collection:"Side Stones",shapes:["Oval","Round","Marquise","Cushion","Radiant","Pear"],price:"From $3,828",url:"https://lovelri.com/products/verona-ring"},
+  {name:"Sydney Ring",slug:"sydney-ring",img:"./rings/sydney-ring.png",remote:IMG.cathedral,collection:"Cathedral",shapes:["Cushion","Oval","Round","Radiant","Emerald","Marquise"],price:"From $2,999",url:"https://lovelri.com/products/sydney-ring"},
+  {name:"Tahiti Ring",slug:"tahiti-ring",img:"./rings/tahiti-ring.png",remote:IMG.modern,collection:"Modern",shapes:["Oval","Round","Radiant","Emerald","Cushion"],price:"From $2,997",url:"https://lovelri.com/products/tahiti-ring"},
+  {name:"Lake Como Ring",slug:"lake-como-ring",img:"./rings/lake-como-ring.png",remote:IMG.modern,collection:"Modern",shapes:["Radiant","Emerald","Round","Oval","Marquise","Pear","Cushion"],price:"From $3,131",url:"https://lovelri.com/products/lake-como-ring"},
+  {name:"Victoria Ring",slug:"victoria",img:"./rings/victoria.png",remote:IMG.halo,collection:"Halo",shapes:["Oval","Round","Cushion","Radiant","Pear","Marquise"],price:"From $3,131",url:"https://lovelri.com/products/victoria"},
+  {name:"Versailles Ring",slug:"versailles",img:"./rings/versailles.png",remote:IMG.pave,collection:"Pavé",shapes:["Oval","Round","Marquise","Pear","Cushion","Radiant"],price:"From $3,703",url:"https://lovelri.com/products/versailles"},
+  {name:"Ontario Ring",slug:"ontario",img:"./rings/ontario.png",remote:IMG.sides,collection:"Side Stones",shapes:["Round","Oval","Marquise","Pear","Radiant","Emerald"],price:"From $2,957",url:"https://lovelri.com/products/ontario"},
+  {name:"Madrid Ring",slug:"madrid",img:"./rings/madrid.png",remote:IMG.modern,collection:"Modern",shapes:["Round","Oval","Cushion","Radiant","Emerald","Marquise","Pear"],price:"From $2,934",url:"https://lovelri.com/products/madrid"},
+  {name:"Vancouver Ring",slug:"vancouver",img:"./rings/vancouver.png",remote:IMG.sides,collection:"Side Stones",shapes:["Pear","Radiant","Emerald","Round","Oval"],price:"From $3,500",url:"https://lovelri.com/products/vancouver"},
+  {name:"Amalfi Coast Ring",slug:"amalfi-coast",img:"./rings/amalfi-coast.png",remote:IMG.modern,collection:"Modern",shapes:["Round","Oval","Cushion","Radiant","Emerald","Marquise","Pear"],price:"From $2,934",url:"https://lovelri.com/products/amalfi-coast"},
+  {name:"Nara Ring",slug:"nara-ring",img:"./rings/nara-ring.png",remote:IMG.sides,collection:"Side Stones",shapes:["Round","Oval","Radiant","Emerald","Pear"],price:"From $2,957",url:"https://lovelri.com/products/nara-ring"},
+  {name:"Capri Ring",slug:"capri-ring",img:"./rings/capri-ring.png",remote:IMG.modern,collection:"Modern",shapes:["Emerald","Radiant","Round","Oval","Cushion","Pear","Marquise"],price:"From $2,997",url:"https://lovelri.com/products/capri-ring"},
+  {name:"England Ring",slug:"england",img:"./rings/england.png",remote:IMG.halo,collection:"Halo",shapes:["Pear","Marquise","Princess"],price:"From $3,131",url:"https://lovelri.com/products/england"},
+  {name:"Osaka Ring",slug:"osaka-ring",img:"./rings/osaka-ring.png",remote:IMG.modern,collection:"Modern",shapes:["Round","Oval","Radiant","Emerald","Marquise","Pear"],price:"From $2,938",url:"https://lovelri.com/products/osaka-ring"},
+  {name:"Mississauga Ring",slug:"lab-diamonds-mississauga",img:"./rings/lab-diamonds-mississauga.png",remote:IMG.solitaire,collection:"Solitaire",shapes:["Round","Oval","Cushion"],price:"From $2,621",url:"https://lovelri.com/products/lab-diamonds-mississauga"},
+  {name:"Kyoto Ring",slug:"kyoto",img:"./rings/kyoto.png",remote:IMG.modern,collection:"Modern",shapes:["Round","Oval","Cushion","Radiant","Emerald","Pear","Marquise"],price:"From $3,098",url:"https://lovelri.com/products/kyoto"},
+  {name:"San Francisco Ring",slug:"san-francisco-ring",img:"./rings/san-francisco-ring.png",remote:IMG.sides,collection:"Side Stones",shapes:["Round","Oval","Radiant","Emerald","Marquise","Pear"],price:"From $3,391",url:"https://lovelri.com/products/san-francisco-ring"},
+  {name:"Kingston Ring",slug:"kingston",img:"./rings/kingston.png",remote:IMG.sides,collection:"Side Stones",shapes:["Marquise","Round","Oval","Cushion","Radiant","Emerald","Pear"],price:"From $3,131",url:"https://lovelri.com/products/kingston"},
+  {name:"Halifax Ring",slug:"halifax",img:"./rings/halifax.png",remote:IMG.sides,collection:"Side Stones",shapes:["Round","Oval","Cushion","Radiant","Emerald","Pear","Marquise"],price:"From $3,728",url:"https://lovelri.com/products/halifax"},
+  {name:"Fiji Ring",slug:"fiji-ring",img:"./rings/fiji-ring.png",remote:IMG.solitaire,collection:"Solitaire",shapes:["Radiant","Emerald","Princess","Round","Oval","Pear","Marquise"],price:"From $2,938",url:"https://lovelri.com/products/fiji-ring"},
+  {name:"Lake Louise Ring",slug:"lake-louise-ring",img:"./rings/lake-louise-ring.png",remote:IMG.botanical,collection:"Botanical",shapes:["Radiant","Emerald","Pear","Cushion","Round","Oval","Marquise"],price:"From $2,766",url:"https://lovelri.com/products/lake-louise-ring"},
+  {name:"Edmonton Ring",slug:"edmonton",img:"./rings/edmonton.png",remote:IMG.solitaire,collection:"Solitaire",shapes:["Round","Oval","Cushion","Radiant","Emerald","Pear","Marquise","Princess"],price:"From $2,938",url:"https://lovelri.com/products/edmonton"},
+  {name:"Florence Ring",slug:"florence",img:"./rings/florence.png",remote:IMG.botanical,collection:"Botanical",shapes:["Oval","Round","Cushion","Radiant","Emerald","Pear","Marquise"],price:"From $3,131",url:"https://lovelri.com/products/florence"},
+  {name:"Burlington Ring",slug:"burlington-ring",img:"./rings/burlington-ring.png",remote:IMG.solitaire,collection:"Solitaire",shapes:["Radiant","Emerald","Princess","Round","Oval","Cushion","Marquise","Pear"],price:"From $2,997",url:"https://lovelri.com/products/burlington-ring"},
+  {name:"Aspen Ring",slug:"aspen-ring",img:"./rings/aspen-ring.png",remote:IMG.solitaire,collection:"Solitaire",shapes:["Pear"],price:"From $2,938",url:"https://lovelri.com/products/aspen-ring"},
+  {name:"Whistler Ring",slug:"whistler",img:"./rings/whistler.png",remote:IMG.solitaire,collection:"Solitaire",shapes:["Pear"],price:"From $3,198",url:"https://lovelri.com/products/whistler"},
+];
+
+// ── CONFIGURATOR OPTIONS ─────────────────────────────────────────────────────
+const METALS = [
+  {id:"yellow",   label:"Yellow Gold",  swatch:"linear-gradient(135deg,#e9c87a,#c9a96e)", filter:"hue-rotate(0deg) saturate(1.05) brightness(1.0)"},
+  {id:"white",    label:"White Gold",   swatch:"linear-gradient(135deg,#ececec,#cfcfcf)", filter:"hue-rotate(-25deg) saturate(0.35) brightness(1.05)"},
+  {id:"rose",     label:"Rose Gold",    swatch:"linear-gradient(135deg,#f0c0aa,#cd8b76)", filter:"hue-rotate(-10deg) saturate(1.15) brightness(1.0)"},
+  {id:"platinum", label:"Platinum",     swatch:"linear-gradient(135deg,#dfe2e6,#a9adb3)", filter:"hue-rotate(-30deg) saturate(0.25) brightness(1.08)"},
+];
+const SHAPES = ["All","Round","Oval","Cushion","Radiant","Emerald","Pear","Marquise","Princess"];
+const SIZES = [4, 4.5, 5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10];
+// Visual scale modifier per ring size (size 7 = baseline 1.0, ~3% per half size)
+const sizeScale = (s) => 1 + (s - 7) * 0.03;
+
+// ── HELPERS ──────────────────────────────────────────────────────────────────
+const dist = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
+const lerp = (a, b, t) => a + (b - a) * t;
+
+// Pre-process a ring product photo: chromakey near-white pixels to transparency
+// so the band can sit cleanly on the finger. Returns an offscreen canvas.
+function chromakeyWhite(img) {
+  const c = document.createElement("canvas");
+  c.width = img.naturalWidth || img.width;
+  c.height = img.naturalHeight || img.height;
+  const ctx = c.getContext("2d");
+  ctx.drawImage(img, 0, 0);
+  try {
+    const id = ctx.getImageData(0, 0, c.width, c.height);
+    const d = id.data;
+    for (let i = 0; i < d.length; i += 4) {
+      const r = d[i], g = d[i+1], b = d[i+2];
+      // Brightness + how close to neutral (low chroma) — kills white/grey bg
+      const max = Math.max(r,g,b), min = Math.min(r,g,b);
+      const lum = (r + g + b) / 3;
+      const chroma = max - min;
+      if (lum > 235 && chroma < 14) {
+        d[i+3] = 0;                       // fully transparent
+      } else if (lum > 215 && chroma < 22) {
+        d[i+3] = Math.max(0, d[i+3] - 180); // soft edge
+      }
+    }
+    ctx.putImageData(id, 0, 0);
+  } catch (e) {
+    // Cross-origin image — we won't be able to read pixels. The CDN remote
+    // images are likely tainted, so chromakey only works for local ./rings/*.
+    console.warn("chromakey skipped (likely CORS-tainted):", e.message);
+  }
+  return c;
+}
+
+// ── HAND-TRACKING + RENDER LOOP ──────────────────────────────────────────────
+// Lives outside React: MediaPipe is imperative and we don't want to re-init on
+// every render. App passes config in via a ref-tracked options object.
+function startTracking({ videoEl, canvasEl, getOptions, onStatus }) {
+  // MediaPipe sometimes loads before the script tag below resolves. Guard.
+  if (!window.Hands || !window.Camera) {
+    onStatus("MediaPipe failed to load. Check your network connection and reload.");
+    return () => {};
+  }
+
+  const ctx = canvasEl.getContext("2d");
+  const hands = new window.Hands({
+    locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`,
+  });
+  hands.setOptions({
+    maxNumHands: 1,
+    modelComplexity: 1,
+    minDetectionConfidence: 0.6,
+    minTrackingConfidence: 0.6,
+  });
+
+  let lastResults = null;
+  hands.onResults((res) => { lastResults = res; });
+
+  const camera = new window.Camera(videoEl, {
+    onFrame: async () => { await hands.send({ image: videoEl }); },
+    width: 1280,
+    height: 720,
+  });
+
+  let stopped = false;
+  let raf = 0;
+
+  // Smoothing: keep an exponentially-weighted average of the ring transform
+  // so the overlay doesn't jitter between frames.
+  let smooth = null;
+
+  function render() {
+    if (stopped) return;
+    raf = requestAnimationFrame(render);
+    const w = canvasEl.width = videoEl.videoWidth || 1280;
+    const h = canvasEl.height = videoEl.videoHeight || 720;
+
+    // Mirror the video: front-facing camera reads natural in selfie view
+    ctx.save();
+    ctx.scale(-1, 1);
+    ctx.drawImage(videoEl, -w, 0, w, h);
+    ctx.restore();
+
+    const opts = getOptions();
+    const lm = lastResults && lastResults.multiHandLandmarks && lastResults.multiHandLandmarks[0];
+    if (lm && opts.ringCanvas) {
+      // Landmarks are normalized [0,1]. Scale to canvas, then mirror x.
+      const px = (p) => ({ x: (1 - p.x) * w, y: p.y * h });
+      const L13 = px(lm[13]);  // Ring finger MCP (base)
+      const L14 = px(lm[14]);  // Ring finger PIP (first knuckle)
+      const L9  = px(lm[9]);   // Middle MCP (used for finger-width estimate)
+      const L17 = px(lm[17]);  // Pinky MCP (used for finger-width estimate)
+
+      // Position: 60% toward PIP from MCP — sits on the proximal phalanx
+      const cx = lerp(L13.x, L14.x, 0.55);
+      const cy = lerp(L13.y, L14.y, 0.55);
+
+      // Finger axis (rotation)
+      const fingerAngle = Math.atan2(L14.y - L13.y, L14.x - L13.x);
+
+      // Width estimate: proportional to MCP-to-MCP distance between adjacent
+      // fingers. More stable than the finger length, which foreshortens.
+      const knuckleSpan = (dist(L9, L13) + dist(L13, L17)) / 2;
+      const targetRingWidth = knuckleSpan * 1.55 * (opts.sizeScale || 1.0);
+
+      // Smooth via EMA so we don't jitter
+      const next = { cx, cy, angle: fingerAngle, w: targetRingWidth };
+      if (!smooth) smooth = next;
+      else {
+        const a = 0.35;  // higher = snappier, lower = smoother
+        smooth = {
+          cx: lerp(smooth.cx, next.cx, a),
+          cy: lerp(smooth.cy, next.cy, a),
+          // Angle EMA via vectors to avoid wraparound artefacts
+          angle: Math.atan2(
+            lerp(Math.sin(smooth.angle), Math.sin(next.angle), a),
+            lerp(Math.cos(smooth.angle), Math.cos(next.angle), a)
+          ),
+          w: lerp(smooth.w, next.w, a),
+        };
+      }
+
+      // Draw the ring image
+      const rc = opts.ringCanvas;
+      const aspect = rc.height / rc.width;
+      const drawW = smooth.w;
+      const drawH = drawW * aspect;
+
+      ctx.save();
+      ctx.translate(smooth.cx, smooth.cy);
+      // Rotate so the ring's long axis is perpendicular to the finger
+      ctx.rotate(smooth.angle + Math.PI / 2);
+      // Apply metal-tone tint via filter
+      if (opts.metalFilter) ctx.filter = opts.metalFilter;
+      ctx.drawImage(rc, -drawW / 2, -drawH / 2, drawW, drawH);
+      ctx.restore();
+
+      // Optional: draw a faint debug dot to reassure the user when tracking
+      if (opts.debug) {
+        ctx.fillStyle = "rgba(201,169,110,0.9)";
+        ctx.beginPath();
+        ctx.arc(smooth.cx, smooth.cy, 4, 0, Math.PI*2);
+        ctx.fill();
+      }
+    } else {
+      smooth = null;  // reset smoothing when hand leaves frame
+    }
+  }
+
+  camera.start()
+    .then(() => { onStatus("ready"); render(); })
+    .catch((err) => {
+      onStatus("camera-error: " + (err && err.message || err));
+    });
+
+  return () => {
+    stopped = true;
+    cancelAnimationFrame(raf);
+    try { camera.stop(); } catch(_) {}
+    try { hands.close(); } catch(_) {}
+  };
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// REACT UI
+// ─────────────────────────────────────────────────────────────────────────────
+function App() {
+  const videoRef = useRef(null);
+  const canvasRef = useRef(null);
+  const optsRef = useRef({ ringCanvas: null, metalFilter: METALS[0].filter, sizeScale: 1, debug: false });
+
+  const [selectedSlug, setSelectedSlug] = useState(RINGS[0].slug);
+  const [metal, setMetal] = useState(METALS[0].id);
+  const [shape, setShape] = useState("All");
+  const [size, setSize] = useState(7);
+  const [debug, setDebug] = useState(false);
+  const [status, setStatus] = useState("starting");
+  const [ringReady, setRingReady] = useState(false);
+
+  const filteredRings = useMemo(
+    () => shape === "All" ? RINGS : RINGS.filter(r => r.shapes.includes(shape)),
+    [shape]
+  );
+  const selected = useMemo(
+    () => RINGS.find(r => r.slug === selectedSlug) || RINGS[0],
+    [selectedSlug]
+  );
+
+  // Load + chromakey the active ring image when it changes
+  useEffect(() => {
+    let cancelled = false;
+    setRingReady(false);
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+    // Try local PNG first (pixel-readable for chromakey); fall back to remote.
+    img.src = selected.img;
+    img.onload = () => {
+      if (cancelled) return;
+      const c = chromakeyWhite(img);
+      optsRef.current.ringCanvas = c;
+      setRingReady(true);
+    };
+    img.onerror = () => {
+      if (cancelled) return;
+      // Local missing — fall back to remote CDN. Will be CORS-tainted, so
+      // chromakey is skipped, but image still draws with mix-blend at least.
+      const f = new Image();
+      f.crossOrigin = "anonymous";
+      f.src = selected.remote;
+      f.onload = () => {
+        if (cancelled) return;
+        optsRef.current.ringCanvas = chromakeyWhite(f);
+        setRingReady(true);
+      };
+    };
+    return () => { cancelled = true; };
+  }, [selected.slug]);
+
+  // Keep options ref in sync with state
+  useEffect(() => {
+    const m = METALS.find(x => x.id === metal) || METALS[0];
+    optsRef.current.metalFilter = m.filter;
+    optsRef.current.sizeScale = sizeScale(size);
+    optsRef.current.debug = debug;
+  }, [metal, size, debug]);
+
+  // Init MediaPipe once
+  useEffect(() => {
+    if (!videoRef.current || !canvasRef.current) return;
+    const stop = startTracking({
+      videoEl: videoRef.current,
+      canvasEl: canvasRef.current,
+      getOptions: () => optsRef.current,
+      onStatus: setStatus,
+    });
+    return stop;
+  }, []);
+
+  // Capture a still image (PNG) of the current canvas
+  const snapshot = useCallback(() => {
+    if (!canvasRef.current) return;
+    const a = document.createElement("a");
+    a.href = canvasRef.current.toDataURL("image/png");
+    a.download = `lovelri-tryon-${selected.slug}-${Date.now()}.png`;
+    a.click();
+  }, [selected.slug]);
+
+  // ── styles ─────────────────────────────────────────────────────────────────
+  const S = {
+    page: { fontFamily: B.sans, color: B.black, background: B.offwhite, minHeight: "100vh" },
+    header: {
+      display:"flex", alignItems:"center", justifyContent:"space-between",
+      padding:"22px 32px", borderBottom:`1px solid ${B.lightgray}`,
+      background: B.white,
+    },
+    brand: { fontFamily: B.serif, fontSize:28, fontWeight:500, letterSpacing:"0.02em" },
+    eyebrow: { fontSize:11, letterSpacing:"0.22em", textTransform:"uppercase", color:B.gray },
+    grid: {
+      display:"grid", gridTemplateColumns:"minmax(0,1fr) 380px",
+      gap:24, padding:24, maxWidth:1440, margin:"0 auto",
+    },
+    stage: {
+      position:"relative", background:"#000", borderRadius:14, overflow:"hidden",
+      aspectRatio:"4/3", boxShadow:"0 20px 60px -30px rgba(0,0,0,0.4)",
+    },
+    canvas: { width:"100%", height:"100%", display:"block", objectFit:"cover" },
+    overlay: {
+      position:"absolute", inset:0, display:"flex", alignItems:"flex-end",
+      justifyContent:"space-between", padding:18, pointerEvents:"none",
+    },
+    overlayPill: {
+      pointerEvents:"auto",
+      background:"rgba(26,26,26,0.55)", color:"#fff",
+      padding:"8px 14px", borderRadius:999, fontSize:12, letterSpacing:"0.08em",
+      backdropFilter:"blur(8px)",
+    },
+    captureBtn: {
+      pointerEvents:"auto", border:"none", cursor:"pointer",
+      background: B.gold, color:"#fff",
+      padding:"12px 22px", borderRadius:999, fontSize:13, letterSpacing:"0.12em",
+      textTransform:"uppercase", fontWeight:500,
+      boxShadow:"0 8px 30px -10px rgba(201,169,110,0.7)",
+    },
+    panel: {
+      background: B.white, borderRadius:14, padding:24,
+      border:`1px solid ${B.lightgray}`, alignSelf:"start",
+      display:"flex", flexDirection:"column", gap:20,
+    },
+    sectionTitle: {
+      fontFamily: B.serif, fontSize:20, fontWeight:500, margin:0,
+    },
+    sectionSub: { fontSize:12, color:B.gray, marginTop:4 },
+    label: {
+      fontSize:11, letterSpacing:"0.18em", textTransform:"uppercase",
+      color:B.gray, marginBottom:10, display:"block",
+    },
+    chipRow: { display:"flex", flexWrap:"wrap", gap:8 },
+    chip: (active) => ({
+      padding:"7px 14px", borderRadius:999, cursor:"pointer", userSelect:"none",
+      fontSize:12, letterSpacing:"0.06em",
+      border: active ? `1px solid ${B.gold}` : `1px solid ${B.border}`,
+      background: active ? "rgba(201,169,110,0.12)" : B.white,
+      color: active ? B.goldDark : B.gray,
+      transition:"all 120ms ease",
+    }),
+    metalRow: { display:"flex", gap:10 },
+    metalSwatch: (m, active) => ({
+      flex:1, cursor:"pointer", padding:10, borderRadius:10,
+      border: active ? `2px solid ${B.gold}` : `1px solid ${B.border}`,
+      background: B.white, display:"flex", flexDirection:"column", gap:8, alignItems:"center",
+      transition:"all 120ms ease",
+    }),
+    swatchDisc: (bg) => ({ width:34, height:34, borderRadius:"50%", background:bg, boxShadow:"inset 0 0 6px rgba(0,0,0,0.18)" }),
+    swatchLabel: { fontSize:10, letterSpacing:"0.08em", color:B.gray, textTransform:"uppercase" },
+    sliderRow: { display:"flex", alignItems:"center", gap:12 },
+    sliderTrack: { flex:1 },
+    sizeBadge: {
+      minWidth:46, textAlign:"center", fontFamily:B.serif, fontSize:18,
+      padding:"4px 10px", border:`1px solid ${B.border}`, borderRadius:8,
+    },
+    ringRail: {
+      display:"flex", gap:10, overflowX:"auto", paddingBottom:10,
+      scrollSnapType:"x mandatory",
+    },
+    ringCard: (active) => ({
+      flex:"0 0 110px", scrollSnapAlign:"start", cursor:"pointer", textAlign:"center",
+      padding:8, borderRadius:10,
+      border: active ? `1px solid ${B.gold}` : `1px solid ${B.lightgray}`,
+      background: active ? "rgba(201,169,110,0.06)" : B.white,
+      transition:"all 120ms ease",
+    }),
+    ringThumb: { width:"100%", aspectRatio:"1", objectFit:"cover", borderRadius:6, background:"#f4f4f0" },
+    ringName: { marginTop:6, fontSize:11, color:B.black, lineHeight:1.3, fontFamily:B.serif },
+    ringPrice: { fontSize:10, color:B.gray, letterSpacing:"0.06em" },
+    statusLine: {
+      fontSize:11, color:B.gray, letterSpacing:"0.1em",
+      textTransform:"uppercase", padding:"8px 14px",
+      background:"rgba(201,169,110,0.08)", borderRadius:6,
+    },
+    footer: {
+      textAlign:"center", padding:"32px 16px", color:B.gray, fontSize:12,
+      borderTop:`1px solid ${B.lightgray}`, marginTop:24,
+    },
+    link: { color:B.goldDark, textDecoration:"none", borderBottom:`1px solid ${B.gold}` },
+  };
+
+  // ── render ─────────────────────────────────────────────────────────────────
+  return (
+    <div style={S.page}>
+      <header style={S.header}>
+        <div>
+          <div style={S.eyebrow}>Lovelri</div>
+          <div style={S.brand}>Virtual Try-On</div>
+        </div>
+        <a href="./index.html" style={{...S.eyebrow, textDecoration:"none", color:B.goldDark}}>← Hub</a>
+      </header>
+
+      <div style={S.grid}>
+        {/* ── LEFT: live AR stage ─────────────────────────────────────────── */}
+        <div>
+          <div style={S.stage}>
+            <video ref={videoRef} className="hidden-source" playsInline muted />
+            <canvas ref={canvasRef} style={S.canvas} />
+            <div style={S.overlay}>
+              <div style={S.overlayPill}>
+                {status === "ready" ? "● Tracking" :
+                 status === "starting" ? "Starting camera…" :
+                 status.startsWith("camera-error") ? "Camera blocked — allow access and reload" :
+                 status}
+              </div>
+              <button style={S.captureBtn} onClick={snapshot} disabled={status !== "ready"}>
+                Capture
+              </button>
+            </div>
+          </div>
+
+          <div style={{display:"flex", justifyContent:"space-between", alignItems:"center", marginTop:14, padding:"0 4px", fontSize:12, color:B.gray}}>
+            <span>Hold your hand at arm's length, palm facing the camera, fingers slightly spread.</span>
+            <label style={{display:"flex", alignItems:"center", gap:6, cursor:"pointer"}}>
+              <input type="checkbox" checked={debug} onChange={e => setDebug(e.target.checked)} />
+              <span style={{fontSize:11, letterSpacing:"0.08em", textTransform:"uppercase"}}>Debug dot</span>
+            </label>
+          </div>
+        </div>
+
+        {/* ── RIGHT: configurator ─────────────────────────────────────────── */}
+        <aside style={S.panel}>
+          <div>
+            <h2 style={S.sectionTitle}>{selected.name}</h2>
+            <div style={S.sectionSub}>
+              {selected.collection} · {selected.price} ·{" "}
+              <a href={selected.url} target="_blank" rel="noreferrer" style={S.link}>View on lovelri.com</a>
+            </div>
+          </div>
+
+          {!ringReady && (
+            <div style={S.statusLine}>Loading ring…</div>
+          )}
+
+          {/* Metal */}
+          <div>
+            <span style={S.label}>Metal</span>
+            <div style={S.metalRow}>
+              {METALS.map(m => (
+                <div key={m.id} style={S.metalSwatch(m, metal === m.id)} onClick={() => setMetal(m.id)}>
+                  <div style={S.swatchDisc(m.swatch)} />
+                  <div style={S.swatchLabel}>{m.label}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Shape filter */}
+          <div>
+            <span style={S.label}>Stone shape</span>
+            <div style={S.chipRow}>
+              {SHAPES.map(s => (
+                <div key={s} style={S.chip(shape === s)} onClick={() => setShape(s)}>{s}</div>
+              ))}
+            </div>
+          </div>
+
+          {/* Size */}
+          <div>
+            <span style={S.label}>Ring size</span>
+            <div style={S.sliderRow}>
+              <input
+                type="range" min={4} max={10} step={0.5} value={size}
+                onChange={e => setSize(parseFloat(e.target.value))}
+                style={S.sliderTrack}
+              />
+              <span style={S.sizeBadge}>{size}</span>
+            </div>
+          </div>
+
+          {/* Ring picker rail */}
+          <div>
+            <span style={S.label}>
+              Choose a ring · {filteredRings.length} {shape === "All" ? "" : `with ${shape} option`}
+            </span>
+            <div style={S.ringRail} className="ring-rail">
+              {filteredRings.map(r => (
+                <div key={r.slug} style={S.ringCard(r.slug === selectedSlug)} onClick={() => setSelectedSlug(r.slug)}>
+                  <img src={r.img} style={S.ringThumb} alt={r.name}
+                       onError={(e) => { e.currentTarget.src = r.remote; }} />
+                  <div style={S.ringName}>{r.name}</div>
+                  <div style={S.ringPrice}>{r.price}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </aside>
+      </div>
+
+      <div style={S.footer}>
+        AR overlay is for visualization only — final ring sizing and stone clarity are confirmed in person at our Bay Street showroom.<br/>
+        Hand tracking by <a href="https://google.github.io/mediapipe/" target="_blank" rel="noreferrer" style={S.link}>MediaPipe Hands</a>. Photos and pricing from lovelri.com.
+      </div>
+    </div>
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(<App />);
+</script>
+</body>
+</html>

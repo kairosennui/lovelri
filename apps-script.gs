@@ -86,4 +86,32 @@ function doGet(e) {
     const headers = data[0];
     const items = data.slice(1).map(row => {
       const obj = {};
-      headers.forEach((h, i)
+      headers.forEach((h, i) => { if (h) obj[h] = row[i]; });
+      return obj;
+    });
+    return jsonResponse({ items });
+  } catch (err) {
+    return jsonResponse({ items: [], error: err.toString() });
+  }
+}
+
+function jsonResponse(obj) {
+  return ContentService.createTextOutput(JSON.stringify(obj))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+// One-time helper Tony can run from the Apps Script editor to seed the
+// header rows correctly. Run → Authorize → Run again. After that,
+// the regular doGet/doPost work without further setup.
+function seedHeaders() {
+  const ss = SpreadsheetApp.getActive();
+  const leadHeaders = ['id','name','email','phone','occasion','budget','style','source','status','time','notes','createdAt'];
+  const bookHeaders = ['id','name','email','phone','type','apptId','consultant','date','time','duration','status','notes','occasion','budget','createdAt'];
+  let leads = ss.getSheetByName('Leads');
+  if (!leads) leads = ss.insertSheet('Leads');
+  if (leads.getLastRow() === 0) leads.getRange(1, 1, 1, leadHeaders.length).setValues([leadHeaders]);
+  let books = ss.getSheetByName('Bookings');
+  if (!books) books = ss.insertSheet('Bookings');
+  if (books.getLastRow() === 0) books.getRange(1, 1, 1, bookHeaders.length).setValues([bookHeaders]);
+  Logger.log('Headers seeded. Now deploy as Web App.');
+}

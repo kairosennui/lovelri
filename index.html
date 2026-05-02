@@ -1361,6 +1361,13 @@ const SECTIONS = [
         purpose: "Lab Diamond Buyer's Guide PDF that captures emails for the funnel.",
         gap: "Footer email signup has zero incentive — Lovelri builds no list.",
       },
+      {
+        id: "tryon",
+        href: "./try-on.html",
+        title: "Virtual Try-On (AR)",
+        purpose: "Live camera + hand tracking overlays any Lovelri ring on the shopper's finger. Pick metal, stone shape, and size.",
+        gap: "Online shoppers can't 'try' rings before booking — AR closes the imagination gap that competitors don't offer.",
+      },
     ],
   },
   {
@@ -1542,6 +1549,7 @@ function Dashboard(){
         )}
         {active!=="overview"&&<span style={{color:B.lightgray}}>·</span>}
         <span style={{fontFamily:B.sans,fontSize:11,letterSpacing:"0.18em",textTransform:"uppercase",color:active==="overview"?B.gold:B.black}}>{NAV.find(n=>n.id===active)?.label}</span>
+        <a href="./try-on.html" style={{marginLeft:"auto",fontFamily:B.sans,fontSize:11,letterSpacing:"0.14em",textTransform:"uppercase",color:B.gold,textDecoration:"none",borderBottom:`1px solid ${B.gold}`,paddingBottom:1}}>◇ AR Try-On</a>
       </div>
       <div style={{padding:"24px 16px 80px",maxWidth:640,margin:"0 auto",boxSizing:"border-box"}}>
         {active==="overview"&&(
@@ -1586,7 +1594,7 @@ function Dashboard(){
                 <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
                   {section.blocks.map(b=>(
                     <div key={b.id}
-                      onClick={()=>go(b.id)}
+                      onClick={()=>{ if(b.href){ window.location.href=b.href; } else { go(b.id); } }}
                       style={{background:B.white,border:`1px solid ${B.border}`,padding:"15px 16px 13px",cursor:"pointer",transition:"all 0.15s",display:"flex",flexDirection:"column",gap:7,minHeight:170}}
                       onMouseEnter={e=>{e.currentTarget.style.borderColor=B.black;e.currentTarget.style.background=B.offwhite;}}
                       onMouseLeave={e=>{e.currentTarget.style.borderColor=B.border;e.currentTarget.style.background=B.white;}}>
