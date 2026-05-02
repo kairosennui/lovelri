@@ -8,11 +8,16 @@ A self-contained set of HTML pages for running the Lovelri customer-facing booki
 | --- | --- | --- |
 | `index.html` | Tony / team | Central hub — site audit, competition, marketing, SEO, social, leads, bookings admin |
 | `bookings.html` | Customers | 4-step booking flow → emails Tony + sends customer confirmation with calendar links |
-| `try-on.html` | Customers | Live AR ring try-on — MediaPipe Hands tracks the ring finger, picks metal / stone shape / size, captures a still |
+| `try-on.html` | Customers | Live AR ring try-on — MediaPipe Hands tracks the ring finger, swaps the displayed photo based on hand orientation (FRONT / 3-quarter / SIDE), picks metal / stone shape / size |
 | `emailjs-test.html` | Internal | Diagnostic page to verify EmailJS credentials are wired correctly |
-| `rings/` | All pages | Ring photos used by the configurator + chat widget + try-on |
+| `rings/` | All pages | Local thumbnails used by the configurator + chat widget |
+| `ring-photos.json` | Try-on | Scraped product photos from lovelri.com — output of `scripts/scrape-rings.js` |
+| `ring-views.json` | Try-on | Curated `slug → angle → metal → photoURL` lookup — output of `scripts/build-ring-views.js` |
+| `scripts/` | Internal | Node scripts for the try-on data pipeline (no build step required at runtime) |
 
-> **AR Try-On note:** browsers only allow camera access on HTTPS origins (or `localhost`). GitHub Pages and Vercel both serve HTTPS by default — Shopify embeds need `<iframe src="…/try-on.html" allow="camera">` for the camera permission to propagate.
+> **AR Try-On notes:**
+> - Browsers only allow camera access on HTTPS origins (or `localhost`). GitHub Pages and Vercel both serve HTTPS by default — Shopify embeds need `<iframe src="…/try-on.html" allow="camera">` for the camera permission to propagate.
+> - The pilot ring set is 10 rings with multi-angle photos (Sicily Lotus, Dolomites, Hawaii, Mt. Fuji, Switzerland, Victoria, Versailles, Edmonton, Lake Como, Vancouver). Other rings fall back to a single flat overlay. To add more rings to the pilot, edit `scripts/build-ring-views.js` classifications and re-run both scripts.
 
 All pages are static HTML with React + Babel + EmailJS pulled from CDNs at runtime. **No build step. No server.** Open any file in a browser and it works.
 
