@@ -28,6 +28,13 @@ echo.
 echo [2/7] Initializing fresh repo on branch 'main'...
 git init -b main
 if errorlevel 1 goto :err
+
+REM Disable git's automatic gc / repack — OneDrive locks .git/objects/XX
+REM folders during sync and the gc deletion step prompts hundreds of times.
+REM This MUST run after init since init creates a fresh config.
+git config gc.auto 0
+git config gc.autoPackLimit 0
+git config gc.autoDetach false
 echo.
 
 echo [3/7] Linking to GitHub remote...
