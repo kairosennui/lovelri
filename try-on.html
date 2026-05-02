@@ -152,14 +152,33 @@ function chromakeyWhite(img) {
   return c;
 }
 
-// Image loader that resolves to a chromakeyed canvas, with a fallback chain.
+// Image loader. For pre-processed PNGs in ./rings/multi/ (already
+// chromakeyed + auto-cropped at build time by scripts/process-rings.js),
+// we MUST skip the runtime chromakey pass — it would otherwise treat the
+// white-gold ring band itself (bright + low-chroma) as background and
+// erase it. For everything else we still chromakey at load time.
 const _ringCache = new Map();
+function imageToCanvas(img) {
+  const c = document.createElement("canvas");
+  c.width = img.naturalWidth || img.width;
+  c.height = img.naturalHeight || img.height;
+  c.getContext("2d").drawImage(img, 0, 0);
+  return c;
+}
 function loadRingImage(url) {
   if (_ringCache.has(url)) return _ringCache.get(url);
+  const isPreProcessed = /\/rings\/multi\//.test(url);
   const promise = new Promise((resolve) => {
     const img = new Image();
     img.crossOrigin = "anonymous";
-    img.onload = () => resolve(chromakeyWhite(img));
+    img.onload = () => {
+      const canvas = isPreProcessed ? imageToCanvas(img) : chromakeyWhite(img);
+      // Tag canvas so the renderer can apply the right scale factor:
+      // pre-processed multi/ images are tight-cropped (use 1.0× knuckleSpan),
+      // legacy ./rings/*.png have whitespace padding (use 1.55×).
+      canvas._isMulti = isPreProcessed;
+      resolve(canvas);
+    };
     img.onerror = () => resolve(null);
     img.src = url;
   });
@@ -277,7 +296,12 @@ function startTracking({ videoEl, canvasEl, getOptions, onStatus, onBucket }) {
         const cy = lerp(L13.y, L14.y, 0.55);
         const fingerAngle = Math.atan2(L14.y - L13.y, L14.x - L13.x);
         const knuckleSpan = (dist(L9, L13) + dist(L13, L17)) / 2;
-        const targetWidth = knuckleSpan * 1.55 * (opts.sizeScale || 1.0);
+        // Pre-processed PNGs in /rings/multi/ are tight-cropped, so the
+        // band's outer diameter ≈ image width. Legacy ./rings/*.png have
+        // whitespace padding so they need a larger draw scale.
+        const isMulti = drawSrc._isMulti === true;
+        const baseScale = isMulti ? 1.0 : 1.55;
+        const targetWidth = knuckleSpan * baseScale * (opts.sizeScale || 1.0);
 
         const next = { cx, cy, angle: fingerAngle, w: targetWidth };
         if (!smooth) smooth = next;
