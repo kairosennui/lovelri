@@ -19,6 +19,46 @@
   video.hidden-source{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
   .ring-rail::-webkit-scrollbar{height:6px}
   .ring-rail::-webkit-scrollbar-thumb{background:#d8d8d2;border-radius:3px}
+
+  /* ═══════════════════════════════════════════════════════════════════
+     Mobile responsive overrides — CSS-only fallback so the layout is
+     correct even before React runs / regardless of JS isNarrow state.
+     Target: viewport width ≤ 900px (covers all phones in portrait
+     and most tablets in portrait).
+     ═══════════════════════════════════════════════════════════════════ */
+  @media (max-width: 900px) {
+    .tryon-grid {
+      grid-template-columns: 1fr !important;
+      gap: 14px !important;
+      padding: 12px !important;
+    }
+    .tryon-stage {
+      aspect-ratio: 3/4 !important;
+    }
+    .tryon-header {
+      padding: 16px 18px !important;
+    }
+    .tryon-brand {
+      font-size: 22px !important;
+    }
+    .tryon-panel {
+      padding: 16px !important;
+      gap: 16px !important;
+    }
+    .tryon-ring-card {
+      flex: 0 0 96px !important;
+    }
+    .tryon-capture-btn {
+      padding: 14px 18px !important;
+      min-height: 44px !important;
+    }
+    /* Make tap targets big enough for fingers */
+    .tryon-chip { padding: 10px 16px !important; min-height: 40px !important; }
+  }
+  @media (max-width: 480px) {
+    .tryon-h2 { font-size: 18px !important; }
+    .tryon-grid { padding: 8px !important; }
+  }
 </style>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&display=swap" rel="stylesheet">
 </head>
@@ -631,17 +671,17 @@ function App() {
 
   return (
     <div style={S.page}>
-      <header style={S.header}>
+      <header style={S.header} className="tryon-header">
         <div>
           <div style={S.eyebrow}>Lovelri</div>
-          <div style={S.brand}>Virtual Try-On</div>
+          <div style={S.brand} className="tryon-brand">Virtual Try-On</div>
         </div>
         <a href="./index.html" style={{...S.eyebrow, textDecoration:"none", color:B.goldDark}}>← Hub</a>
       </header>
 
-      <div style={S.grid}>
+      <div style={S.grid} className="tryon-grid">
         <div>
-          <div style={S.stage}>
+          <div style={S.stage} className="tryon-stage">
             <video ref={videoRef} className="hidden-source" playsInline muted autoPlay />
             <canvas ref={canvasRef} style={S.canvas} />
 
@@ -683,7 +723,7 @@ function App() {
                  (isTouch && !hasStarted) ? "Tap to start" :
                  status}
               </div>
-              <button style={S.captureBtn} onClick={snapshot} disabled={status !== "ready"}>
+              <button style={S.captureBtn} className="tryon-capture-btn" onClick={snapshot} disabled={status !== "ready"}>
                 Capture
               </button>
             </div>
@@ -698,7 +738,7 @@ function App() {
           </div>
         </div>
 
-        <aside style={S.panel}>
+        <aside style={S.panel} className="tryon-panel">
           <div>
             <h2 style={S.sectionTitle}>
               {selected.name}
