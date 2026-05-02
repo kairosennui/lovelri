@@ -23,30 +23,97 @@
   /* ═══════════════════════════════════════════════════════════════════
      Mobile responsive overrides — CSS-only fallback so the layout is
      correct even before React runs / regardless of JS isNarrow state.
+
+     Mobile UX pattern: camera fills the entire viewport. The configurator
+     becomes a bottom sheet that slides up over the video. Tap the handle
+     to expand/collapse — the AR view is never obscured permanently.
+
      Target: viewport width ≤ 900px (covers all phones in portrait
      and most tablets in portrait).
      ═══════════════════════════════════════════════════════════════════ */
   @media (max-width: 900px) {
+    body { overflow: hidden; }
+
     .tryon-grid {
+      display: block !important;
       grid-template-columns: 1fr !important;
-      gap: 14px !important;
-      padding: 12px !important;
+      gap: 0 !important;
+      padding: 0 !important;
+      /* dvh = dynamic viewport height: respects iOS Safari's URL bar */
+      height: 100dvh !important;
+      position: relative !important;
     }
     .tryon-stage {
-      aspect-ratio: 3/4 !important;
+      aspect-ratio: auto !important;
+      height: 100dvh !important;
+      width: 100% !important;
+      border-radius: 0 !important;
+      box-shadow: none !important;
     }
-    .tryon-header {
-      padding: 16px 18px !important;
-    }
-    .tryon-brand {
-      font-size: 22px !important;
-    }
+    /* Hide the "hold your hand at arm's length" tip on mobile to keep the
+       camera frame clean — instructions live in the drawer header instead. */
+    .tryon-tip { display: none !important; }
+
+    /* ── BOTTOM SHEET: configurator becomes a slide-up drawer ───────── */
     .tryon-panel {
-      padding: 16px !important;
+      position: fixed !important;
+      bottom: 0 !important;
+      left: 0 !important;
+      right: 0 !important;
+      max-height: 80dvh !important;
+      background: rgba(255,255,255,0.97) !important;
+      -webkit-backdrop-filter: blur(14px) saturate(150%);
+      backdrop-filter: blur(14px) saturate(150%);
+      border-radius: 22px 22px 0 0 !important;
+      box-shadow: 0 -12px 50px -10px rgba(0,0,0,0.28) !important;
+      /* Default state: collapsed, only handle visible (~92px peek) */
+      transform: translateY(calc(100% - 92px));
+      transition: transform 0.34s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 50 !important;
+      overflow-y: auto !important;
+      overscroll-behavior: contain !important;
+      padding: 0 16px 28px !important;
       gap: 18px !important;
+      border: none !important;
     }
-    /* Bigger ring picker cards — ~half the screen wide so 2 cards visible
-       at once, generous tap target. Photo inside is bigger too. */
+    .tryon-panel.is-open {
+      transform: translateY(0) !important;
+    }
+
+    /* Drawer handle — sticky at top so it stays visible when scrolling */
+    .tryon-drawer-handle {
+      position: sticky !important;
+      top: 0 !important;
+      background: rgba(255,255,255,0.97);
+      -webkit-backdrop-filter: blur(14px) saturate(150%);
+      backdrop-filter: blur(14px) saturate(150%);
+      margin: 0 -16px 4px !important;
+      padding: 10px 16px 12px !important;
+      z-index: 1;
+      cursor: pointer;
+      text-align: center;
+      user-select: none;
+      border-radius: 22px 22px 0 0;
+      display: block !important;
+    }
+    .tryon-drawer-handle::before {
+      content: '';
+      display: block;
+      width: 44px;
+      height: 4px;
+      background: #d8d8d2;
+      border-radius: 2px;
+      margin: 0 auto 8px;
+    }
+    .tryon-drawer-handle-label {
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #8c6d3f;
+      font-weight: 500;
+    }
+
+    /* Bigger ring picker cards — finger-friendly */
     .tryon-ring-card {
       flex: 0 0 140px !important;
       padding: 10px !important;
@@ -54,7 +121,6 @@
     .tryon-ring-rail {
       gap: 12px !important;
       padding-bottom: 14px !important;
-      /* Snap-to-card scrolling feels more deliberate on a phone */
       scroll-snap-type: x mandatory !important;
       -webkit-overflow-scrolling: touch !important;
     }
@@ -64,7 +130,6 @@
       padding: 14px 18px !important;
       min-height: 44px !important;
     }
-    /* Bigger metal swatches: full-width, finger-sized, easy to tap */
     .tryon-metal-swatch {
       padding: 14px !important;
       gap: 10px !important;
@@ -74,20 +139,41 @@
       height: 44px !important;
     }
     .tryon-metal-swatch-label { font-size: 11px !important; }
-    /* Bigger chips for stone shape filter */
     .tryon-chip {
       padding: 10px 16px !important;
       font-size: 13px !important;
       min-height: 40px !important;
     }
-    /* Larger range slider thumb on mobile — default is too small for fingers */
     .tryon-panel input[type="range"] {
       height: 36px !important;
     }
+    /* Make the bucket pill stand out over a fullscreen video */
+    .tryon-grid > div:first-child > div:first-child > [style*="bucketPill"] {
+      top: calc(env(safe-area-inset-top, 0) + 14px) !important;
+      left: 14px !important;
+    }
+    /* Header floats over video, doesn't take its own row */
+    .tryon-header {
+      position: absolute !important;
+      top: 0; left: 0; right: 0;
+      background: linear-gradient(to bottom, rgba(0,0,0,0.4), rgba(0,0,0,0)) !important;
+      border-bottom: none !important;
+      color: #fff !important;
+      padding: calc(env(safe-area-inset-top, 0) + 12px) 18px 24px !important;
+      z-index: 60 !important;
+    }
+    .tryon-header > div > div { color: rgba(255,255,255,0.7) !important; }
+    .tryon-brand { color: #fff !important; font-size: 20px !important; }
+    .tryon-header a { color: #c9a96e !important; }
   }
+
+  /* Drawer handle hidden on desktop — only the slide-up pattern is mobile */
+  @media (min-width: 901px) {
+    .tryon-drawer-handle { display: none !important; }
+  }
+
   @media (max-width: 480px) {
     .tryon-h2 { font-size: 18px !important; }
-    .tryon-grid { padding: 8px !important; }
     .tryon-ring-card { flex: 0 0 120px !important; }
   }
 </style>
@@ -449,7 +535,7 @@ function App() {
   const [ringReady, setRingReady] = useState(false);
 
   // Track viewport for responsive layout — desktop uses 2-column grid,
-  // mobile stacks the camera above the configurator.
+  // mobile uses fullscreen camera + bottom-sheet drawer.
   const [isNarrow, setIsNarrow] = useState(
     typeof window !== "undefined" ? window.innerWidth < 900 : false
   );
@@ -462,6 +548,10 @@ function App() {
       window.removeEventListener("orientationchange", check);
     };
   }, []);
+
+  // Mobile bottom-sheet state. Closed by default so the AR view is unobstructed.
+  // Tap the drawer handle to expand/collapse.
+  const [panelOpen, setPanelOpen] = useState(false);
 
   const filteredRings = useMemo(
     () => shape === "All" ? RINGS : RINGS.filter(r => r.shapes.includes(shape)),
@@ -760,7 +850,7 @@ function App() {
             </div>
           </div>
 
-          <div style={{display:"flex", justifyContent:"space-between", alignItems:"center", marginTop:14, padding:"0 4px", fontSize:12, color:B.gray}}>
+          <div className="tryon-tip" style={{display:"flex", justifyContent:"space-between", alignItems:"center", marginTop:14, padding:"0 4px", fontSize:12, color:B.gray}}>
             <span>Hold your hand at arm's length, fingers slightly spread. Rotate your hand to see different ring angles.</span>
             <label style={{display:"flex", alignItems:"center", gap:6, cursor:"pointer"}}>
               <input type="checkbox" checked={debug} onChange={e => setDebug(e.target.checked)} />
@@ -769,7 +859,19 @@ function App() {
           </div>
         </div>
 
-        <aside style={S.panel} className="tryon-panel">
+        <aside style={S.panel} className={`tryon-panel${panelOpen ? " is-open" : ""}`}>
+          {/* Mobile-only drawer handle — tap to slide up/down */}
+          <div
+            className="tryon-drawer-handle"
+            onClick={() => setPanelOpen(o => !o)}
+            role="button"
+            aria-label={panelOpen ? "Collapse options" : "Expand options"}
+          >
+            <span className="tryon-drawer-handle-label">
+              {panelOpen ? "Tap to collapse" : `${selected.name} · Tap for options`}
+            </span>
+          </div>
+
           <div>
             <h2 style={S.sectionTitle}>
               {selected.name}
