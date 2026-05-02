@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-02T01:49:34.405Z",
+  "generatedAt": "2026-05-02T02:58:45.589Z",
   "rings": [
     {
       "slug": "sicily-lotus-ring",
@@ -92,7 +92,7 @@
           "angle": null
         }
       ],
-      "fetchedAt": "2026-05-02T01:49:34.928Z"
+      "fetchedAt": "2026-05-02T02:58:45.951Z"
     },
     {
       "slug": "dolomites-ring",
@@ -185,7 +185,100 @@
           "angle": null
         }
       ],
-      "fetchedAt": "2026-05-02T01:49:35.130Z"
+      "fetchedAt": "2026-05-02T02:58:46.117Z"
+    },
+    {
+      "slug": "sicily-ring-marquise",
+      "title": "Sicily Ring - Marquise",
+      "handle": "sicily-ring-marquise",
+      "productType": "Engagement Ring",
+      "vendor": "Lovelri Engagements",
+      "tags": "14K Solid Gold, 18K Solid Gold, _select_diamond, _unbridaled, Cathedral, Floral, Hidden Halo, Lab Diamond Settings, lab diamonds, Marquise Cut, Modern, Platinum",
+      "priceFrom": "4982.00",
+      "images": [
+        {
+          "id": 41462014378161,
+          "position": 1,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/3_3c911e08-1638-4afe-b073-0b029cc552a6.png?v=1762052821",
+          "width": 3000,
+          "height": 3000,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 41462014410929,
+          "position": 2,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/4_5eaa16bf-c751-4c9c-adc1-af9de507d5a2.png?v=1762052821",
+          "width": 3000,
+          "height": 3000,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 41462014312625,
+          "position": 3,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/1_453d43be-7ab9-4b80-a7e6-21019bd02996.png?v=1762052821",
+          "width": 3000,
+          "height": 3000,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 41462014345393,
+          "position": 4,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/2_b6d377fb-5e8d-4f30-8ed5-195ca0d7d6d0.png?v=1762052821",
+          "width": 3000,
+          "height": 3000,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 41462014443697,
+          "position": 5,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/5_e24d81d5-630c-489d-9248-5f946c761601.png?v=1762052718",
+          "width": 3000,
+          "height": 3000,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 41462014476465,
+          "position": 6,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/6_bf765edd-3237-4c2d-a657-d8a2dd77b795.png?v=1762052718",
+          "width": 3000,
+          "height": 3000,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 41462014509233,
+          "position": 7,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/7_7719c525-84bf-4e5b-b9b9-7389710278d6.png?v=1762052718",
+          "width": 3000,
+          "height": 3000,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 41462014542001,
+          "position": 8,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/8_30cb869d-dc35-42c8-ba8f-108a1cd9a571.png?v=1762052719",
+          "width": 3000,
+          "height": 3000,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 41462014574769,
+          "position": 9,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/9_dca77447-a83d-456a-b38d-8414e06af15c.png?v=1762052718",
+          "width": 3000,
+          "height": 3000,
+          "alt": null,
+          "angle": null
+        }
+      ],
+      "fetchedAt": "2026-05-02T02:58:46.258Z"
     },
     {
       "slug": "hawaii-ring",
@@ -278,7 +371,100 @@
           "angle": null
         }
       ],
-      "fetchedAt": "2026-05-02T01:49:35.289Z"
+      "fetchedAt": "2026-05-02T02:58:46.437Z"
+    },
+    {
+      "slug": "portland",
+      "title": "Portland Ring",
+      "handle": "portland",
+      "productType": "Engagement Ring",
+      "vendor": "Lovelri Engagements",
+      "tags": "14K Solid Gold, 18K Solid Gold, _select_diamond, _unbridaled, Floral, Lab Diamond Settings, lab diamonds, Modern, Oval Cut, Platinum, Solitaire",
+      "priceFrom": "3937.00",
+      "images": [
+        {
+          "id": 37240988893361,
+          "position": 1,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/1_cc6fabf1-3658-4995-937e-ca4d8c8c99c1.png?v=1752461381",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 37240988860593,
+          "position": 2,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/8_207fb3d7-a2e7-4dd3-80fe-772cfacb88d0.png?v=1752461381",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 37240988958897,
+          "position": 3,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/7_59275c57-6112-4712-8b20-63feaa568918.png?v=1752461381",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 37240988827825,
+          "position": 4,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/6_d7b19736-308b-45a6-9473-e327f9671845.png?v=1752461381",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 37240988926129,
+          "position": 5,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/9_1dea3eea-b572-44e4-981b-5fefbee4b802.png?v=1752461381",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 37240989024433,
+          "position": 6,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/4_08c9d7f4-47a9-4b8a-bc44-72faf5d50e40.png?v=1752461382",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 37240989057201,
+          "position": 7,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/2_6a7c43f7-3360-460a-bf3e-c0bc4f46b654.png?v=1752461382",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 37240988991665,
+          "position": 8,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/5_40f6dd1e-c6c8-4068-bad5-be1662fe69cb.png?v=1752461382",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 37240988795057,
+          "position": 9,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/3_f3f4d180-c414-4bef-a92e-bd4088ea4a0f.png?v=1752461382",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        }
+      ],
+      "fetchedAt": "2026-05-02T02:58:46.567Z"
     },
     {
       "slug": "mt-fuji-ring",
@@ -371,7 +557,100 @@
           "angle": null
         }
       ],
-      "fetchedAt": "2026-05-02T01:49:35.493Z"
+      "fetchedAt": "2026-05-02T02:58:46.719Z"
+    },
+    {
+      "slug": "thunder-bay-ring",
+      "title": "Thunder Bay Ring",
+      "handle": "thunder-bay-ring",
+      "productType": "Engagement Ring",
+      "vendor": "Lovelri Engagements",
+      "tags": "14K Solid Gold, 18K Solid Gold, _select_diamond, _unbridaled, Cathedral, Cluster, Lab Diamond Settings, lab diamonds, Modern, Oval Cut, Platinum, Side Stones",
+      "priceFrom": "4662.00",
+      "images": [
+        {
+          "id": 37196701204657,
+          "position": 1,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/Thunder_Bay_Diamond_Ring.png?v=1752461410",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 37196700844209,
+          "position": 2,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/Thunder-Bay-Diamond-Ring.png?v=1752461411",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 37196701565105,
+          "position": 3,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/1_9cfec9fb-d646-4079-8682-842d06c9b25d.png?v=1752461411",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 37196701335729,
+          "position": 4,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/6_7681bcaa-ce3c-4466-a93c-36c7439ad427.png?v=1752461411",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 37196701237425,
+          "position": 5,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/2_36b8a607-9455-421d-947e-eb4020d5c45b.png?v=1752461411",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 37196701958321,
+          "position": 6,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/9_4596e86b-ddde-4509-aaef-6c9ac4cd6878.png?v=1752461411",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 37196700909745,
+          "position": 7,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/8_adb8bbe0-3754-4772-9e49-66405023c8ce.png?v=1752461411",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 37196701302961,
+          "position": 8,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/4_969f8f74-6cab-4427-80a3-82e30cc2db96.png?v=1752461411",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 37196700811441,
+          "position": 9,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/7_f7b2243a-a08e-492b-998c-9bed346d49e9.png?v=1752461411",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        }
+      ],
+      "fetchedAt": "2026-05-02T02:58:46.897Z"
     },
     {
       "slug": "switzerland",
@@ -500,286 +779,286 @@
           "angle": null
         }
       ],
-      "fetchedAt": "2026-05-02T01:49:35.697Z"
+      "fetchedAt": "2026-05-02T02:58:47.014Z"
     },
     {
-      "slug": "victoria",
-      "title": "Victoria Ring",
-      "handle": "victoria",
+      "slug": "verona-ring",
+      "title": "Verona Ring",
+      "handle": "verona-ring",
       "productType": "Engagement Ring",
       "vendor": "Lovelri Engagements",
-      "tags": "14K Solid Gold, 18K Solid Gold, _select_diamond, _unbridaled, Hidden Halo, Lab Diamond Settings, lab diamonds, Oval Cut, Pavé, Platinum",
-      "priceFrom": "4212.00",
+      "tags": "14K Solid Gold, 18K Solid Gold, _select_diamond, _unbridaled, Cathedral, Cluster, Lab Diamond Settings, lab diamonds, Modern, Oval Cut, Platinum, Side Stones",
+      "priceFrom": "5262.00",
       "images": [
         {
-          "id": 37239311630513,
+          "id": 37196798329009,
           "position": 1,
-          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/2_1f0cf203-14d9-4b7c-8fe5-fbc76a1c2171.png?v=1752461465",
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/1_bcfd5dda-a8c6-41c0-841f-ba7fe093e866.png?v=1752461405",
           "width": 2560,
           "height": 2560,
-          "alt": "Victoria Engagement Rings",
+          "alt": null,
           "angle": null
         },
         {
-          "id": 37239311761585,
+          "id": 37196798525617,
           "position": 2,
-          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/9_e8c680f4-a8d7-4629-9549-e283bfe2718d.png?v=1752461465",
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/5_43e1b493-dca1-4d06-892b-000eb2c63d22.png?v=1752461406",
           "width": 2560,
           "height": 2560,
           "alt": null,
           "angle": null
         },
         {
-          "id": 37239311728817,
+          "id": 37196798296241,
           "position": 3,
-          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/3_2c942ac2-4a06-4983-8e15-50e0705d11b7.png?v=1752461465",
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/4_c63ced25-a634-41aa-b351-abcb7b28c853.png?v=1752461406",
           "width": 2560,
           "height": 2560,
           "alt": null,
           "angle": null
         },
         {
-          "id": 37239312220337,
+          "id": 37196798361777,
           "position": 4,
-          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/7_e362feed-6f00-42c9-a7ef-be8564c44bf6.png?v=1752461465",
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/7_ab3154be-bb61-46e1-af71-69eccfb97bc3.png?v=1752461406",
           "width": 2560,
           "height": 2560,
           "alt": null,
           "angle": null
         },
         {
-          "id": 37239312122033,
+          "id": 37196798558385,
           "position": 5,
-          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/4_10dd64a7-61e0-4743-b7ee-1a3f79d01a35.png?v=1752461465",
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/3_b8760872-eea1-4e50-846d-490fadc495a2.png?v=1752461406",
           "width": 2560,
           "height": 2560,
           "alt": null,
           "angle": null
         },
         {
-          "id": 37239312023729,
+          "id": 37196798427313,
           "position": 6,
-          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/1_777eb653-7dda-4f6b-8951-520b8785f8e7.png?v=1752461465",
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/2_1328225f-3468-422c-93f5-27b89f209229.png?v=1752461406",
           "width": 2560,
           "height": 2560,
           "alt": null,
           "angle": null
         },
         {
-          "id": 37239311794353,
+          "id": 37196798394545,
           "position": 7,
-          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/5_d3434137-c4ad-45e4-81a2-709ee0ecb494.png?v=1752461465",
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/8_fa7560d2-8915-40a9-9cc9-45f8462959c1.png?v=1752461406",
           "width": 2560,
           "height": 2560,
           "alt": null,
           "angle": null
         },
         {
-          "id": 37239311827121,
+          "id": 37196798460081,
           "position": 8,
-          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/6_f28acb8a-11cc-46b3-bac1-2bdad6bc5fb6.png?v=1752461465",
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/9_b74fea89-56ad-4e9c-9c1f-38837a6d8a9a.png?v=1752461406",
           "width": 2560,
           "height": 2560,
           "alt": null,
           "angle": null
         },
         {
-          "id": 37239311892657,
+          "id": 37196798492849,
           "position": 9,
-          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/8_9f95d6ba-f1b7-4aed-94b6-83b3649d42dd.png?v=1752461466",
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/6_3cda829d-21b8-4ca6-9157-24e93128c10d.png?v=1752461407",
           "width": 2560,
           "height": 2560,
           "alt": null,
           "angle": null
         }
       ],
-      "fetchedAt": "2026-05-02T01:49:35.891Z"
+      "fetchedAt": "2026-05-02T02:58:47.134Z"
     },
     {
-      "slug": "versailles",
-      "title": "Versailles Ring",
-      "handle": "versailles",
+      "slug": "sydney-ring",
+      "title": "Sydney Ring",
+      "handle": "sydney-ring",
       "productType": "Engagement Ring",
       "vendor": "Lovelri Engagements",
-      "tags": "14K Solid Gold, 18K Solid Gold, _select_diamond, _unbridaled, Hidden Halo, lab diamonds, Marquise Cut, Platinum",
-      "priceFrom": "3912.00",
+      "tags": "14K Solid Gold, 18K Solid Gold, _select_diamond, _unbridaled, Cathedral, Cushion Cut, Hidden Halo, Lab Diamond Settings, lab diamonds, Platinum",
+      "priceFrom": "4012.00",
       "images": [
         {
-          "id": 37135103099057,
+          "id": 37196897157297,
           "position": 1,
-          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/3_682dc953-1e95-42bd-8bad-fb7b2c67d356.png?v=1752461417",
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/2_81601cba-2c3d-46ee-beb1-a8909e4c7b55.png?v=1752461401",
           "width": 2560,
           "height": 2560,
           "alt": null,
           "angle": null
         },
         {
-          "id": 37135103328433,
+          "id": 37196897222833,
           "position": 2,
-          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/5_46077d4b-521b-4190-904f-2bdbdfc43885.png?v=1752461417",
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/8_9a036e02-3151-4559-a42f-0b3f11ce9d09.png?v=1752461401",
           "width": 2560,
           "height": 2560,
           "alt": null,
           "angle": null
         },
         {
-          "id": 37135103197361,
+          "id": 37196897353905,
           "position": 3,
-          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/2_0ded4a86-e636-42f2-b43b-22a7f9ec0c3d.png?v=1752461418",
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/3_71bb5202-8361-414e-b97c-632109808940.png?v=1752461402",
           "width": 2560,
           "height": 2560,
           "alt": null,
           "angle": null
         },
         {
-          "id": 37135103033521,
+          "id": 37196897321137,
           "position": 4,
-          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/7_47f72005-9508-4e8f-a6ec-f36e3addba6e.png?v=1752461418",
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/4_f9834504-f1b8-4a52-a109-ac764a857b80.png?v=1752461402",
           "width": 2560,
           "height": 2560,
           "alt": null,
           "angle": null
         },
         {
-          "id": 37135103131825,
+          "id": 37196897288369,
           "position": 5,
-          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/1_473f64d1-5928-4b59-b09b-f84ab70d02b3.png?v=1752461418",
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/7_1f36e1cf-9585-4b9a-937f-b6d5ea62e220.png?v=1752461402",
           "width": 2560,
           "height": 2560,
           "alt": null,
           "angle": null
         },
         {
-          "id": 37135103262897,
+          "id": 37196897190065,
           "position": 6,
-          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/4_51c398f9-cd62-4200-8f56-4bdeff17e74d.png?v=1752461418",
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/5_d9157822-1e82-4b95-970b-871050b5322e.png?v=1752461402",
           "width": 2560,
           "height": 2560,
           "alt": null,
           "angle": null
         },
         {
-          "id": 37135103066289,
+          "id": 37196897124529,
           "position": 7,
-          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/9_5c064594-1005-458a-abfc-ecfa8b12b30e.png?v=1752461418",
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/1_32de0e49-a918-4cdb-80d1-6e9f0262babd.png?v=1752461403",
           "width": 2560,
           "height": 2560,
           "alt": null,
           "angle": null
         },
         {
-          "id": 37135103295665,
+          "id": 37196897386673,
           "position": 8,
-          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/6_e1d4e544-e507-4ab1-8f4a-d5d2ffaf1724.png?v=1752461418",
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/6_5212d547-c653-4b5c-b9f0-993f413a8a39.png?v=1752461403",
           "width": 2560,
           "height": 2560,
           "alt": null,
           "angle": null
         },
         {
-          "id": 37135103164593,
+          "id": 37196897091761,
           "position": 9,
-          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/8_2486471d-6b99-4a5a-afc7-176d8f667183.png?v=1752461418",
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/9_fad75982-435e-413e-b7e4-5e10cbac1659.png?v=1752461403",
           "width": 2560,
           "height": 2560,
           "alt": null,
           "angle": null
         }
       ],
-      "fetchedAt": "2026-05-02T01:49:36.040Z"
+      "fetchedAt": "2026-05-02T02:58:47.304Z"
     },
     {
-      "slug": "edmonton",
-      "title": "Edmonton Ring",
-      "handle": "edmonton",
+      "slug": "tahiti-ring",
+      "title": "Tahiti Ring",
+      "handle": "tahiti-ring",
       "productType": "Engagement Ring",
       "vendor": "Lovelri Engagements",
-      "tags": "14K Solid Gold, 18K Solid Gold, _select_diamond, _unbridaled, Cluster, Lab Diamond Settings, lab diamonds, Modern, Oval Cut, Platinum, Side Stones",
-      "priceFrom": "4962.00",
+      "tags": "14K Solid Gold, 18K Solid Gold, _select_diamond, _unbridaled, Cathedral, Floral, lab diamonds, Modern, Platinum, Round Cut",
+      "priceFrom": "4862.00",
       "images": [
         {
-          "id": 37134463336625,
+          "id": 40937521709233,
           "position": 1,
-          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/3_f66e40e7-131b-4982-bf76-e883fd501063.png?v=1752461434",
-          "width": 2560,
-          "height": 2560,
-          "alt": "Moissanite Engagement Ring Edmonton",
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/9_a0184a2e-ca59-4376-ac4f-700f6de8f514.png?v=1762052020",
+          "width": 3000,
+          "height": 3000,
+          "alt": null,
           "angle": null
         },
         {
-          "id": 37134463467697,
+          "id": 40937521643697,
           "position": 2,
-          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/5_b6c5fd84-5abf-4306-987e-710fcc0e0cb3.png?v=1752461434",
-          "width": 2560,
-          "height": 2560,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/7_02620430-d76e-4a89-bec0-8572a89afed9.png?v=1762052020",
+          "width": 3000,
+          "height": 3000,
           "alt": null,
           "angle": null
         },
         {
-          "id": 37134463369393,
+          "id": 40937521512625,
           "position": 3,
-          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/2_699193a8-d90c-4f3d-9cfd-e0ecb800c558.png?v=1752461434",
-          "width": 2560,
-          "height": 2560,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/3_b3d27138-4408-4b42-918d-830da1b0a45a.png?v=1762052020",
+          "width": 3000,
+          "height": 3000,
           "alt": null,
           "angle": null
         },
         {
-          "id": 37134463238321,
+          "id": 40937521447089,
           "position": 4,
-          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/6_c0652836-10a9-4500-a876-42ba137a6196.png?v=1752461434",
-          "width": 2560,
-          "height": 2560,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/1_76b707d3-f342-4006-9b1f-7f05429be069.png?v=1762052020",
+          "width": 3000,
+          "height": 3000,
           "alt": null,
           "angle": null
         },
         {
-          "id": 37134463303857,
+          "id": 40937521479857,
           "position": 5,
-          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/9_edfd43b5-a3e6-47a8-8996-17af24c81652.png?v=1752461434",
-          "width": 2560,
-          "height": 2560,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/2_75dbb122-9700-4123-8efb-519f0870bf68.png?v=1762052020",
+          "width": 3000,
+          "height": 3000,
           "alt": null,
           "angle": null
         },
         {
-          "id": 37134463500465,
+          "id": 40937521545393,
           "position": 6,
-          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/4_c9947ccd-5798-4402-87b7-6dead0cd2b93.png?v=1752461435",
-          "width": 2560,
-          "height": 2560,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/4_0f53515a-8e86-48af-a52b-d07876d2fb2a.png?v=1762052020",
+          "width": 3000,
+          "height": 3000,
           "alt": null,
           "angle": null
         },
         {
-          "id": 37134463140017,
+          "id": 40937521578161,
           "position": 7,
-          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/1_87753b60-c9c6-49ad-bb73-0af1ea97f2b8.png?v=1752461435",
-          "width": 2560,
-          "height": 2560,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/5_d1c9d258-b1be-4c71-8486-c705e303399d.png?v=1762052020",
+          "width": 3000,
+          "height": 3000,
           "alt": null,
           "angle": null
         },
         {
-          "id": 37134463271089,
+          "id": 40937521610929,
           "position": 8,
-          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/8_bae13bfe-988a-4196-8a95-5af69f94e1ed.png?v=1752461435",
-          "width": 2560,
-          "height": 2560,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/6_aef66d90-68f7-469b-abba-f44702ddcedc.png?v=1762052020",
+          "width": 3000,
+          "height": 3000,
           "alt": null,
           "angle": null
         },
         {
-          "id": 37134463205553,
+          "id": 40937521676465,
           "position": 9,
-          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/7_d0dbdb6e-41e7-46f8-b321-010694d253ba.png?v=1752461435",
-          "width": 2560,
-          "height": 2560,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/8_be36a9d4-95f3-4122-905c-b1324bd759d1.png?v=1762052020",
+          "width": 3000,
+          "height": 3000,
           "alt": null,
           "angle": null
         }
       ],
-      "fetchedAt": "2026-05-02T01:49:36.282Z"
+      "fetchedAt": "2026-05-02T02:58:47.427Z"
     },
     {
       "slug": "lake-como-ring",
@@ -872,7 +1151,379 @@
           "angle": null
         }
       ],
-      "fetchedAt": "2026-05-02T01:49:36.496Z"
+      "fetchedAt": "2026-05-02T02:58:47.595Z"
+    },
+    {
+      "slug": "victoria",
+      "title": "Victoria Ring",
+      "handle": "victoria",
+      "productType": "Engagement Ring",
+      "vendor": "Lovelri Engagements",
+      "tags": "14K Solid Gold, 18K Solid Gold, _select_diamond, _unbridaled, Hidden Halo, Lab Diamond Settings, lab diamonds, Oval Cut, Pavé, Platinum",
+      "priceFrom": "4212.00",
+      "images": [
+        {
+          "id": 37239311630513,
+          "position": 1,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/2_1f0cf203-14d9-4b7c-8fe5-fbc76a1c2171.png?v=1752461465",
+          "width": 2560,
+          "height": 2560,
+          "alt": "Victoria Engagement Rings",
+          "angle": null
+        },
+        {
+          "id": 37239311761585,
+          "position": 2,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/9_e8c680f4-a8d7-4629-9549-e283bfe2718d.png?v=1752461465",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 37239311728817,
+          "position": 3,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/3_2c942ac2-4a06-4983-8e15-50e0705d11b7.png?v=1752461465",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 37239312220337,
+          "position": 4,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/7_e362feed-6f00-42c9-a7ef-be8564c44bf6.png?v=1752461465",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 37239312122033,
+          "position": 5,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/4_10dd64a7-61e0-4743-b7ee-1a3f79d01a35.png?v=1752461465",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 37239312023729,
+          "position": 6,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/1_777eb653-7dda-4f6b-8951-520b8785f8e7.png?v=1752461465",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 37239311794353,
+          "position": 7,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/5_d3434137-c4ad-45e4-81a2-709ee0ecb494.png?v=1752461465",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 37239311827121,
+          "position": 8,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/6_f28acb8a-11cc-46b3-bac1-2bdad6bc5fb6.png?v=1752461465",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 37239311892657,
+          "position": 9,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/8_9f95d6ba-f1b7-4aed-94b6-83b3649d42dd.png?v=1752461466",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        }
+      ],
+      "fetchedAt": "2026-05-02T02:58:47.729Z"
+    },
+    {
+      "slug": "versailles",
+      "title": "Versailles Ring",
+      "handle": "versailles",
+      "productType": "Engagement Ring",
+      "vendor": "Lovelri Engagements",
+      "tags": "14K Solid Gold, 18K Solid Gold, _select_diamond, _unbridaled, Hidden Halo, lab diamonds, Marquise Cut, Platinum",
+      "priceFrom": "3912.00",
+      "images": [
+        {
+          "id": 37135103099057,
+          "position": 1,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/3_682dc953-1e95-42bd-8bad-fb7b2c67d356.png?v=1752461417",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 37135103328433,
+          "position": 2,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/5_46077d4b-521b-4190-904f-2bdbdfc43885.png?v=1752461417",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 37135103197361,
+          "position": 3,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/2_0ded4a86-e636-42f2-b43b-22a7f9ec0c3d.png?v=1752461418",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 37135103033521,
+          "position": 4,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/7_47f72005-9508-4e8f-a6ec-f36e3addba6e.png?v=1752461418",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 37135103131825,
+          "position": 5,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/1_473f64d1-5928-4b59-b09b-f84ab70d02b3.png?v=1752461418",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 37135103262897,
+          "position": 6,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/4_51c398f9-cd62-4200-8f56-4bdeff17e74d.png?v=1752461418",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 37135103066289,
+          "position": 7,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/9_5c064594-1005-458a-abfc-ecfa8b12b30e.png?v=1752461418",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 37135103295665,
+          "position": 8,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/6_e1d4e544-e507-4ab1-8f4a-d5d2ffaf1724.png?v=1752461418",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 37135103164593,
+          "position": 9,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/8_2486471d-6b99-4a5a-afc7-176d8f667183.png?v=1752461418",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        }
+      ],
+      "fetchedAt": "2026-05-02T02:58:47.922Z"
+    },
+    {
+      "slug": "ontario",
+      "title": "Ontario Ring",
+      "handle": "ontario",
+      "productType": "Engagement Ring",
+      "vendor": "Lovelri Engagements",
+      "tags": "14K Solid Gold, 18K Solid Gold, _select_diamond, _unbridaled, Hidden Halo, Lab Diamond Settings, lab diamonds, Oval Cut, Pavé, Platinum",
+      "priceFrom": "4312.00",
+      "images": [
+        {
+          "id": 37239149166769,
+          "position": 1,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/3_2940a948-5670-438f-8c46-c19adea10d24.png?v=1752461432",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 37239148937393,
+          "position": 2,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/6_9c0791c1-972a-4cf4-9db4-e9229394dd20.png?v=1752461432",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 37239148904625,
+          "position": 3,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/8_97e6e19f-4921-4742-8784-d8463aef8e2d.png?v=1752461432",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 37239148970161,
+          "position": 4,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/4_07833613-9a6c-44e8-9792-8034160392bb.png?v=1752461432",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 37239149035697,
+          "position": 5,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/1_97cda25e-0ef8-47c8-ada6-8cac9c6476c2.png?v=1752461432",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 37239149134001,
+          "position": 6,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/5_9dd3758c-3bc1-435a-8210-4bc180beaa67.png?v=1752461432",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 37239149101233,
+          "position": 7,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/9_20d4274e-1d1f-416a-acd6-660bc290f1ef.png?v=1752461432",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 37239149002929,
+          "position": 8,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/7_920b302c-ff2a-4722-800e-3fa22f9dc703.png?v=1752461433",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 37239149068465,
+          "position": 9,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/2_bc517282-6a55-4870-86c5-e4c5f8c16d05.png?v=1752461433",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        }
+      ],
+      "fetchedAt": "2026-05-02T02:58:48.067Z"
+    },
+    {
+      "slug": "madrid",
+      "title": "Madrid Ring",
+      "handle": "madrid",
+      "productType": "Engagement Ring",
+      "vendor": "Lovelri Engagements",
+      "tags": "14K Solid Gold, 18K Solid Gold, _select_diamond, _unbridaled, Cathedral, Halo, Lab Diamond Settings, lab diamonds, Oval Cut, Pavé, Platinum",
+      "priceFrom": "4412.00",
+      "images": [
+        {
+          "id": 34097524441265,
+          "position": 1,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/3_6c56f339-975d-45af-b498-c05a1e9ed1e6.png?v=1752461472",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 34097524474033,
+          "position": 2,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/6_9d97e7e6-9095-4343-89e5-f2062d0552c3.png?v=1752461473",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 34097524506801,
+          "position": 3,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/4_b0c69f98-93d2-41fd-ba32-7f03f1d36513.png?v=1752461473",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 34097524539569,
+          "position": 4,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/9_780c409f-de26-4b14-ae76-978ed7f029be.png?v=1752461473",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 34097524572337,
+          "position": 5,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/8_5faa9082-0ea3-4a9c-b5ad-b0ecccf4c367.png?v=1752461473",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 34097524605105,
+          "position": 6,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/2_742ba6a3-d12f-404a-8292-ec61e44b974e.png?v=1752461473",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 34097524637873,
+          "position": 7,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/5_ad30e971-e787-413a-91fb-be08fcd22a87.png?v=1752461473",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 34097524670641,
+          "position": 8,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/1_a78200b1-fc9f-429b-928d-8cfafc91a5f7.png?v=1752461473",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 34097524703409,
+          "position": 9,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/7_96486ea3-2bc7-4f52-b70c-b1503018ae58.png?v=1752461473",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        }
+      ],
+      "fetchedAt": "2026-05-02T02:58:48.199Z"
     },
     {
       "slug": "vancouver",
@@ -965,7 +1616,1561 @@
           "angle": null
         }
       ],
-      "fetchedAt": "2026-05-02T01:49:36.690Z"
+      "fetchedAt": "2026-05-02T02:58:48.362Z"
+    },
+    {
+      "slug": "amalfi-coast",
+      "title": "Amalfi Coast Ring",
+      "handle": "amalfi-coast",
+      "productType": "Engagement Ring",
+      "vendor": "Lovelri Engagements",
+      "tags": "14K Solid Gold, 18K Solid Gold, _select_diamond, _unbridaled, Lab Diamond Settings, lab diamonds, Modern, Oval Cut, Platinum, Solitaire",
+      "priceFrom": "3937.00",
+      "images": [
+        {
+          "id": 37134980645041,
+          "position": 1,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/3_2f76c7f7-0f91-418a-919a-8bacfc803c32.png?v=1752461422",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 37134980546737,
+          "position": 2,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/6_58e9a728-9347-4a03-92de-7d8f0a808690.png?v=1752461422",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 37134980448433,
+          "position": 3,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/2_4217a939-9908-4928-a398-c594f9c58cb5.png?v=1752461422",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 37134980743345,
+          "position": 4,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/9_5e813ce3-aeab-4459-b3c5-a45968d1a819.png?v=1752461422",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 37134980677809,
+          "position": 5,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/1_6f692524-c331-4920-bb5e-8e93613c9cc1.png?v=1752461422",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 37134980415665,
+          "position": 6,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/4_aa3e0d16-3147-479a-a7f4-a7a323595e58.png?v=1752461422",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 37134980710577,
+          "position": 7,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/7_12957326-27d7-4899-b448-2a4ca0405ad4.png?v=1752461423",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 37134980481201,
+          "position": 8,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/5_8874ee58-9835-4706-8131-aea220f8285a.png?v=1752461423",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 37134980579505,
+          "position": 9,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/8_153de59e-e53d-4d1b-b8c5-7e8217af51bd.png?v=1752461423",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        }
+      ],
+      "fetchedAt": "2026-05-02T02:58:48.525Z"
+    },
+    {
+      "slug": "nara-ring",
+      "title": "Nara Ring",
+      "handle": "nara-ring",
+      "productType": "Engagement Ring",
+      "vendor": "Lovelri Engagements",
+      "tags": "14K Solid Gold, 18K Solid Gold, _select_diamond, _unbridaled, Floral, Lab Diamond Settings, lab diamonds, Modern, Oval Cut, Platinum, Side Stones",
+      "priceFrom": "3962.00",
+      "images": [
+        {
+          "id": 37197216186545,
+          "position": 1,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/3_a30fbf60-03c9-4568-9628-b7df23671391.png?v=1752461383",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 37197216317617,
+          "position": 2,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/5_1c1126ec-f3a2-4f27-a23c-96d4c2bb0a4b.png?v=1752461383",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 37197216383153,
+          "position": 3,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/2_82a57632-a267-4e5f-bc12-de8ec9c627f4.png?v=1752461383",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 37197216284849,
+          "position": 4,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/4_182d87ee-17aa-4ce6-9d13-6a8d20406db5.png?v=1752461384",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 37197216448689,
+          "position": 5,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/8_e0bb7f14-e7d6-4f07-8bc8-a9b9e7965688.png?v=1752461384",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 37197216350385,
+          "position": 6,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/7_37d394e2-06a1-4556-bc14-cb4d523340e0.png?v=1752461384",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 37197216219313,
+          "position": 7,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/1_4d2554bc-896e-4a85-b199-d598d8c3fc46.png?v=1752461384",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 37197216415921,
+          "position": 8,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/9_bf454e87-264c-41e0-acf7-eff508d5b44c.png?v=1752461384",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 37197216252081,
+          "position": 9,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/6_6be8095b-51df-4745-a304-68cca06b1524.png?v=1752461384",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        }
+      ],
+      "fetchedAt": "2026-05-02T02:58:48.645Z"
+    },
+    {
+      "slug": "capri-ring",
+      "title": "Capri Ring",
+      "handle": "capri-ring",
+      "productType": "Engagement Ring",
+      "vendor": "Lovelri Engagements",
+      "tags": "14K Solid Gold, 18K Solid Gold, _select_diamond, _unbridaled, Emerald Cut, Lab Diamond Settings, lab diamonds, Modern, Platinum",
+      "priceFrom": "4212.00",
+      "images": [
+        {
+          "id": 40914318131377,
+          "position": 1,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/3_8cf789ee-ea34-4ec8-984d-79f20b5ff1ba.png?v=1756332635",
+          "width": 3000,
+          "height": 3000,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 40914318164145,
+          "position": 2,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/4_68877da2-d16a-455e-8a41-aa2253dbed14.png?v=1756332635",
+          "width": 3000,
+          "height": 3000,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 40914318065841,
+          "position": 3,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/1_1b6ae603-359f-47c1-9a98-3e996910672a.png?v=1761602556",
+          "width": 3000,
+          "height": 3000,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 40914318098609,
+          "position": 4,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/2_7605eed3-2c53-4a94-9c12-0d88539adf21.png?v=1761602556",
+          "width": 3000,
+          "height": 3000,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 40914318196913,
+          "position": 5,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/5_6fd21c29-4b88-40ed-8019-d5585afa2328.png?v=1761602556",
+          "width": 3000,
+          "height": 3000,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 40914318229681,
+          "position": 6,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/6_8107247e-986f-4df9-b8cf-70a9acdf1ae3.png?v=1761602556",
+          "width": 3000,
+          "height": 3000,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 40914318262449,
+          "position": 7,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/7_8219a39b-b69a-4442-bba6-0bfb870a2dae.png?v=1761602556",
+          "width": 3000,
+          "height": 3000,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 40914318295217,
+          "position": 8,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/8_b3854ce5-bcfe-4c29-9d7d-03d5d27d69ee.png?v=1761602556",
+          "width": 3000,
+          "height": 3000,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 40914318327985,
+          "position": 9,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/9_7ecb4755-a6b2-45ff-a911-a0aee5d9fddb.png?v=1761602556",
+          "width": 3000,
+          "height": 3000,
+          "alt": null,
+          "angle": null
+        }
+      ],
+      "fetchedAt": "2026-05-02T02:58:48.911Z"
+    },
+    {
+      "slug": "england",
+      "title": "England Ring",
+      "handle": "england",
+      "productType": "Engagement Ring",
+      "vendor": "Lovelri Engagements",
+      "tags": "14K Solid Gold, 18K Solid Gold, _select_diamond, _unbridaled, lab diamonds, Modern, Pavé, Pear Cut, Platinum",
+      "priceFrom": "4012.00",
+      "images": [
+        {
+          "id": 34099979518129,
+          "position": 1,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/4_f4729535-b9a7-4bee-8837-e7d3d977f8c0.png?v=1752461454",
+          "width": 2560,
+          "height": 2560,
+          "alt": "England Ring",
+          "angle": null
+        },
+        {
+          "id": 34099979550897,
+          "position": 2,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/6_0880a4b9-a91c-4b59-8fb0-5bf79259ce9a.png?v=1752461454",
+          "width": 2560,
+          "height": 2560,
+          "alt": "England Ring",
+          "angle": null
+        },
+        {
+          "id": 34099979583665,
+          "position": 3,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/5_057e3cf2-071c-484c-91be-7ff2fa35a23b.png?v=1752461454",
+          "width": 2560,
+          "height": 2560,
+          "alt": "England Ring",
+          "angle": null
+        },
+        {
+          "id": 34099979616433,
+          "position": 4,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/2_801ef355-0ca3-43f4-97e5-8f05164593cb.png?v=1752461454",
+          "width": 2560,
+          "height": 2560,
+          "alt": "England Ring",
+          "angle": null
+        },
+        {
+          "id": 34099979649201,
+          "position": 5,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/3_fd84b86d-f9eb-4d07-adb3-0d5869480612.png?v=1752461454",
+          "width": 2560,
+          "height": 2560,
+          "alt": "England Ring",
+          "angle": null
+        },
+        {
+          "id": 34099979681969,
+          "position": 6,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/1_59fa2492-2080-400e-b020-661052f5b18d.png?v=1752461454",
+          "width": 2560,
+          "height": 2560,
+          "alt": "England Ring",
+          "angle": null
+        }
+      ],
+      "fetchedAt": "2026-05-02T02:58:49.024Z"
+    },
+    {
+      "slug": "osaka-ring",
+      "title": "Osaka Ring",
+      "handle": "osaka-ring",
+      "productType": "Engagement Ring",
+      "vendor": "Lovelri Engagements",
+      "tags": "14K Solid Gold, 18K Solid Gold, _select_diamond, _unbridaled, lab diamonds, Pavé, Platinum, Round Cut",
+      "priceFrom": "4262.00",
+      "images": [
+        {
+          "id": 37196982124721,
+          "position": 1,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/2_a49b43c7-bbca-4e5d-9582-e3ce0d3cb557.png?v=1752461392",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 37196982157489,
+          "position": 2,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/6_51067e4e-befe-46bc-b1ff-281e4733f23d.png?v=1752461392",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 37196982091953,
+          "position": 3,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/8_8c842878-3f05-43c4-b317-f13618b0d5a0.png?v=1752461392",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 37196981993649,
+          "position": 4,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/4_f41964f7-727b-464b-ba7a-fd4f1ccf5c24.png?v=1752461392",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 37196981829809,
+          "position": 5,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/5_4b1186aa-7b71-4a8e-ba35-e88431657393.png?v=1752461392",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 37196981862577,
+          "position": 6,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/9_4c7c838e-0d43-4aa1-bd87-13bcc25abf00.png?v=1752461392",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 37196982026417,
+          "position": 7,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/1_582619a9-8a7f-4c09-a8b7-144be960dc95.png?v=1752461392",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 37196982059185,
+          "position": 8,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/3_c23959d6-b75a-4051-9b74-d82b65bc7ead.png?v=1752461392",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 37196981960881,
+          "position": 9,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/7_543e204a-97cb-4828-b323-7c030b9de0e3.png?v=1752461393",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        }
+      ],
+      "fetchedAt": "2026-05-02T02:58:49.163Z"
+    },
+    {
+      "slug": "lab-diamonds-mississauga",
+      "title": "Mississauga Ring",
+      "handle": "lab-diamonds-mississauga",
+      "productType": "Engagement Ring",
+      "vendor": "Lovelri Engagements",
+      "tags": "14K Solid Gold, 18K Solid Gold, _select_diamond, _unbridaled, Lab Diamond Settings, lab diamonds, Modern, Pavé, Platinum, Round Cut",
+      "priceFrom": "5262.00",
+      "images": [
+        {
+          "id": 34118492520625,
+          "position": 1,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/4_1b1ff320-a96d-43a5-a59d-9cd175e8ae33.png?v=1752461447",
+          "width": 2560,
+          "height": 2560,
+          "alt": "Moissanite Rings Mississauga",
+          "angle": null
+        },
+        {
+          "id": 34118492553393,
+          "position": 2,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/1_afaeb061-dae7-43d6-97f4-f92a871c50b7.png?v=1752461447",
+          "width": 2560,
+          "height": 2560,
+          "alt": "Mississauga Ring",
+          "angle": null
+        },
+        {
+          "id": 34118492586161,
+          "position": 3,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/9_23e65e3c-93f3-4931-960b-f93812561ec7.png?v=1752461447",
+          "width": 2560,
+          "height": 2560,
+          "alt": "Mississauga Ring",
+          "angle": null
+        },
+        {
+          "id": 34118492618929,
+          "position": 4,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/3_7d552c0e-1992-4fd5-8aa6-628fb70aef78.png?v=1752461448",
+          "width": 2560,
+          "height": 2560,
+          "alt": "Mississauga Ring",
+          "angle": null
+        },
+        {
+          "id": 34118492651697,
+          "position": 5,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/5_635661d3-c5f4-4091-bd04-f20b6941cfb0.png?v=1752461448",
+          "width": 2560,
+          "height": 2560,
+          "alt": "Mississauga Ring",
+          "angle": null
+        },
+        {
+          "id": 34118492750001,
+          "position": 6,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/7_de3eda35-1360-424b-a987-446c8a43fdea.png?v=1752461448",
+          "width": 2560,
+          "height": 2560,
+          "alt": "Mississauga Ring",
+          "angle": null
+        },
+        {
+          "id": 34118492684465,
+          "position": 7,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/2_163fbd23-2aff-49d5-92cc-dd414903f4da.png?v=1752461448",
+          "width": 2560,
+          "height": 2560,
+          "alt": "Mississauga Ring",
+          "angle": null
+        },
+        {
+          "id": 34118492717233,
+          "position": 8,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/6_fb89c83b-6ade-4800-bdde-a12c2f39b96c.png?v=1752461448",
+          "width": 2560,
+          "height": 2560,
+          "alt": "Mississauga Ring",
+          "angle": null
+        },
+        {
+          "id": 34118492782769,
+          "position": 9,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/8_0e1d0833-a72a-4b4f-982e-d1a8a365e52c.png?v=1752461448",
+          "width": 2560,
+          "height": 2560,
+          "alt": "Mississauga Ring",
+          "angle": null
+        }
+      ],
+      "fetchedAt": "2026-05-02T02:58:49.311Z"
+    },
+    {
+      "slug": "kyoto",
+      "title": "Kyoto Ring",
+      "handle": "kyoto",
+      "productType": "Engagement Ring",
+      "vendor": "Lovelri Engagements",
+      "tags": "14K Solid Gold, 18K Solid Gold, _select_diamond, _unbridaled, Lab Diamond Settings, lab diamonds, Modern, Pavé, Platinum, Round Cut",
+      "priceFrom": "5012.00",
+      "images": [
+        {
+          "id": 34099955073201,
+          "position": 1,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/NT_01.3_312844d0-9a4e-4c98-852c-77a919b334f3.png?v=1752461458",
+          "width": 2560,
+          "height": 2560,
+          "alt": "Side View - Scalloped Band Round Engagement Ring White Gold",
+          "angle": null
+        },
+        {
+          "id": 34099955171505,
+          "position": 2,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/NT_01.8_2_b9b56134-c1e5-4f8a-acd5-5782d5b290e5.png?v=1752461458",
+          "width": 2560,
+          "height": 2560,
+          "alt": "Face Up View - Scalloped Band Round Engagement Ring Yellow Gold",
+          "angle": null
+        },
+        {
+          "id": 34099954974897,
+          "position": 3,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/NT_01.286_1_548e607c-5a23-4a4e-ba3b-0bbb6c110318.png?v=1752461458",
+          "width": 2560,
+          "height": 2560,
+          "alt": "Front View - Scalloped Band Round Engagement Ring White Gold",
+          "angle": null
+        },
+        {
+          "id": 34099955105969,
+          "position": 4,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/NT_01.9_2_f192a25c-b7c0-497b-a2bc-1926f75b0778.png?v=1752461458",
+          "width": 2560,
+          "height": 2560,
+          "alt": "Face Up View - Scalloped Band Round Engagement Ring White Gold",
+          "angle": null
+        },
+        {
+          "id": 34099955040433,
+          "position": 5,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/NT_01.1_455e5555-e5cb-4076-b839-de0750d6c274.png?v=1752461459",
+          "width": 2560,
+          "height": 2560,
+          "alt": "Side View - Scalloped Band Round Engagement Ring Yellow Gold",
+          "angle": null
+        },
+        {
+          "id": 34099955138737,
+          "position": 6,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/NT_01.288_1_21dddbb5-ac08-4248-96a5-8d57fb71910c.png?v=1752461459",
+          "width": 2560,
+          "height": 2560,
+          "alt": "Front View - Scalloped Band Round Engagement Ring Yellow Gold",
+          "angle": null
+        },
+        {
+          "id": 34099955204273,
+          "position": 7,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/NT_01.287_1_6b140f06-4211-40b5-98f2-fda7585f7308.png?v=1752461459",
+          "width": 2560,
+          "height": 2560,
+          "alt": "Front View - Scalloped Band Round Engagement Ring Rose Gold",
+          "angle": null
+        },
+        {
+          "id": 34099955302577,
+          "position": 8,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/NT_01.2_33a3dfca-c41c-4bdf-ace5-66bc84a2faa2.png?v=1752461459",
+          "width": 2560,
+          "height": 2560,
+          "alt": "Side View - Scalloped Band Round Engagement Ring Rose Gold",
+          "angle": null
+        },
+        {
+          "id": 34099955335345,
+          "position": 9,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/NT_01.7_2_085fe86a-9aa2-473f-8d9d-86dad3c83d7d.png?v=1752461459",
+          "width": 2560,
+          "height": 2560,
+          "alt": "Face Up View - Scalloped Band Round Engagement Ring Rose Gold",
+          "angle": null
+        }
+      ],
+      "fetchedAt": "2026-05-02T02:58:49.464Z"
+    },
+    {
+      "slug": "san-francisco-ring",
+      "title": "San Francisco Ring",
+      "handle": "san-francisco-ring",
+      "productType": "Engagement Ring",
+      "vendor": "Lovelri Engagements",
+      "tags": "14K Solid Gold, 18K Solid Gold, _select_diamond, _unbridaled, Cluster, Lab Diamond Settings, lab diamonds, Modern, Oval Cut, Platinum, Side Stones",
+      "priceFrom": "4662.00",
+      "images": [
+        {
+          "id": 37241096208561,
+          "position": 1,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/1_73046a93-e194-40ed-a641-1b241a366672.png?v=1752461378",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 37241096241329,
+          "position": 2,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/5_d6731e98-8df3-40cf-ae9c-1f6bab933fad.png?v=1752461379",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 37241096110257,
+          "position": 3,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/2_8a181bf8-ec8a-443a-9129-01995c3fc191.png?v=1752461379",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 37241096175793,
+          "position": 4,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/8_2b2b07d7-9786-4123-81fe-4485ba121d32.png?v=1752461379",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 37241096011953,
+          "position": 5,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/3_e71cef96-5ad2-4e58-a230-66278a8ab28b.png?v=1752461379",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 37241096274097,
+          "position": 6,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/7_612da05c-be71-480a-bba3-1dea5a425aa7.png?v=1752461379",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 37241096044721,
+          "position": 7,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/4_eb01cdbb-c4d4-4923-84c5-564019988c99.png?v=1752461379",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 37241096143025,
+          "position": 8,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/6_5b355104-7613-4dd9-9569-9f98f6201c88.png?v=1752461379",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 37241096077489,
+          "position": 9,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/9_f64d5e03-56ff-4420-952f-2caa204f8c80.png?v=1752461379",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        }
+      ],
+      "fetchedAt": "2026-05-02T02:58:49.592Z"
+    },
+    {
+      "slug": "kingston",
+      "title": "Kingston Ring",
+      "handle": "kingston",
+      "productType": "Engagement Ring",
+      "vendor": "Lovelri Engagements",
+      "tags": "14K Solid Gold, 18K Solid Gold, _select_diamond, _unbridaled, lab diamonds, Marquise Cut, Platinum, Side Stones, Three Stone",
+      "priceFrom": "3812.00",
+      "images": [
+        {
+          "id": 37139389939889,
+          "position": 1,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/1_a3a35a86-6e83-4af4-b66b-51a8d88cea0d.png?v=1752461413",
+          "width": 2560,
+          "height": 2560,
+          "alt": "Engagement Rings Kingston",
+          "angle": null
+        },
+        {
+          "id": 37139389841585,
+          "position": 2,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/9_f155cc85-4b42-4c1b-a7a0-893ab9e0d604.png?v=1752461413",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 37139389874353,
+          "position": 3,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/2_61cbbb8b-c113-4389-8683-5b0bb648dd8f.png?v=1752461413",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 37139389677745,
+          "position": 4,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/4_345853cb-a994-4e03-90cb-51a426297d79.png?v=1752461413",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 37139389808817,
+          "position": 5,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/7_b5e11f20-aa42-4278-b752-af2a0fa172c3.png?v=1752461413",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 37139389743281,
+          "position": 6,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/3_1f87bfa3-8bbb-4cb1-b526-da4c2237d6a4.png?v=1752461413",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 37139389710513,
+          "position": 7,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/6_dd51c682-d55d-4350-95f7-0ab5a40f0175.png?v=1752461413",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 37139389776049,
+          "position": 8,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/8_840cfbd8-e8c7-4b18-abec-9eb7eebef2b7.png?v=1752461414",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 37139389907121,
+          "position": 9,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/5_ecc31560-ece9-4ea2-9c08-3ac2c4627e7d.png?v=1752461414",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        }
+      ],
+      "fetchedAt": "2026-05-02T02:58:49.732Z"
+    },
+    {
+      "slug": "halifax",
+      "title": "Halifax Ring",
+      "handle": "halifax",
+      "productType": "Engagement Ring",
+      "vendor": "Lovelri Engagements",
+      "tags": "14K Solid Gold, 18K Solid Gold, _select_diamond, _unbridaled, lab diamonds, Platinum, Round Cut, Side Stones, Three Stone",
+      "priceFrom": "3612.00",
+      "images": [
+        {
+          "id": 37134930903217,
+          "position": 1,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/3_7e435ad7-9558-4bf3-be64-edd1cd36a4b8.png?v=1752461429",
+          "width": 2560,
+          "height": 2560,
+          "alt": "Halifax Ring",
+          "angle": null
+        },
+        {
+          "id": 37134931001521,
+          "position": 2,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/4_8135ccc6-9b22-40e5-98c0-f77f04160ce9.png?v=1752461429",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 37134930870449,
+          "position": 3,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/2_05baed3a-1038-4781-9968-72054686c615.png?v=1752461429",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 37134931034289,
+          "position": 4,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/7_d43055d6-8bdf-4b4f-bdc4-4ac7dbcab32e.png?v=1752461429",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 37134930837681,
+          "position": 5,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/5_48f0e439-d7f0-433e-b57e-c63a47bc21cd.png?v=1752461430",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 37134930968753,
+          "position": 6,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/8_e6f56a61-cede-4d83-8b98-30d5938dabb1.png?v=1752461430",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 37134931099825,
+          "position": 7,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/1_847b329d-8208-4d83-923b-e307adbe620d.png?v=1752461430",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 37134930935985,
+          "position": 8,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/9_88983fc1-e8c1-4ce2-87db-ed13fbacd3a6.png?v=1752461430",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 37134931067057,
+          "position": 9,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/6_cb97bd1e-56b6-4d61-a90b-806f02f9c8a6.png?v=1752461430",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        }
+      ],
+      "fetchedAt": "2026-05-02T02:58:49.885Z"
+    },
+    {
+      "slug": "fiji-ring",
+      "title": "Fiji Ring",
+      "handle": "fiji-ring",
+      "productType": "Engagement Ring",
+      "vendor": "Lovelri Engagements",
+      "tags": "14K Solid Gold, 18K Solid Gold, _select_diamond, _unbridaled, lab diamonds, Platinum, Radiant Cut, Side Stones, Three Stone",
+      "priceFrom": "3812.00",
+      "images": [
+        {
+          "id": 40914371248305,
+          "position": 1,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/3_f70d5d97-e247-4b05-95fe-b9bad204e4c7.png?v=1756333255",
+          "width": 3000,
+          "height": 3000,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 40914371281073,
+          "position": 2,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/4_ed399c78-0fec-4192-bbb6-c17024e1499f.png?v=1756333255",
+          "width": 3000,
+          "height": 3000,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 40914371182769,
+          "position": 3,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/1_afaccbe0-f5b6-46f1-9a65-f5183fa907c0.png?v=1761602554",
+          "width": 3000,
+          "height": 3000,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 40914371215537,
+          "position": 4,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/2_b50a8e9a-01ab-4fa8-b645-b3d84ba81c36.png?v=1761602554",
+          "width": 3000,
+          "height": 3000,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 40914371313841,
+          "position": 5,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/5_c555cf5a-8408-4cab-bb0c-ab4439fa5511.png?v=1761602554",
+          "width": 3000,
+          "height": 3000,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 40914371346609,
+          "position": 6,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/6_08b46f43-3240-4ae0-8d95-65f0cd07ec69.png?v=1761602554",
+          "width": 3000,
+          "height": 3000,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 40914371379377,
+          "position": 7,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/7_74a14cb9-6bdb-4dbb-bb43-79c60c0fd1b7.png?v=1761602554",
+          "width": 3000,
+          "height": 3000,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 40914371412145,
+          "position": 8,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/8_29eabb62-d1bd-4b80-8210-ff490aa18c3c.png?v=1761602554",
+          "width": 3000,
+          "height": 3000,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 40914371444913,
+          "position": 9,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/9_29d1e8ca-eb8b-42ac-9981-ba8293593bd6.png?v=1761602554",
+          "width": 3000,
+          "height": 3000,
+          "alt": null,
+          "angle": null
+        }
+      ],
+      "fetchedAt": "2026-05-02T02:58:50.032Z"
+    },
+    {
+      "slug": "lake-louise-ring",
+      "title": "Lake Louise Ring",
+      "handle": "lake-louise-ring",
+      "productType": "Engagement Ring",
+      "vendor": "Lovelri Engagements",
+      "tags": "14K Solid Gold, 18K Solid Gold, _select_diamond, _unbridaled, Lab Diamond Settings, lab diamonds, Modern, Platinum, Radiant Cut, Side Stones",
+      "priceFrom": "3712.00",
+      "images": [
+        {
+          "id": 40914045829297,
+          "position": 1,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/3_6a4d087a-2778-44d2-b004-f673a6a4a95d.png?v=1756331754",
+          "width": 3000,
+          "height": 3000,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 40914045862065,
+          "position": 2,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/4_5a359e46-e1bc-4d2b-97e5-90daea98201d.png?v=1756331754",
+          "width": 3000,
+          "height": 3000,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 40914045763761,
+          "position": 3,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/1_9b862436-8538-4c6b-a28f-ebd3781c11cf.png?v=1761602557",
+          "width": 3000,
+          "height": 3000,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 40914045796529,
+          "position": 4,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/2_f062117f-9a2f-4c95-9253-600d05ea6f98.png?v=1761602557",
+          "width": 3000,
+          "height": 3000,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 40914045894833,
+          "position": 5,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/5_c3cc5289-5b82-4795-9551-9fbdd66ad0c0.png?v=1761602557",
+          "width": 3000,
+          "height": 3000,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 40914045927601,
+          "position": 6,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/6_7efbb459-c316-44de-bfbc-d685e93b351d.png?v=1761602557",
+          "width": 3000,
+          "height": 3000,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 40914045960369,
+          "position": 7,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/7_74f65aad-9150-4edf-b88e-3353446aea3a.png?v=1761602557",
+          "width": 3000,
+          "height": 3000,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 40914045993137,
+          "position": 8,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/8_33d6c624-b3c4-450c-af8b-12bb6dd55a96.png?v=1761602557",
+          "width": 3000,
+          "height": 3000,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 40914046025905,
+          "position": 9,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/9_1e043841-beae-46d2-a7e4-c63a0c1bf5af.png?v=1761602557",
+          "width": 3000,
+          "height": 3000,
+          "alt": null,
+          "angle": null
+        }
+      ],
+      "fetchedAt": "2026-05-02T02:58:50.187Z"
+    },
+    {
+      "slug": "edmonton",
+      "title": "Edmonton Ring",
+      "handle": "edmonton",
+      "productType": "Engagement Ring",
+      "vendor": "Lovelri Engagements",
+      "tags": "14K Solid Gold, 18K Solid Gold, _select_diamond, _unbridaled, Cluster, Lab Diamond Settings, lab diamonds, Modern, Oval Cut, Platinum, Side Stones",
+      "priceFrom": "4962.00",
+      "images": [
+        {
+          "id": 37134463336625,
+          "position": 1,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/3_f66e40e7-131b-4982-bf76-e883fd501063.png?v=1752461434",
+          "width": 2560,
+          "height": 2560,
+          "alt": "Moissanite Engagement Ring Edmonton",
+          "angle": null
+        },
+        {
+          "id": 37134463467697,
+          "position": 2,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/5_b6c5fd84-5abf-4306-987e-710fcc0e0cb3.png?v=1752461434",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 37134463369393,
+          "position": 3,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/2_699193a8-d90c-4f3d-9cfd-e0ecb800c558.png?v=1752461434",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 37134463238321,
+          "position": 4,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/6_c0652836-10a9-4500-a876-42ba137a6196.png?v=1752461434",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 37134463303857,
+          "position": 5,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/9_edfd43b5-a3e6-47a8-8996-17af24c81652.png?v=1752461434",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 37134463500465,
+          "position": 6,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/4_c9947ccd-5798-4402-87b7-6dead0cd2b93.png?v=1752461435",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 37134463140017,
+          "position": 7,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/1_87753b60-c9c6-49ad-bb73-0af1ea97f2b8.png?v=1752461435",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 37134463271089,
+          "position": 8,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/8_bae13bfe-988a-4196-8a95-5af69f94e1ed.png?v=1752461435",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 37134463205553,
+          "position": 9,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/7_d0dbdb6e-41e7-46f8-b321-010694d253ba.png?v=1752461435",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        }
+      ],
+      "fetchedAt": "2026-05-02T02:58:50.388Z"
+    },
+    {
+      "slug": "florence",
+      "title": "Florence Ring",
+      "handle": "florence",
+      "productType": "Engagement Ring",
+      "vendor": "Lovelri Engagements",
+      "tags": "14K Solid Gold, 18K Solid Gold, _select_diamond, _unbridaled, Lab Diamond Settings, lab diamonds, Modern, Oval Cut, Platinum, Solitaire",
+      "priceFrom": "3012.00",
+      "images": [
+        {
+          "id": 37197012697265,
+          "position": 1,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/1_918eacdf-1b48-4bc3-b465-955700d7a5c6.png?v=1752461389",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 37197012664497,
+          "position": 2,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/5_e40e62f5-5705-48b2-87c1-aa223c1c00fe.png?v=1752461390",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 37197012598961,
+          "position": 3,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/9_e3a9adfb-ea73-4dcc-ac73-682d198d1227.png?v=1752461390",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 37197012566193,
+          "position": 4,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/6_65ac1669-c01a-4215-9628-00f708160fd0.png?v=1752461390",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 37197012795569,
+          "position": 5,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/7_fc4e23d3-ae70-4ee4-9225-c1deee4a3a15.png?v=1752461390",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 37197012828337,
+          "position": 6,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/4_84d39a15-6244-4f1b-87b9-57a386b0751c.png?v=1752461390",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 37197012730033,
+          "position": 7,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/3_29a93a5f-6b37-4431-affe-88ac3bec10a9.png?v=1752461390",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 37197012435121,
+          "position": 8,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/8_aec80dc8-25e8-4786-9f35-36031ae1ab06.png?v=1752461390",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 37197012631729,
+          "position": 9,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/2_385cff67-f49a-474b-a321-87e9c1f89819.png?v=1752461390",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        }
+      ],
+      "fetchedAt": "2026-05-02T02:58:50.573Z"
+    },
+    {
+      "slug": "burlington-ring",
+      "title": "Burlington Ring",
+      "handle": "burlington-ring",
+      "productType": "Engagement Ring",
+      "vendor": "Lovelri Engagements",
+      "tags": "14K Solid Gold, 18K Solid Gold, _select_diamond, _unbridaled, Cathedral, Lab Diamond Settings, lab diamonds, Modern, Platinum, Radiant Cut, Solitaire",
+      "priceFrom": "3012.00",
+      "images": [
+        {
+          "id": 37197190103217,
+          "position": 1,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/3_a55620b5-bb77-4b08-8de1-9de47d594ab3.png?v=1752461385",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 37197190070449,
+          "position": 2,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/5_607a3252-c941-4f61-930f-711f9e80fe7b.png?v=1752461385",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 37197190135985,
+          "position": 3,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/2_0fbb8afa-1c3a-4f09-8f95-c2a9b01baa9e.png?v=1752461385",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 37197190037681,
+          "position": 4,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/7_581f020c-8b04-4f1c-bb5d-63ac10b2ce42.png?v=1752461386",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 37197190168753,
+          "position": 5,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/1_01792a2e-1c11-45ac-b08b-947b311899fe.png?v=1752461386",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 37197190234289,
+          "position": 6,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/6_770e2aa8-dbce-4c99-9137-39c7edb337a7.png?v=1752461386",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 37197190004913,
+          "position": 7,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/9_f8785f8f-65f4-495c-8648-4acf00d7d809.png?v=1752461386",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 37197190201521,
+          "position": 8,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/4_e8673736-895f-47bb-b38a-8a95a7a1cbce.png?v=1752461386",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 37197189972145,
+          "position": 9,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/8_00ea6899-ee61-4927-a3b9-9031f9409dd3.png?v=1752461386",
+          "width": 2560,
+          "height": 2560,
+          "alt": null,
+          "angle": null
+        }
+      ],
+      "fetchedAt": "2026-05-02T02:58:50.727Z"
+    },
+    {
+      "slug": "aspen-ring",
+      "title": "Aspen Ring",
+      "handle": "aspen-ring",
+      "productType": "Engagement Ring",
+      "vendor": "Lovelri Engagements",
+      "tags": "14K Solid Gold, 18K Solid Gold, _select_diamond, _unbridaled, Bezel, Lab Diamond Settings, lab diamonds, Pear Cut, Platinum, Solitaire",
+      "priceFrom": "3291.00",
+      "images": [
+        {
+          "id": 40943796125873,
+          "position": 1,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/3_43483bf9-666c-4ba1-b237-ac58456c97db.png?v=1756745262",
+          "width": 3000,
+          "height": 3000,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 40943796158641,
+          "position": 2,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/4_d9b98d1f-da1c-488f-b316-5595e981e0dd.png?v=1756745262",
+          "width": 3000,
+          "height": 3000,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 40943796060337,
+          "position": 3,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/1_7f328f21-404a-4443-93b2-5d5b8c543317.png?v=1761602551",
+          "width": 3000,
+          "height": 3000,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 40943796093105,
+          "position": 4,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/2_6ad58ffc-52dc-4ce0-af2c-e538e14ced6a.png?v=1761602551",
+          "width": 3000,
+          "height": 3000,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 40943796191409,
+          "position": 5,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/5_29f3183a-7fb6-4aaf-bafb-98c93ad9fad5.png?v=1761602551",
+          "width": 3000,
+          "height": 3000,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 40943796224177,
+          "position": 6,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/6_a1f353af-8c39-4dbf-930d-c7de8047149d.png?v=1761602551",
+          "width": 3000,
+          "height": 3000,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 40943796256945,
+          "position": 7,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/7_742c813a-596c-4431-a1a8-baa9b1abbedf.png?v=1761602551",
+          "width": 3000,
+          "height": 3000,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 40943796289713,
+          "position": 8,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/8_3a4077bc-6b77-4fea-931d-a88da4527d65.png?v=1761602551",
+          "width": 3000,
+          "height": 3000,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 40943796322481,
+          "position": 9,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/9_fe48a856-eed3-4f33-ac7d-857982d6a958.png?v=1761602551",
+          "width": 3000,
+          "height": 3000,
+          "alt": null,
+          "angle": null
+        }
+      ],
+      "fetchedAt": "2026-05-02T02:58:50.849Z"
+    },
+    {
+      "slug": "whistler",
+      "title": "Whistler Ring",
+      "handle": "whistler",
+      "productType": "Engagement Ring",
+      "vendor": "Lovelri Engagements",
+      "tags": "14K Solid Gold, 18K Solid Gold, _select_diamond, _unbridaled, Hidden Halo, Lab Diamond Settings, lab diamonds, Pear Cut, Platinum, Solitaire",
+      "priceFrom": "4291.00",
+      "images": [
+        {
+          "id": 40913914855601,
+          "position": 1,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/3_b287e03a-1153-4496-bd80-c78191f48435.png?v=1756330493",
+          "width": 3000,
+          "height": 3000,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 40913914888369,
+          "position": 2,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/4_633f170f-4063-4b79-bd34-ef10b3550ace.png?v=1756330493",
+          "width": 3000,
+          "height": 3000,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 40913914790065,
+          "position": 3,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/1_a725b383-84b2-46ea-8671-c031783c7e39.png?v=1761602559",
+          "width": 3000,
+          "height": 3000,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 40913914822833,
+          "position": 4,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/2_23ae547f-396b-4cff-b8c2-75f41ca52a71.png?v=1761602559",
+          "width": 3000,
+          "height": 3000,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 40913914921137,
+          "position": 5,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/5_b70a3fec-507d-4c29-9389-f4049920c7d0.png?v=1761602559",
+          "width": 3000,
+          "height": 3000,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 40913914953905,
+          "position": 6,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/6_19fa2700-e5fc-48a5-ba38-1fa76fef07ac.png?v=1761602559",
+          "width": 3000,
+          "height": 3000,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 40913914986673,
+          "position": 7,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/7_62615f45-1411-41ff-a60c-5c9236adecea.png?v=1761602559",
+          "width": 3000,
+          "height": 3000,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 40913915019441,
+          "position": 8,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/8_18d92117-36f8-4575-8665-4d95b85d2435.png?v=1761602559",
+          "width": 3000,
+          "height": 3000,
+          "alt": null,
+          "angle": null
+        },
+        {
+          "id": 40913915052209,
+          "position": 9,
+          "src": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/9_ed447fe2-aa9e-4212-9ff3-d04e83baa22c.png?v=1761602559",
+          "width": 3000,
+          "height": 3000,
+          "alt": null,
+          "angle": null
+        }
+      ],
+      "fetchedAt": "2026-05-02T02:58:50.990Z"
     }
   ]
 }

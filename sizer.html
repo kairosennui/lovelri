@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Lovelri · Ring Sizer</title>
+<style>
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:#fafaf8;color:#1a1a1a;font-family:'Helvetica Neue','Arial',sans-serif}
+  /* Mobile: stack converter inputs, larger tap targets */
+  @media (max-width: 768px) {
+    .sizer-converter-row { grid-template-columns: 1fr !important; gap: 12px !important; }
+    .sizer-h2 { font-size: 24px !important; }
+    .sizer-card { padding: 20px !important; }
+    .sizer-tabs { overflow-x: auto; flex-wrap: nowrap !important; }
+    input[type="range"] { height: 32px; }
+  }
+  #root{min-height:100vh}
+  .boot{display:flex;align-items:center;justify-content:center;min-height:100vh;color:#6b6b6b;font-size:13px;letter-spacing:0.22em;text-transform:uppercase}
+
+  /* Print-only stylesheet — calibrated mm circles for at-home sizing.
+     Browsers respect mm units in @media print at 96 DPI screen → real mm on paper. */
+  @media print {
+    .no-print { display: none !important; }
+    .print-only { display: block !important; }
+    body { background: #fff; }
+    .print-page { padding: 18mm; }
+    .ring-circle { border: 1px solid #1a1a1a; border-radius: 50%; }
+  }
+  .print-only { display: none; }
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+<div id="root"><div class="boot">Loading Ring Sizer</div></div>
+
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+<script type="text/babel" data-presets="env,react">
+const { useState, useMemo } = React;
+
+const B = {
+  white:"#ffffff", offwhite:"#fafaf8", black:"#1a1a1a",
+  gray:"#6b6b6b", lightgray:"#e8e8e4", border:"#d8d8d2",
+  gold:"#c9a96e", goldDark:"#8c6d3f",
+  serif:"'Cormorant Garamond','Georgia',serif",
+  sans:"'Helvetica Neue','Arial',sans-serif",
+};
+
+// Standard ring size table — diameter in mm, circumference = π × diameter.
+// Cross-system conversions (US / UK / EU / Japan) per jewelers' published charts.
+const SIZES = [
+  {us:3,    dia:14.0, uk:"F",     eu:44, jp:4},
+  {us:3.5,  dia:14.4, uk:"G",     eu:45, jp:5},
+  {us:4,    dia:14.8, uk:"H",     eu:46, jp:7},
+  {us:4.5,  dia:15.3, uk:"I",     eu:48, jp:8},
+  {us:5,    dia:15.7, uk:"J½",    eu:49, jp:9},
+  {us:5.5,  dia:16.1, uk:"K½",    eu:50, jp:10},
+  {us:6,    dia:16.5, uk:"L½",    eu:51, jp:12},
+  {us:6.5,  dia:16.9, uk:"M½",    eu:53, jp:13},
+  {us:7,    dia:17.3, uk:"N½",    eu:54, jp:14},
+  {us:7.5,  dia:17.7, uk:"O½",    eu:56, jp:15},
+  {us:8,    dia:18.1, uk:"P½",    eu:57, jp:16},
+  {us:8.5,  dia:18.5, uk:"Q½",    eu:58, jp:17},
+  {us:9,    dia:19.0, uk:"R½",    eu:60, jp:18},
+  {us:9.5,  dia:19.4, uk:"S½",    eu:61, jp:19},
+  {us:10,   dia:19.8, uk:"T½",    eu:62, jp:20},
+  {us:10.5, dia:20.2, uk:"U½",    eu:64, jp:22},
+  {us:11,   dia:20.6, uk:"V½",    eu:65, jp:23},
+  {us:11.5, dia:21.0, uk:"W½",    eu:66, jp:24},
+  {us:12,   dia:21.4, uk:"X½",    eu:68, jp:25},
+];
+const circ = (dia) => +(Math.PI * dia).toFixed(1);
+
+function nearestSize(dia) {
+  let best = SIZES[0], bestD = Infinity;
+  for (const s of SIZES) {
+    const d = Math.abs(s.dia - dia);
+    if (d < bestD) { bestD = d; best = s; }
+  }
+  return best;
+}
+
+function App() {
+  const [tab, setTab] = useState("convert");
+  const [unit, setUnit] = useState("dia"); // dia | circ | us | eu | uk
+  const [value, setValue] = useState(17.3);
+
+  const result = useMemo(() => {
+    let dia = 17.3;
+    if (unit === "dia") dia = parseFloat(value) || 17.3;
+    else if (unit === "circ") dia = (parseFloat(value) || 54.4) / Math.PI;
+    else if (unit === "us") {
+      const s = SIZES.find(s => s.us === parseFloat(value));
+      dia = s ? s.dia : 17.3;
+    } else if (unit === "eu") {
+      const s = SIZES.find(s => s.eu === parseInt(value));
+      dia = s ? s.dia : 17.3;
+    } else if (unit === "uk") {
+      const s = SIZES.find(s => s.uk.toLowerCase() === String(value).toLowerCase());
+      dia = s ? s.dia : 17.3;
+    }
+    return nearestSize(dia);
+  }, [unit, value]);
+
+  const S = {
+    page: { background: B.offwhite, minHeight: "100vh" },
+    header: { display:"flex", alignItems:"center", justifyContent:"space-between",
+              padding:"22px 32px", borderBottom:`1px solid ${B.lightgray}`, background: B.white },
+    brand: { fontFamily: B.serif, fontSize:28, fontWeight:500 },
+    eyebrow: { fontSize:11, letterSpacing:"0.22em", textTransform:"uppercase", color:B.gray },
+    container: { maxWidth: 880, margin: "0 auto", padding: "32px 24px" },
+    tabs: { display:"flex", gap:8, marginBottom:24, borderBottom:`1px solid ${B.lightgray}` },
+    tab: (active) => ({
+      padding:"10px 18px", cursor:"pointer", fontSize:12, letterSpacing:"0.14em",
+      textTransform:"uppercase", fontFamily:B.sans,
+      borderBottom: active ? `2px solid ${B.gold}` : "2px solid transparent",
+      color: active ? B.goldDark : B.gray, marginBottom:-1,
+    }),
+    card: { background: B.white, borderRadius:14, padding:32, border:`1px solid ${B.lightgray}` },
+    h2: { fontFamily: B.serif, fontSize:28, fontWeight:500, margin:"0 0 6px" },
+    sub: { fontSize:14, color:B.gray, lineHeight:1.6, margin:"0 0 24px" },
+    label: { fontSize:11, letterSpacing:"0.18em", textTransform:"uppercase", color:B.gray, display:"block", marginBottom:8 },
+    select: { padding:"10px 14px", border:`1px solid ${B.border}`, borderRadius:8, fontSize:14, fontFamily:B.sans, background:B.white, width:"100%" },
+    input: { padding:"10px 14px", border:`1px solid ${B.border}`, borderRadius:8, fontSize:14, fontFamily:B.sans, width:"100%" },
+    resultBox: { marginTop:24, padding:24, background:"rgba(201,169,110,0.08)", borderRadius:10, border:`1px solid rgba(201,169,110,0.3)` },
+    bigSize: { fontFamily:B.serif, fontSize:64, fontWeight:500, color:B.goldDark, lineHeight:1, margin:"0 0 8px" },
+    rowGrid: { display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:16, marginTop:16 },
+    statLabel: { fontSize:11, letterSpacing:"0.1em", textTransform:"uppercase", color:B.gray, marginBottom:3 },
+    statVal: { fontFamily:B.serif, fontSize:22, color:B.black },
+    table: { width:"100%", borderCollapse:"collapse", fontSize:14, marginTop:24 },
+    th: { textAlign:"left", padding:"10px 8px", borderBottom:`2px solid ${B.border}`, fontSize:11, letterSpacing:"0.12em", textTransform:"uppercase", color:B.gray },
+    td: { padding:"8px", borderBottom:`1px solid ${B.lightgray}` },
+    btn: { padding:"12px 24px", border:"none", borderRadius:999, background:B.gold, color:"#fff", fontSize:13, letterSpacing:"0.12em", textTransform:"uppercase", cursor:"pointer", fontFamily:B.sans },
+    note: { padding:14, background:"rgba(201,169,110,0.06)", borderLeft:`3px solid ${B.gold}`, fontSize:13, color:B.gray, lineHeight:1.6, margin:"16px 0" },
+    footer: { textAlign:"center", padding:"32px 16px", color:B.gray, fontSize:12, borderTop:`1px solid ${B.lightgray}`, marginTop:32 },
+    link: { color:B.goldDark, textDecoration:"none", borderBottom:`1px solid ${B.gold}` },
+  };
+
+  return (
+    <div style={S.page}>
+      <header style={S.header} className="no-print">
+        <div>
+          <div style={S.eyebrow}>Lovelri</div>
+          <div style={S.brand}>Ring Sizer</div>
+        </div>
+        <a href="./index.html" style={{...S.eyebrow, textDecoration:"none", color:B.goldDark}}>← Hub</a>
+      </header>
+
+      <div style={S.container} className="no-print">
+        <div style={S.tabs}>
+          <div style={S.tab(tab === "convert")} onClick={() => setTab("convert")}>Size Converter</div>
+          <div style={S.tab(tab === "print")}   onClick={() => setTab("print")}>Print Method</div>
+          <div style={S.tab(tab === "wrap")}    onClick={() => setTab("wrap")}>Paper Strip Method</div>
+        </div>
+
+        {tab === "convert" && (
+          <div style={S.card}>
+            <h2 style={S.h2}>Convert any size to all systems</h2>
+            <p style={S.sub}>Enter a measurement you already know — Lovelri uses US sizes by default, but we'll translate to whatever your old ring or family heirloom is using.</p>
+
+            <div className="sizer-converter-row" style={{display:"grid", gridTemplateColumns:"1fr 2fr", gap:14, alignItems:"end"}}>
+              <div>
+                <span style={S.label}>I have</span>
+                <select style={S.select} value={unit} onChange={e => { setUnit(e.target.value); setValue(e.target.value === "dia" ? 17.3 : e.target.value === "circ" ? 54.4 : e.target.value === "us" ? 7 : e.target.value === "eu" ? 54 : "N½"); }}>
+                  <option value="dia">Inner diameter (mm)</option>
+                  <option value="circ">Inner circumference (mm)</option>
+                  <option value="us">US size</option>
+                  <option value="eu">EU size</option>
+                  <option value="uk">UK size</option>
+                </select>
+              </div>
+              <div>
+                <span style={S.label}>Value</span>
+                <input style={S.input} type={unit === "uk" ? "text" : "number"} step="0.1" value={value} onChange={e => setValue(e.target.value)} />
+              </div>
+            </div>
+
+            <div style={S.resultBox}>
+              <div style={S.statLabel}>Closest Lovelri size</div>
+              <div style={S.bigSize}>US {result.us}</div>
+              <div style={S.rowGrid}>
+                <div><div style={S.statLabel}>UK</div><div style={S.statVal}>{result.uk}</div></div>
+                <div><div style={S.statLabel}>EU</div><div style={S.statVal}>{result.eu}</div></div>
+                <div><div style={S.statLabel}>Japan</div><div style={S.statVal}>{result.jp}</div></div>
+                <div><div style={S.statLabel}>Diameter</div><div style={S.statVal}>{result.dia} mm</div></div>
+              </div>
+            </div>
+
+            <details style={{marginTop:24}}>
+              <summary style={{cursor:"pointer", fontSize:13, letterSpacing:"0.1em", textTransform:"uppercase", color:B.goldDark, padding:"8px 0"}}>
+                Full conversion table
+              </summary>
+              <table style={S.table}>
+                <thead><tr>
+                  <th style={S.th}>US</th><th style={S.th}>UK</th><th style={S.th}>EU</th><th style={S.th}>JP</th>
+                  <th style={S.th}>Diameter (mm)</th><th style={S.th}>Circumference (mm)</th>
+                </tr></thead>
+                <tbody>
+                  {SIZES.map(s => (
+                    <tr key={s.us}>
+                      <td style={S.td}>{s.us}</td>
+                      <td style={S.td}>{s.uk}</td>
+                      <td style={S.td}>{s.eu}</td>
+                      <td style={S.td}>{s.jp}</td>
+                      <td style={S.td}>{s.dia}</td>
+                      <td style={S.td}>{circ(s.dia)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </details>
+          </div>
+        )}
+
+        {tab === "print" && (
+          <div style={S.card}>
+            <h2 style={S.h2}>Print &amp; size at home</h2>
+            <p style={S.sub}>Print this page at <strong>actual size (100%, no scaling)</strong>. Place a ring you already own over the circles below — the size where the inner edge of your ring lines up with the printed circle is your size.</p>
+            <div style={S.note}>
+              <strong>Important:</strong> verify with the 1-inch test square below before measuring. If your printer scaled the page, the circles will be wrong.
+            </div>
+            <button style={S.btn} onClick={() => window.print()}>Print sizer →</button>
+            <div style={{marginTop:24, fontSize:13, color:B.gray, lineHeight:1.6}}>
+              The printable layout is on the next page when you click Print. Hold the printout flat against a hard surface, place your ring over each circle, and find the smallest one that the inner edge of your band lines up with — that's your size.
+            </div>
+          </div>
+        )}
+
+        {tab === "wrap" && (
+          <div style={S.card}>
+            <h2 style={S.h2}>Paper strip method</h2>
+            <p style={S.sub}>Best for sizing your own finger when you don't have a reference ring. Takes ~2 minutes.</p>
+            <ol style={{lineHeight:1.9, fontSize:14, color:B.black, paddingLeft:20}}>
+              <li>Cut a strip of paper about 1 cm wide and 10 cm long.</li>
+              <li>Wrap it snugly around the base of the finger you'll wear the ring on. Not so tight it leaves a mark — but firm enough that it won't slide off the knuckle.</li>
+              <li>Mark where the strip overlaps with a pen.</li>
+              <li>Lay it flat against a millimetre ruler. Measure from the start of the strip to your mark — that's your <strong>circumference in mm</strong>.</li>
+              <li>Switch to the Size Converter tab, choose "Inner circumference (mm)", and enter your measurement.</li>
+            </ol>
+            <div style={S.note}>
+              Measure 3 times across the day — fingers swell with heat, exercise, and salt. Use the average. If you're between sizes, size up — easier to resize down later than up.
+            </div>
+            <p style={{fontSize:13, color:B.gray, lineHeight:1.7, marginTop:24}}>
+              Still unsure? Book a 30-minute <a href="./bookings.html" style={S.link}>Ring Viewing</a> at Bay Street — we'll size you exactly with calibrated tools, no purchase required.
+            </p>
+          </div>
+        )}
+      </div>
+
+      {/* Print-only sizer page */}
+      <div className="print-only print-page">
+        <div style={{textAlign:"center", marginBottom:"6mm"}}>
+          <div style={{fontFamily:B.serif, fontSize:"24pt", fontWeight:500}}>Lovelri Ring Sizer</div>
+          <div style={{fontSize:"10pt", color:"#444", marginTop:"2mm"}}>Print at 100% / actual size. Verify the 1-inch square below before measuring.</div>
+        </div>
+        {/* Calibration square — exactly 25.4mm = 1in */}
+        <div style={{display:"flex", alignItems:"center", gap:"6mm", marginBottom:"10mm"}}>
+          <div style={{width:"25.4mm", height:"25.4mm", border:"0.4mm solid #000"}} />
+          <div style={{fontSize:"9pt"}}>This square should measure exactly 1 inch (25.4 mm) per side.</div>
+        </div>
+        {/* Circles, 4 per row */}
+        <div style={{display:"grid", gridTemplateColumns:"repeat(4, 1fr)", gap:"6mm", justifyItems:"center"}}>
+          {SIZES.map(s => (
+            <div key={s.us} style={{textAlign:"center"}}>
+              <div className="ring-circle" style={{width: s.dia + "mm", height: s.dia + "mm", margin:"0 auto"}} />
+              <div style={{fontSize:"9pt", marginTop:"2mm"}}>US {s.us} · {s.dia} mm</div>
+            </div>
+          ))}
+        </div>
+        <div style={{marginTop:"10mm", fontSize:"8pt", color:"#666", textAlign:"center"}}>
+          lovelri.com · Toronto · 320 Bay Street
+        </div>
+      </div>
+
+      <div style={S.footer} className="no-print">
+        Sizes shown follow international jewelry industry standards. For absolute precision, visit our Bay Street showroom — we'll size you with calibrated mandrels.
+      </div>
+    </div>
+  );
+}
+ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+</script>
+</body>
+</html>

@@ -1,23 +1,23 @@
 {
-  "generatedAt": "2026-05-02T01:54:35.748Z",
+  "generatedAt": "2026-05-02T03:08:01.696Z",
   "rings": {
     "sicily-lotus-ring": {
       "title": "Sicily Lotus Ring",
       "slots": {
         "FRONT": {
-          "yellow": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/1_abd74b1f-fb1b-4490-9270-45ed725427b8.png?v=1762051800&width=600",
-          "rose": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/2_c1436a4d-f815-4117-b5ee-99007fcfced7.png?v=1762051800&width=600",
-          "white": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/3_c66692da-9dd5-4410-9380-f7c75805b7ed.png?v=1762051800&width=600"
+          "yellow": "./rings/multi/sicily-lotus-ring_FRONT_yellow.png",
+          "rose": "./rings/multi/sicily-lotus-ring_FRONT_rose.png",
+          "white": "./rings/multi/sicily-lotus-ring_FRONT_white.png"
         },
         "THREEQ": {
-          "yellow": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/4_5d4cc65e-f1eb-4e62-abb0-24345fac1e62.png?v=1762051800&width=600",
-          "rose": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/5_98fc88bc-525a-4b75-bdfd-28517b9a5398.png?v=1762051800&width=600",
-          "white": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/6_20dda9b1-74e1-4e88-b186-44b585f04dce.png?v=1762051800&width=600"
+          "yellow": "./rings/multi/sicily-lotus-ring_THREEQ_yellow.png",
+          "rose": "./rings/multi/sicily-lotus-ring_THREEQ_rose.png",
+          "white": "./rings/multi/sicily-lotus-ring_THREEQ_white.png"
         },
         "SIDE": {
-          "white": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/9_b16b54f0-a3ba-4e25-902f-9ed006a168e0.png?v=1762051800&width=600",
-          "yellow": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/7_11942c99-39bb-4e04-bb64-9c22a3e8dac1.png?v=1762051800&width=600",
-          "rose": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/8_67439cdc-c4aa-4bfa-8616-4845cd09e69f.png?v=1762051800&width=600"
+          "white": "./rings/multi/sicily-lotus-ring_SIDE_white.png",
+          "yellow": "./rings/multi/sicily-lotus-ring_SIDE_yellow.png",
+          "rose": "./rings/multi/sicily-lotus-ring_SIDE_rose.png"
         }
       }
     },
@@ -25,19 +25,39 @@
       "title": "Dolomites Ring",
       "slots": {
         "FRONT": {
-          "white": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/3_e6350445-9e43-4ec1-aca6-d630c81696de.png?v=1756782097&width=600",
-          "yellow": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/1_eda8f0fc-39ae-4ebd-83f4-3f4568a93190.png?v=1761602549&width=600",
-          "rose": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/2_3da29345-3c55-4709-a4cd-8888d4343c6f.png?v=1761602549&width=600"
+          "white": "./rings/multi/dolomites-ring_FRONT_white.png",
+          "yellow": "./rings/multi/dolomites-ring_FRONT_yellow.png",
+          "rose": "./rings/multi/dolomites-ring_FRONT_rose.png"
         },
         "THREEQ": {
-          "yellow": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/4_70614276-61ab-46e1-98cf-57b41356a6e4.png?v=1756782097&width=600",
-          "rose": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/5_cce817ba-631b-4c52-bb92-8df5b0103198.png?v=1761602549&width=600",
-          "white": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/6_7ebd6cbc-06e7-43b8-a63b-131b6afa43d4.png?v=1761602550&width=600"
+          "yellow": "./rings/multi/dolomites-ring_THREEQ_yellow.png",
+          "rose": "./rings/multi/dolomites-ring_THREEQ_rose.png",
+          "white": "./rings/multi/dolomites-ring_THREEQ_white.png"
         },
         "SIDE": {
-          "yellow": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/7_70397dc1-4328-40c4-ae70-de6d245fffa4.png?v=1761602549&width=600",
-          "rose": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/8_81f9b801-0a8e-4eeb-aa75-42f5804e60b0.png?v=1761602550&width=600",
-          "white": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/9_0a5acab6-234e-48eb-8388-128d7ca1b255.png?v=1761602550&width=600"
+          "yellow": "./rings/multi/dolomites-ring_SIDE_yellow.png",
+          "rose": "./rings/multi/dolomites-ring_SIDE_rose.png",
+          "white": "./rings/multi/dolomites-ring_SIDE_white.png"
+        }
+      }
+    },
+    "sicily-ring-marquise": {
+      "title": "Sicily Ring - Marquise",
+      "slots": {
+        "FRONT": {
+          "white": "./rings/multi/sicily-ring-marquise_FRONT_white.png",
+          "yellow": "./rings/multi/sicily-ring-marquise_FRONT_yellow.png",
+          "rose": "./rings/multi/sicily-ring-marquise_FRONT_rose.png"
+        },
+        "THREEQ": {
+          "yellow": "./rings/multi/sicily-ring-marquise_THREEQ_yellow.png",
+          "white": "./rings/multi/sicily-ring-marquise_THREEQ_yellow.png",
+          "rose": "./rings/multi/sicily-ring-marquise_THREEQ_yellow.png"
+        },
+        "SIDE": {
+          "yellow": "./rings/multi/sicily-ring-marquise_SIDE_yellow.png",
+          "rose": "./rings/multi/sicily-ring-marquise_SIDE_rose.png",
+          "white": "./rings/multi/sicily-ring-marquise_SIDE_white.png"
         }
       }
     },
@@ -45,19 +65,39 @@
       "title": "Hawaii Ring",
       "slots": {
         "FRONT": {
-          "white": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/3_17cfcfad-77f6-40b8-9115-fd446f0d544d.png?v=1762986510&width=600",
-          "yellow": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/1_4f95785f-070d-41ec-be7f-e2be5571353a.png?v=1763244119&width=600",
-          "rose": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/2_60a56fd7-cc25-4ea3-8474-1dc436479351.png?v=1762986510&width=600"
+          "white": "./rings/multi/hawaii-ring_FRONT_white.png",
+          "yellow": "./rings/multi/hawaii-ring_FRONT_yellow.png",
+          "rose": "./rings/multi/hawaii-ring_FRONT_rose.png"
         },
         "THREEQ": {
-          "yellow": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/4_102c5d55-ffd7-422e-a02b-8fbc07f61188.png?v=1762986510&width=600",
-          "rose": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/5_fe5e442b-15f3-4b5f-8ceb-638abe8ef0ac.png?v=1762986510&width=600",
-          "white": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/6_b151b8e2-5815-4f51-ae9d-4f00bf171e19.png?v=1762986510&width=600"
+          "yellow": "./rings/multi/hawaii-ring_THREEQ_yellow.png",
+          "rose": "./rings/multi/hawaii-ring_THREEQ_rose.png",
+          "white": "./rings/multi/hawaii-ring_THREEQ_white.png"
         },
         "SIDE": {
-          "yellow": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/7_de10a8dc-1b85-4032-84fb-020c8759e2a5.png?v=1763244119&width=600",
-          "rose": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/8_5942e270-7a76-4b79-b100-78e4c4b83c5b.png?v=1762986290&width=600",
-          "white": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/9_b6133582-22d2-49b9-86ed-09484f17b682.png?v=1762986290&width=600"
+          "yellow": "./rings/multi/hawaii-ring_SIDE_yellow.png",
+          "rose": "./rings/multi/hawaii-ring_SIDE_rose.png",
+          "white": "./rings/multi/hawaii-ring_SIDE_white.png"
+        }
+      }
+    },
+    "portland": {
+      "title": "Portland Ring",
+      "slots": {
+        "FRONT": {
+          "rose": "./rings/multi/portland_FRONT_rose.png",
+          "yellow": "./rings/multi/portland_FRONT_yellow.png",
+          "white": "./rings/multi/portland_FRONT_yellow.png"
+        },
+        "THREEQ": {
+          "white": "./rings/multi/portland_THREEQ_white.png",
+          "rose": "./rings/multi/portland_THREEQ_rose.png",
+          "yellow": "./rings/multi/portland_THREEQ_white.png"
+        },
+        "SIDE": {
+          "yellow": "./rings/multi/portland_SIDE_yellow.png",
+          "white": "./rings/multi/portland_SIDE_white.png",
+          "rose": "./rings/multi/portland_SIDE_rose.png"
         }
       }
     },
@@ -65,19 +105,39 @@
       "title": "Mt Fuji Ring",
       "slots": {
         "FRONT": {
-          "yellow": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/1_6bb544b1-9250-4107-ae4e-78d95248144f.png?v=1762980897&width=600",
-          "rose": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/2_800e86ca-7adf-40a6-a0e2-a84bbf0591bc.png?v=1762980897&width=600",
-          "white": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/3_2562cefe-39aa-433b-90b6-a7b9cd36ea0b.png?v=1762980897&width=600"
+          "yellow": "./rings/multi/mt-fuji-ring_FRONT_yellow.png",
+          "rose": "./rings/multi/mt-fuji-ring_FRONT_rose.png",
+          "white": "./rings/multi/mt-fuji-ring_FRONT_white.png"
         },
         "THREEQ": {
-          "yellow": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/4_7ae95902-5ab7-43d2-9e54-b63eff86e7d1.png?v=1762980897&width=600",
-          "rose": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/5_9ba50e1c-98e8-46c4-92ce-cd69b83d50d2.png?v=1762980897&width=600",
-          "white": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/6_a22950b6-b1f6-491a-ace7-c975e06150c5.png?v=1762980897&width=600"
+          "yellow": "./rings/multi/mt-fuji-ring_THREEQ_yellow.png",
+          "rose": "./rings/multi/mt-fuji-ring_THREEQ_rose.png",
+          "white": "./rings/multi/mt-fuji-ring_THREEQ_white.png"
         },
         "SIDE": {
-          "white": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/9_0e71ed72-a53e-47de-b26a-c3383b7eabf8.png?v=1762980897&width=600",
-          "yellow": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/7_755b0f3e-4ea7-43c3-bc15-9cf4914a63c5.png?v=1762980897&width=600",
-          "rose": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/8_48b131bf-8103-4e00-acd0-e94153e96727.png?v=1762980897&width=600"
+          "white": "./rings/multi/mt-fuji-ring_SIDE_white.png",
+          "yellow": "./rings/multi/mt-fuji-ring_SIDE_yellow.png",
+          "rose": "./rings/multi/mt-fuji-ring_SIDE_rose.png"
+        }
+      }
+    },
+    "thunder-bay-ring": {
+      "title": "Thunder Bay Ring",
+      "slots": {
+        "FRONT": {
+          "white": "./rings/multi/thunder-bay-ring_FRONT_white.png",
+          "rose": "./rings/multi/thunder-bay-ring_FRONT_rose.png",
+          "yellow": "./rings/multi/thunder-bay-ring_FRONT_yellow.png"
+        },
+        "THREEQ": {
+          "yellow": "./rings/multi/thunder-bay-ring_THREEQ_yellow.png",
+          "white": "./rings/multi/thunder-bay-ring_THREEQ_white.png",
+          "rose": "./rings/multi/thunder-bay-ring_THREEQ_white.png"
+        },
+        "SIDE": {
+          "rose": "./rings/multi/thunder-bay-ring_SIDE_rose.png",
+          "yellow": "./rings/multi/thunder-bay-ring_SIDE_yellow.png",
+          "white": "./rings/multi/thunder-bay-ring_SIDE_white.png"
         }
       }
     },
@@ -85,79 +145,79 @@
       "title": "Switzerland Ring",
       "slots": {
         "FRONT": {
-          "white": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/3_1e174d61-4c2c-406a-a16f-7748b6514f43.png?v=1752461426&width=600",
-          "yellow": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/6_08c0b344-dc1e-4945-8b17-909699b2526f.png?v=1752461427&width=600",
-          "rose": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/1_874e076a-e641-4ea0-9af5-24e65b1e05dd.png?v=1752461427&width=600"
+          "white": "./rings/multi/switzerland_FRONT_white.png",
+          "yellow": "./rings/multi/switzerland_FRONT_yellow.png",
+          "rose": "./rings/multi/switzerland_FRONT_rose.png"
         },
         "THREEQ": {
-          "yellow": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/9_276bb9dd-585b-4571-82e4-7fa13b1b655f.png?v=1752461427&width=600",
-          "white": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/8_62b5de80-a16b-4f95-8cc8-5f8be5dc381f.png?v=1752461427&width=600",
-          "rose": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/5_f51c7049-b8c9-46c6-a228-6e615d6a4371.png?v=1752461427&width=600"
+          "yellow": "./rings/multi/switzerland_THREEQ_yellow.png",
+          "white": "./rings/multi/switzerland_THREEQ_white.png",
+          "rose": "./rings/multi/switzerland_THREEQ_rose.png"
         },
         "SIDE": {
-          "white": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/4_d8a1eb70-4ee5-403d-864e-610ad6e96830.png?v=1752461427&width=600",
-          "rose": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/7_a90b4ee8-1e3c-4d9c-a1e0-84928642b1c3.png?v=1752461427&width=600",
-          "yellow": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/2_95e4e780-f7e9-4a01-8f3c-3f2d8946fb10.png?v=1752461427&width=600"
+          "white": "./rings/multi/switzerland_SIDE_white.png",
+          "rose": "./rings/multi/switzerland_SIDE_rose.png",
+          "yellow": "./rings/multi/switzerland_SIDE_yellow.png"
         }
       }
     },
-    "victoria": {
-      "title": "Victoria Ring",
+    "verona-ring": {
+      "title": "Verona Ring",
       "slots": {
         "FRONT": {
-          "white": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/2_1f0cf203-14d9-4b7c-8fe5-fbc76a1c2171.png?v=1752461465&width=600",
-          "rose": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/3_2c942ac2-4a06-4983-8e15-50e0705d11b7.png?v=1752461465&width=600",
-          "yellow": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/1_777eb653-7dda-4f6b-8951-520b8785f8e7.png?v=1752461465&width=600"
+          "white": "./rings/multi/verona-ring_FRONT_white.png",
+          "rose": "./rings/multi/verona-ring_FRONT_rose.png",
+          "yellow": "./rings/multi/verona-ring_FRONT_yellow.png"
         },
         "THREEQ": {
-          "yellow": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/9_e8c680f4-a8d7-4629-9549-e283bfe2718d.png?v=1752461465&width=600",
-          "rose": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/7_e362feed-6f00-42c9-a7ef-be8564c44bf6.png?v=1752461465&width=600",
-          "white": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/8_9f95d6ba-f1b7-4aed-94b6-83b3649d42dd.png?v=1752461466&width=600"
+          "yellow": "./rings/multi/verona-ring_THREEQ_yellow.png",
+          "rose": "./rings/multi/verona-ring_THREEQ_rose.png",
+          "white": "./rings/multi/verona-ring_THREEQ_white.png"
         },
         "SIDE": {
-          "white": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/2_1f0cf203-14d9-4b7c-8fe5-fbc76a1c2171.png?v=1752461465&width=600",
-          "yellow": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/2_1f0cf203-14d9-4b7c-8fe5-fbc76a1c2171.png?v=1752461465&width=600",
-          "rose": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/2_1f0cf203-14d9-4b7c-8fe5-fbc76a1c2171.png?v=1752461465&width=600"
+          "rose": "./rings/multi/verona-ring_SIDE_rose.png",
+          "yellow": "./rings/multi/verona-ring_SIDE_yellow.png",
+          "white": "./rings/multi/verona-ring_SIDE_white.png"
         }
       }
     },
-    "versailles": {
-      "title": "Versailles Ring",
+    "sydney-ring": {
+      "title": "Sydney Ring",
       "slots": {
         "FRONT": {
-          "white": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/3_682dc953-1e95-42bd-8bad-fb7b2c67d356.png?v=1752461417&width=600",
-          "yellow": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/2_0ded4a86-e636-42f2-b43b-22a7f9ec0c3d.png?v=1752461418&width=600",
-          "rose": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/1_473f64d1-5928-4b59-b09b-f84ab70d02b3.png?v=1752461418&width=600"
+          "white": "./rings/multi/sydney-ring_FRONT_white.png",
+          "yellow": "./rings/multi/sydney-ring_FRONT_yellow.png",
+          "rose": "./rings/multi/sydney-ring_FRONT_rose.png"
         },
         "THREEQ": {
-          "yellow": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/5_46077d4b-521b-4190-904f-2bdbdfc43885.png?v=1752461417&width=600",
-          "white": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/6_e1d4e544-e507-4ab1-8f4a-d5d2ffaf1724.png?v=1752461418&width=600",
-          "rose": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/8_2486471d-6b99-4a5a-afc7-176d8f667183.png?v=1752461418&width=600"
+          "white": "./rings/multi/sydney-ring_FRONT_white.png",
+          "yellow": "./rings/multi/sydney-ring_FRONT_white.png",
+          "rose": "./rings/multi/sydney-ring_FRONT_white.png"
         },
         "SIDE": {
-          "yellow": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/7_47f72005-9508-4e8f-a6ec-f36e3addba6e.png?v=1752461418&width=600",
-          "rose": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/9_5c064594-1005-458a-abfc-ecfa8b12b30e.png?v=1752461418&width=600",
-          "white": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/7_47f72005-9508-4e8f-a6ec-f36e3addba6e.png?v=1752461418&width=600"
+          "yellow": "./rings/multi/sydney-ring_SIDE_yellow.png",
+          "white": "./rings/multi/sydney-ring_SIDE_white.png",
+          "rose": "./rings/multi/sydney-ring_SIDE_rose.png"
         }
       }
     },
-    "edmonton": {
-      "title": "Edmonton Ring",
+    "tahiti-ring": {
+      "title": "Tahiti Ring",
       "slots": {
         "FRONT": {
-          "white": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/3_f66e40e7-131b-4982-bf76-e883fd501063.png?v=1752461434&width=600",
-          "yellow": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/5_b6c5fd84-5abf-4306-987e-710fcc0e0cb3.png?v=1752461434&width=600",
-          "rose": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/2_699193a8-d90c-4f3d-9cfd-e0ecb800c558.png?v=1752461434&width=600"
+          "white": "./rings/multi/tahiti-ring_FRONT_white.png",
+          "yellow": "./rings/multi/tahiti-ring_FRONT_yellow.png",
+          "rose": "./rings/multi/tahiti-ring_FRONT_rose.png"
         },
         "THREEQ": {
-          "rose": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/9_edfd43b5-a3e6-47a8-8996-17af24c81652.png?v=1752461434&width=600",
-          "white": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/9_edfd43b5-a3e6-47a8-8996-17af24c81652.png?v=1752461434&width=600",
-          "yellow": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/9_edfd43b5-a3e6-47a8-8996-17af24c81652.png?v=1752461434&width=600"
+          "white": "./rings/multi/tahiti-ring_THREEQ_white.png",
+          "yellow": "./rings/multi/tahiti-ring_THREEQ_white.png",
+          "rose": "./rings/multi/tahiti-ring_THREEQ_white.png"
         },
         "SIDE": {
-          "white": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/8_bae13bfe-988a-4196-8a95-5af69f94e1ed.png?v=1752461435&width=600",
-          "yellow": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/7_d0dbdb6e-41e7-46f8-b321-010694d253ba.png?v=1752461435&width=600",
-          "rose": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/8_bae13bfe-988a-4196-8a95-5af69f94e1ed.png?v=1752461435&width=600"
+          "white": "./rings/multi/tahiti-ring_SIDE_white.png",
+          "yellow": "./rings/multi/tahiti-ring_SIDE_yellow.png",
+          "rose": "./rings/multi/tahiti-ring_SIDE_rose.png"
         }
       }
     },
@@ -165,19 +225,99 @@
       "title": "Lake Como Ring",
       "slots": {
         "FRONT": {
-          "white": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/3_ff778e58-cce1-4833-9d37-c0b57d200e60.png?v=1756783082&width=600",
-          "yellow": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/1_3c9762ae-b203-4856-8f8d-6709c4835633.png?v=1761602547&width=600",
-          "rose": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/2_5ad703b1-299e-4ec1-8ca7-42a3f50c9d3b.png?v=1761602547&width=600"
+          "white": "./rings/multi/lake-como-ring_FRONT_white.png",
+          "yellow": "./rings/multi/lake-como-ring_FRONT_yellow.png",
+          "rose": "./rings/multi/lake-como-ring_FRONT_rose.png"
         },
         "THREEQ": {
-          "yellow": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/7_e99a6919-ceb8-4887-b0bb-51240a0838bf.png?v=1756783082&width=600",
-          "rose": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/5_31ea38c5-79a7-4d9b-b89e-233421afe39a.png?v=1761602548&width=600",
-          "white": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/7_e99a6919-ceb8-4887-b0bb-51240a0838bf.png?v=1756783082&width=600"
+          "yellow": "./rings/multi/lake-como-ring_THREEQ_yellow.png",
+          "rose": "./rings/multi/lake-como-ring_THREEQ_rose.png",
+          "white": "./rings/multi/lake-como-ring_THREEQ_yellow.png"
         },
         "SIDE": {
-          "white": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/6_b38d815e-e4d4-43a2-8512-4e66ef87a394.png?v=1761602548&width=600",
-          "rose": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/8_f73e5199-f9ea-4c0c-8586-1f8928cc5700.png?v=1761602548&width=600",
-          "yellow": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/6_b38d815e-e4d4-43a2-8512-4e66ef87a394.png?v=1761602548&width=600"
+          "white": "./rings/multi/lake-como-ring_SIDE_white.png",
+          "rose": "./rings/multi/lake-como-ring_SIDE_rose.png",
+          "yellow": "./rings/multi/lake-como-ring_SIDE_white.png"
+        }
+      }
+    },
+    "victoria": {
+      "title": "Victoria Ring",
+      "slots": {
+        "FRONT": {
+          "white": "./rings/multi/victoria_FRONT_white.png",
+          "rose": "./rings/multi/victoria_FRONT_rose.png",
+          "yellow": "./rings/multi/victoria_FRONT_yellow.png"
+        },
+        "THREEQ": {
+          "yellow": "./rings/multi/victoria_THREEQ_yellow.png",
+          "rose": "./rings/multi/victoria_THREEQ_rose.png",
+          "white": "./rings/multi/victoria_THREEQ_white.png"
+        },
+        "SIDE": {
+          "white": "./rings/multi/victoria_FRONT_white.png",
+          "yellow": "./rings/multi/victoria_FRONT_white.png",
+          "rose": "./rings/multi/victoria_FRONT_white.png"
+        }
+      }
+    },
+    "versailles": {
+      "title": "Versailles Ring",
+      "slots": {
+        "FRONT": {
+          "white": "./rings/multi/versailles_FRONT_white.png",
+          "yellow": "./rings/multi/versailles_FRONT_yellow.png",
+          "rose": "./rings/multi/versailles_FRONT_rose.png"
+        },
+        "THREEQ": {
+          "yellow": "./rings/multi/versailles_THREEQ_yellow.png",
+          "white": "./rings/multi/versailles_THREEQ_white.png",
+          "rose": "./rings/multi/versailles_THREEQ_rose.png"
+        },
+        "SIDE": {
+          "yellow": "./rings/multi/versailles_SIDE_yellow.png",
+          "rose": "./rings/multi/versailles_SIDE_rose.png",
+          "white": "./rings/multi/versailles_SIDE_yellow.png"
+        }
+      }
+    },
+    "ontario": {
+      "title": "Ontario Ring",
+      "slots": {
+        "FRONT": {
+          "white": "./rings/multi/ontario_FRONT_white.png",
+          "rose": "./rings/multi/ontario_FRONT_rose.png",
+          "yellow": "./rings/multi/ontario_FRONT_white.png"
+        },
+        "THREEQ": {
+          "yellow": "./rings/multi/ontario_THREEQ_yellow.png",
+          "white": "./rings/multi/ontario_THREEQ_white.png",
+          "rose": "./rings/multi/ontario_THREEQ_rose.png"
+        },
+        "SIDE": {
+          "white": "./rings/multi/ontario_SIDE_white.png",
+          "rose": "./rings/multi/ontario_SIDE_rose.png",
+          "yellow": "./rings/multi/ontario_SIDE_yellow.png"
+        }
+      }
+    },
+    "madrid": {
+      "title": "Madrid Ring",
+      "slots": {
+        "FRONT": {
+          "white": "./rings/multi/madrid_FRONT_white.png",
+          "yellow": "./rings/multi/madrid_FRONT_yellow.png",
+          "rose": "./rings/multi/madrid_FRONT_rose.png"
+        },
+        "THREEQ": {
+          "white": "./rings/multi/madrid_THREEQ_white.png",
+          "rose": "./rings/multi/madrid_THREEQ_rose.png",
+          "yellow": "./rings/multi/madrid_THREEQ_yellow.png"
+        },
+        "SIDE": {
+          "white": "./rings/multi/madrid_SIDE_white.png",
+          "rose": "./rings/multi/madrid_SIDE_rose.png",
+          "yellow": "./rings/multi/madrid_SIDE_yellow.png"
         }
       }
     },
@@ -185,19 +325,359 @@
       "title": "Vancouver Ring",
       "slots": {
         "FRONT": {
-          "white": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/9_e044ba44-3fb6-44b6-9c94-bfd060d3b637.png?v=1752461480&width=600",
-          "yellow": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/6_17eb39ff-7b92-4780-bfd1-524331a92177.png?v=1752461480&width=600",
-          "rose": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/4_1450a0ae-406d-4453-ba66-564a2131b2f3.png?v=1752461481&width=600"
+          "white": "./rings/multi/vancouver_FRONT_white.png",
+          "yellow": "./rings/multi/vancouver_FRONT_yellow.png",
+          "rose": "./rings/multi/vancouver_FRONT_rose.png"
         },
         "THREEQ": {
-          "white": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/3_f7437ba9-22df-4958-9c54-b2266f6178e3.png?v=1752461481&width=600",
-          "yellow": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/2_b8a78b06-a7eb-4d4c-a0b7-dce355777413.png?v=1752461481&width=600",
-          "rose": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/1_cb6befd2-3fe8-47d9-bc38-b0a530e58e8c.png?v=1752461481&width=600"
+          "white": "./rings/multi/vancouver_THREEQ_white.png",
+          "yellow": "./rings/multi/vancouver_THREEQ_yellow.png",
+          "rose": "./rings/multi/vancouver_THREEQ_rose.png"
         },
         "SIDE": {
-          "white": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/9_e044ba44-3fb6-44b6-9c94-bfd060d3b637.png?v=1752461480&width=600",
-          "yellow": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/9_e044ba44-3fb6-44b6-9c94-bfd060d3b637.png?v=1752461480&width=600",
-          "rose": "https://cdn.shopify.com/s/files/1/0568/3026/3473/files/9_e044ba44-3fb6-44b6-9c94-bfd060d3b637.png?v=1752461480&width=600"
+          "white": "./rings/multi/vancouver_FRONT_white.png",
+          "yellow": "./rings/multi/vancouver_FRONT_white.png",
+          "rose": "./rings/multi/vancouver_FRONT_white.png"
+        }
+      }
+    },
+    "amalfi-coast": {
+      "title": "Amalfi Coast Ring",
+      "slots": {
+        "FRONT": {
+          "white": "./rings/multi/amalfi-coast_FRONT_white.png",
+          "yellow": "./rings/multi/amalfi-coast_FRONT_yellow.png",
+          "rose": "./rings/multi/amalfi-coast_FRONT_rose.png"
+        },
+        "THREEQ": {
+          "white": "./rings/multi/amalfi-coast_FRONT_white.png",
+          "yellow": "./rings/multi/amalfi-coast_FRONT_white.png",
+          "rose": "./rings/multi/amalfi-coast_FRONT_white.png"
+        },
+        "SIDE": {
+          "yellow": "./rings/multi/amalfi-coast_SIDE_yellow.png",
+          "rose": "./rings/multi/amalfi-coast_SIDE_rose.png",
+          "white": "./rings/multi/amalfi-coast_SIDE_white.png"
+        }
+      }
+    },
+    "nara-ring": {
+      "title": "Nara Ring",
+      "slots": {
+        "FRONT": {
+          "white": "./rings/multi/nara-ring_FRONT_white.png",
+          "yellow": "./rings/multi/nara-ring_FRONT_yellow.png",
+          "rose": "./rings/multi/nara-ring_FRONT_rose.png"
+        },
+        "THREEQ": {
+          "yellow": "./rings/multi/nara-ring_THREEQ_yellow.png",
+          "white": "./rings/multi/nara-ring_THREEQ_yellow.png",
+          "rose": "./rings/multi/nara-ring_THREEQ_yellow.png"
+        },
+        "SIDE": {
+          "yellow": "./rings/multi/nara-ring_SIDE_yellow.png",
+          "white": "./rings/multi/nara-ring_SIDE_white.png",
+          "rose": "./rings/multi/nara-ring_SIDE_rose.png"
+        }
+      }
+    },
+    "capri-ring": {
+      "title": "Capri Ring",
+      "slots": {
+        "FRONT": {
+          "white": "./rings/multi/capri-ring_FRONT_white.png",
+          "yellow": "./rings/multi/capri-ring_FRONT_yellow.png",
+          "rose": "./rings/multi/capri-ring_FRONT_rose.png"
+        },
+        "THREEQ": {
+          "yellow": "./rings/multi/capri-ring_THREEQ_yellow.png",
+          "rose": "./rings/multi/capri-ring_THREEQ_rose.png",
+          "white": "./rings/multi/capri-ring_THREEQ_white.png"
+        },
+        "SIDE": {
+          "yellow": "./rings/multi/capri-ring_SIDE_yellow.png",
+          "rose": "./rings/multi/capri-ring_SIDE_rose.png",
+          "white": "./rings/multi/capri-ring_SIDE_white.png"
+        }
+      }
+    },
+    "england": {
+      "title": "England Ring",
+      "slots": {
+        "FRONT": {
+          "white": "./rings/multi/england_FRONT_white.png",
+          "yellow": "./rings/multi/england_FRONT_yellow.png",
+          "rose": "./rings/multi/england_FRONT_rose.png"
+        },
+        "THREEQ": {
+          "white": "./rings/multi/england_FRONT_white.png",
+          "yellow": "./rings/multi/england_FRONT_white.png",
+          "rose": "./rings/multi/england_FRONT_white.png"
+        },
+        "SIDE": {
+          "white": "./rings/multi/england_SIDE_white.png",
+          "yellow": "./rings/multi/england_SIDE_yellow.png",
+          "rose": "./rings/multi/england_SIDE_rose.png"
+        }
+      }
+    },
+    "osaka-ring": {
+      "title": "Osaka Ring",
+      "slots": {
+        "FRONT": {
+          "white": "./rings/multi/osaka-ring_FRONT_white.png",
+          "yellow": "./rings/multi/osaka-ring_FRONT_yellow.png",
+          "rose": "./rings/multi/osaka-ring_FRONT_rose.png"
+        },
+        "THREEQ": {
+          "white": "./rings/multi/osaka-ring_FRONT_white.png",
+          "yellow": "./rings/multi/osaka-ring_FRONT_white.png",
+          "rose": "./rings/multi/osaka-ring_FRONT_white.png"
+        },
+        "SIDE": {
+          "yellow": "./rings/multi/osaka-ring_SIDE_yellow.png",
+          "white": "./rings/multi/osaka-ring_SIDE_white.png",
+          "rose": "./rings/multi/osaka-ring_SIDE_rose.png"
+        }
+      }
+    },
+    "lab-diamonds-mississauga": {
+      "title": "Mississauga Ring",
+      "slots": {
+        "FRONT": {
+          "white": "./rings/multi/lab-diamonds-mississauga_FRONT_white.png",
+          "yellow": "./rings/multi/lab-diamonds-mississauga_FRONT_yellow.png",
+          "rose": "./rings/multi/lab-diamonds-mississauga_FRONT_rose.png"
+        },
+        "THREEQ": {
+          "white": "./rings/multi/lab-diamonds-mississauga_THREEQ_white.png",
+          "rose": "./rings/multi/lab-diamonds-mississauga_THREEQ_rose.png",
+          "yellow": "./rings/multi/lab-diamonds-mississauga_THREEQ_white.png"
+        },
+        "SIDE": {
+          "yellow": "./rings/multi/lab-diamonds-mississauga_SIDE_yellow.png",
+          "white": "./rings/multi/lab-diamonds-mississauga_SIDE_white.png",
+          "rose": "./rings/multi/lab-diamonds-mississauga_SIDE_rose.png"
+        }
+      }
+    },
+    "kyoto": {
+      "title": "Kyoto Ring",
+      "slots": {
+        "FRONT": {
+          "white": "./rings/multi/kyoto_FRONT_white.png",
+          "yellow": "./rings/multi/kyoto_FRONT_yellow.png",
+          "rose": "./rings/multi/kyoto_FRONT_rose.png"
+        },
+        "THREEQ": {
+          "white": "./rings/multi/kyoto_FRONT_white.png",
+          "yellow": "./rings/multi/kyoto_FRONT_white.png",
+          "rose": "./rings/multi/kyoto_FRONT_white.png"
+        },
+        "SIDE": {
+          "yellow": "./rings/multi/kyoto_SIDE_yellow.png",
+          "white": "./rings/multi/kyoto_SIDE_white.png",
+          "rose": "./rings/multi/kyoto_SIDE_rose.png"
+        }
+      }
+    },
+    "san-francisco-ring": {
+      "title": "San Francisco Ring",
+      "slots": {
+        "FRONT": {
+          "white": "./rings/multi/san-francisco-ring_FRONT_white.png",
+          "yellow": "./rings/multi/san-francisco-ring_FRONT_yellow.png",
+          "rose": "./rings/multi/san-francisco-ring_FRONT_rose.png"
+        },
+        "THREEQ": {
+          "yellow": "./rings/multi/san-francisco-ring_THREEQ_yellow.png",
+          "white": "./rings/multi/san-francisco-ring_THREEQ_white.png",
+          "rose": "./rings/multi/san-francisco-ring_THREEQ_white.png"
+        },
+        "SIDE": {
+          "yellow": "./rings/multi/san-francisco-ring_SIDE_yellow.png",
+          "rose": "./rings/multi/san-francisco-ring_SIDE_rose.png",
+          "white": "./rings/multi/san-francisco-ring_SIDE_white.png"
+        }
+      }
+    },
+    "kingston": {
+      "title": "Kingston Ring",
+      "slots": {
+        "FRONT": {
+          "white": "./rings/multi/kingston_FRONT_white.png",
+          "rose": "./rings/multi/kingston_FRONT_rose.png",
+          "yellow": "./rings/multi/kingston_FRONT_yellow.png"
+        },
+        "THREEQ": {
+          "yellow": "./rings/multi/kingston_THREEQ_yellow.png",
+          "rose": "./rings/multi/kingston_THREEQ_rose.png",
+          "white": "./rings/multi/kingston_THREEQ_white.png"
+        },
+        "SIDE": {
+          "rose": "./rings/multi/kingston_SIDE_rose.png",
+          "yellow": "./rings/multi/kingston_SIDE_yellow.png",
+          "white": "./rings/multi/kingston_SIDE_white.png"
+        }
+      }
+    },
+    "halifax": {
+      "title": "Halifax Ring",
+      "slots": {
+        "FRONT": {
+          "white": "./rings/multi/halifax_FRONT_white.png",
+          "yellow": "./rings/multi/halifax_FRONT_yellow.png",
+          "rose": "./rings/multi/halifax_FRONT_rose.png"
+        },
+        "THREEQ": {
+          "yellow": "./rings/multi/halifax_THREEQ_yellow.png",
+          "white": "./rings/multi/halifax_THREEQ_white.png",
+          "rose": "./rings/multi/halifax_THREEQ_rose.png"
+        },
+        "SIDE": {
+          "yellow": "./rings/multi/halifax_SIDE_yellow.png",
+          "white": "./rings/multi/halifax_SIDE_white.png",
+          "rose": "./rings/multi/halifax_SIDE_rose.png"
+        }
+      }
+    },
+    "fiji-ring": {
+      "title": "Fiji Ring",
+      "slots": {
+        "FRONT": {
+          "white": "./rings/multi/fiji-ring_FRONT_white.png",
+          "yellow": "./rings/multi/fiji-ring_FRONT_yellow.png",
+          "rose": "./rings/multi/fiji-ring_FRONT_rose.png"
+        },
+        "THREEQ": {
+          "yellow": "./rings/multi/fiji-ring_THREEQ_yellow.png",
+          "rose": "./rings/multi/fiji-ring_THREEQ_rose.png",
+          "white": "./rings/multi/fiji-ring_THREEQ_white.png"
+        },
+        "SIDE": {
+          "yellow": "./rings/multi/fiji-ring_SIDE_yellow.png",
+          "rose": "./rings/multi/fiji-ring_SIDE_rose.png",
+          "white": "./rings/multi/fiji-ring_SIDE_white.png"
+        }
+      }
+    },
+    "lake-louise-ring": {
+      "title": "Lake Louise Ring",
+      "slots": {
+        "FRONT": {
+          "white": "./rings/multi/lake-louise-ring_FRONT_white.png",
+          "yellow": "./rings/multi/lake-louise-ring_FRONT_yellow.png",
+          "rose": "./rings/multi/lake-louise-ring_FRONT_rose.png"
+        },
+        "THREEQ": {
+          "yellow": "./rings/multi/lake-louise-ring_THREEQ_yellow.png",
+          "rose": "./rings/multi/lake-louise-ring_THREEQ_rose.png",
+          "white": "./rings/multi/lake-louise-ring_THREEQ_white.png"
+        },
+        "SIDE": {
+          "yellow": "./rings/multi/lake-louise-ring_SIDE_yellow.png",
+          "rose": "./rings/multi/lake-louise-ring_SIDE_rose.png",
+          "white": "./rings/multi/lake-louise-ring_SIDE_white.png"
+        }
+      }
+    },
+    "edmonton": {
+      "title": "Edmonton Ring",
+      "slots": {
+        "FRONT": {
+          "white": "./rings/multi/edmonton_FRONT_white.png",
+          "yellow": "./rings/multi/edmonton_FRONT_yellow.png",
+          "rose": "./rings/multi/edmonton_FRONT_rose.png"
+        },
+        "THREEQ": {
+          "rose": "./rings/multi/edmonton_THREEQ_rose.png",
+          "white": "./rings/multi/edmonton_THREEQ_rose.png",
+          "yellow": "./rings/multi/edmonton_THREEQ_rose.png"
+        },
+        "SIDE": {
+          "white": "./rings/multi/edmonton_SIDE_white.png",
+          "yellow": "./rings/multi/edmonton_SIDE_yellow.png",
+          "rose": "./rings/multi/edmonton_SIDE_white.png"
+        }
+      }
+    },
+    "florence": {
+      "title": "Florence Ring",
+      "slots": {
+        "FRONT": {
+          "white": "./rings/multi/florence_FRONT_white.png",
+          "rose": "./rings/multi/florence_FRONT_rose.png",
+          "yellow": "./rings/multi/florence_FRONT_yellow.png"
+        },
+        "THREEQ": {
+          "yellow": "./rings/multi/florence_THREEQ_yellow.png",
+          "white": "./rings/multi/florence_THREEQ_white.png",
+          "rose": "./rings/multi/florence_THREEQ_rose.png"
+        },
+        "SIDE": {
+          "white": "./rings/multi/florence_SIDE_white.png",
+          "rose": "./rings/multi/florence_SIDE_rose.png",
+          "yellow": "./rings/multi/florence_SIDE_yellow.png"
+        }
+      }
+    },
+    "burlington-ring": {
+      "title": "Burlington Ring",
+      "slots": {
+        "FRONT": {
+          "white": "./rings/multi/burlington-ring_FRONT_white.png",
+          "yellow": "./rings/multi/burlington-ring_FRONT_yellow.png",
+          "rose": "./rings/multi/burlington-ring_FRONT_rose.png"
+        },
+        "THREEQ": {
+          "yellow": "./rings/multi/burlington-ring_THREEQ_yellow.png",
+          "rose": "./rings/multi/burlington-ring_THREEQ_rose.png",
+          "white": "./rings/multi/burlington-ring_THREEQ_white.png"
+        },
+        "SIDE": {
+          "yellow": "./rings/multi/burlington-ring_SIDE_yellow.png",
+          "rose": "./rings/multi/burlington-ring_SIDE_rose.png",
+          "white": "./rings/multi/burlington-ring_SIDE_white.png"
+        }
+      }
+    },
+    "aspen-ring": {
+      "title": "Aspen Ring",
+      "slots": {
+        "FRONT": {
+          "white": "./rings/multi/aspen-ring_FRONT_white.png",
+          "yellow": "./rings/multi/aspen-ring_FRONT_yellow.png",
+          "rose": "./rings/multi/aspen-ring_FRONT_rose.png"
+        },
+        "THREEQ": {
+          "yellow": "./rings/multi/aspen-ring_THREEQ_yellow.png",
+          "rose": "./rings/multi/aspen-ring_THREEQ_rose.png",
+          "white": "./rings/multi/aspen-ring_THREEQ_white.png"
+        },
+        "SIDE": {
+          "yellow": "./rings/multi/aspen-ring_SIDE_yellow.png",
+          "rose": "./rings/multi/aspen-ring_SIDE_rose.png",
+          "white": "./rings/multi/aspen-ring_SIDE_white.png"
+        }
+      }
+    },
+    "whistler": {
+      "title": "Whistler Ring",
+      "slots": {
+        "FRONT": {
+          "white": "./rings/multi/whistler_FRONT_white.png",
+          "yellow": "./rings/multi/whistler_FRONT_yellow.png",
+          "rose": "./rings/multi/whistler_FRONT_rose.png"
+        },
+        "THREEQ": {
+          "yellow": "./rings/multi/whistler_THREEQ_yellow.png",
+          "rose": "./rings/multi/whistler_THREEQ_rose.png",
+          "white": "./rings/multi/whistler_THREEQ_white.png"
+        },
+        "SIDE": {
+          "yellow": "./rings/multi/whistler_SIDE_yellow.png",
+          "rose": "./rings/multi/whistler_SIDE_rose.png",
+          "white": "./rings/multi/whistler_SIDE_white.png"
         }
       }
     }

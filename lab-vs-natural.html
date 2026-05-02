@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Lovelri · Lab vs Natural Diamonds</title>
+<style>
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:#fafaf8;color:#1a1a1a;font-family:'Helvetica Neue','Arial',sans-serif}
+  #root{min-height:100vh}
+  .boot{display:flex;align-items:center;justify-content:center;min-height:100vh;color:#6b6b6b;font-size:13px;letter-spacing:0.22em;text-transform:uppercase}
+  /* Mobile: stack the 2-column lab/natural comparison into a single column */
+  @media (max-width: 768px) {
+    .lvn-row-grid { grid-template-columns: 1fr !important; gap: 10px !important; }
+    .lvn-fourcs-grid { grid-template-columns: 1fr !important; }
+    .lvn-h1 { font-size: 32px !important; }
+    .lvn-header { padding: 16px 18px !important; }
+    .lvn-container { padding: 24px 14px !important; }
+  }
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+<div id="root"><div class="boot">Loading</div></div>
+
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+<script type="text/babel" data-presets="env,react">
+const { useState } = React;
+
+const B = {
+  white:"#ffffff", offwhite:"#fafaf8", black:"#1a1a1a",
+  gray:"#6b6b6b", lightgray:"#e8e8e4", border:"#d8d8d2",
+  gold:"#c9a96e", goldDark:"#8c6d3f",
+  serif:"'Cormorant Garamond','Georgia',serif",
+  sans:"'Helvetica Neue','Arial',sans-serif",
+};
+
+// Comparison rows. "verdict" is the honest framing — we don't pretend lab is
+// universally better, just clearer about the trade-offs.
+const COMPARE = [
+  { attr: "Chemical composition",
+    lab: "Pure carbon (C), crystallised in a cubic lattice",
+    nat: "Pure carbon (C), crystallised in a cubic lattice",
+    verdict: "Identical. Even gemologists can't tell them apart visually." },
+  { attr: "Optical & physical properties",
+    lab: "Mohs hardness 10. Brilliance, fire, scintillation: indistinguishable from natural.",
+    nat: "Mohs hardness 10. Brilliance, fire, scintillation: indistinguishable from lab.",
+    verdict: "Identical. Same sparkle, same durability — your great-grandchildren's heirloom either way." },
+  { attr: "Origin",
+    lab: "Grown in a controlled lab over 4–8 weeks via HPHT or CVD process.",
+    nat: "Formed 1–3 billion years ago, ~150km below Earth's surface, brought up by volcanic eruptions.",
+    verdict: "Different stories. Both are real diamonds — \"lab-grown\" is not a synonym for synthetic, simulated, or fake." },
+  { attr: "Price (carat for carat)",
+    lab: "30–70% less for the same size, cut, clarity, colour.",
+    nat: "Reference price.",
+    verdict: "Lab buys a noticeably larger or higher-quality stone for the same budget." },
+  { attr: "Resale value",
+    lab: "Resale market is small and prices are still falling as production scales.",
+    nat: "Established secondary market, but resale is typically 30–50% of retail.",
+    verdict: "Neither is an investment vehicle. If resale matters, set expectations honestly." },
+  { attr: "Ethical sourcing",
+    lab: "Conflict-free by construction. Energy-intensive — providers vary on renewable use.",
+    nat: "Kimberley Process certified, but the chain of custody is hard to verify perfectly.",
+    verdict: "Lab removes the supply-chain question. Worth weighing if provenance matters to you." },
+  { attr: "Environmental footprint",
+    lab: "Energy use varies. Renewable-powered labs (some) are very low impact.",
+    nat: "Mining moves significant earth and water per carat.",
+    verdict: "Lab is generally lower impact, but be skeptical of any \"zero emissions\" claim." },
+  { attr: "Certification",
+    lab: "GIA / IGI grading reports identify lab origin and grade against the same 4Cs.",
+    nat: "GIA / IGI grading reports against the same 4Cs.",
+    verdict: "Both come with the same standardised reports. Always insist on one." },
+  { attr: "Lovelri's recommendation",
+    lab: "Default for engagement rings under $25K. The math just makes sense.",
+    nat: "If heirloom-of-mined-origin matters to you or your partner, we source ethically too.",
+    verdict: "We carry both. Tony will help you decide based on budget, sentiment, and your fiancé(e)'s feelings about either." },
+];
+
+const FOUR_CS = [
+  { c: "Cut", desc: "How well the diamond's facets reflect light. Most important driver of sparkle. Aim for Excellent or Ideal cut grade." },
+  { c: "Colour", desc: "Graded D (colourless) to Z (light yellow). For white settings, D–H look colourless. For yellow gold, you can save by going I–J without visible difference." },
+  { c: "Clarity", desc: "How free of inclusions. Eye-clean (no inclusions visible to the naked eye) usually starts at SI1 or VS2 — no need to pay for VVS unless the stone is over 2ct." },
+  { c: "Carat", desc: "Weight, not size. A 1.0ct round is ~6.5mm; 1.5ct is ~7.4mm. The visual jump from 1.0 → 1.5 is bigger than the price gradient suggests." },
+];
+
+function App() {
+  const [tab, setTab] = useState("compare");
+
+  const S = {
+    page: { background: B.offwhite, minHeight: "100vh" },
+    header: { display:"flex", alignItems:"center", justifyContent:"space-between",
+              padding:"22px 32px", borderBottom:`1px solid ${B.lightgray}`, background: B.white },
+    brand: { fontFamily: B.serif, fontSize:28, fontWeight:500 },
+    eyebrow: { fontSize:11, letterSpacing:"0.22em", textTransform:"uppercase", color:B.gray },
+    container: { maxWidth: 1080, margin: "0 auto", padding: "32px 24px" },
+    intro: { textAlign:"center", marginBottom:32 },
+    h1: { fontFamily:B.serif, fontSize:42, fontWeight:500, margin:"0 0 12px", lineHeight:1.1 },
+    sub: { fontSize:15, color:B.gray, lineHeight:1.7, margin:"0", maxWidth:580, marginLeft:"auto", marginRight:"auto" },
+    tabs: { display:"flex", gap:0, justifyContent:"center", marginBottom:32, borderBottom:`1px solid ${B.lightgray}` },
+    tab: (active) => ({
+      padding:"12px 24px", cursor:"pointer", fontSize:12, letterSpacing:"0.16em",
+      textTransform:"uppercase", fontFamily:B.sans,
+      borderBottom: active ? `2px solid ${B.gold}` : "2px solid transparent",
+      color: active ? B.goldDark : B.gray, marginBottom:-1,
+    }),
+    row: { background:B.white, padding:"22px 26px", borderRadius:12, border:`1px solid ${B.lightgray}`, marginBottom:14 },
+    rowAttr: { fontFamily:B.serif, fontSize:18, fontWeight:500, marginBottom:14 },
+    rowGrid: { display:"grid", gridTemplateColumns:"1fr 1fr", gap:18, marginBottom:14 },
+    side: (kind) => ({
+      padding:14, borderRadius:8, fontSize:13, lineHeight:1.6, color:B.black,
+      background: kind === "lab" ? "rgba(76,175,125,0.08)" : "rgba(201,169,110,0.08)",
+      borderLeft: `3px solid ${kind === "lab" ? "#4caf7d" : B.gold}`,
+    }),
+    sideLabel: (kind) => ({ fontSize:10, letterSpacing:"0.18em", textTransform:"uppercase", color: kind === "lab" ? "#2d7a54" : B.goldDark, marginBottom:6, fontWeight:600 }),
+    verdict: { fontSize:13, color:B.gray, fontStyle:"italic", lineHeight:1.6, padding:"10px 0 0", borderTop:`1px dashed ${B.border}` },
+    fourCsGrid: { display:"grid", gridTemplateColumns:"repeat(2, 1fr)", gap:16 },
+    fourCsCard: { background:B.white, borderRadius:12, padding:22, border:`1px solid ${B.lightgray}` },
+    cBig: { fontFamily:B.serif, fontSize:48, fontWeight:500, color:B.gold, lineHeight:0.9, marginBottom:8 },
+    cName: { fontFamily:B.serif, fontSize:22, fontWeight:500, marginBottom:8 },
+    cDesc: { fontSize:13, color:B.gray, lineHeight:1.7 },
+    cta: { textAlign:"center", marginTop:48, padding:32, background:B.white, borderRadius:14, border:`1px solid ${B.lightgray}` },
+    ctaH: { fontFamily:B.serif, fontSize:26, fontWeight:500, margin:"0 0 8px" },
+    ctaP: { fontSize:14, color:B.gray, lineHeight:1.6, marginBottom:18 },
+    ctaBtn: { display:"inline-block", padding:"14px 28px", background:B.gold, color:"#fff", textDecoration:"none", fontSize:13, letterSpacing:"0.14em", textTransform:"uppercase", borderRadius:999, fontFamily:B.sans },
+    footer: { textAlign:"center", padding:"32px 16px", color:B.gray, fontSize:12, borderTop:`1px solid ${B.lightgray}`, marginTop:48 },
+    link: { color:B.goldDark, textDecoration:"none", borderBottom:`1px solid ${B.gold}` },
+  };
+
+  return (
+    <div style={S.page}>
+      <header style={S.header} className="lvn-header">
+        <div>
+          <div style={S.eyebrow}>Lovelri</div>
+          <div style={S.brand}>Lab vs Natural</div>
+        </div>
+        <a href="./index.html" style={{...S.eyebrow, textDecoration:"none", color:B.goldDark}}>← Hub</a>
+      </header>
+
+      <div style={S.container} className="lvn-container">
+        <div style={S.intro}>
+          <h1 style={S.h1} className="lvn-h1">Lab-grown or mined.<br/><em style={{fontStyle:"italic"}}>Both are diamonds.</em></h1>
+          <p style={S.sub}>The most common question in our showroom — and the answer most jewellers won't give you straight. Here's the honest comparison, with our recommendation at the end.</p>
+        </div>
+
+        <div style={S.tabs}>
+          <div style={S.tab(tab === "compare")} onClick={() => setTab("compare")}>The Comparison</div>
+          <div style={S.tab(tab === "fourCs")} onClick={() => setTab("fourCs")}>The 4Cs (both)</div>
+        </div>
+
+        {tab === "compare" && (
+          <div>
+            {COMPARE.map((row, i) => (
+              <div key={i} style={S.row}>
+                <div style={S.rowAttr}>{row.attr}</div>
+                <div style={S.rowGrid} className="lvn-row-grid">
+                  <div style={S.side("lab")}>
+                    <div style={S.sideLabel("lab")}>Lab-grown</div>
+                    {row.lab}
+                  </div>
+                  <div style={S.side("nat")}>
+                    <div style={S.sideLabel("nat")}>Natural</div>
+                    {row.nat}
+                  </div>
+                </div>
+                <div style={S.verdict}>{row.verdict}</div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {tab === "fourCs" && (
+          <div style={S.fourCsGrid} className="lvn-fourcs-grid">
+            {FOUR_CS.map((f, i) => (
+              <div key={f.c} style={S.fourCsCard}>
+                <div style={S.cBig}>{f.c.charAt(0)}</div>
+                <div style={S.cName}>{f.c}</div>
+                <div style={S.cDesc}>{f.desc}</div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        <div style={S.cta}>
+          <h2 style={S.ctaH}>Still not sure?</h2>
+          <p style={S.ctaP}>30 minutes with Tony at Bay Street will answer every question on this page — and you'll get to handle both lab and natural stones side by side.</p>
+          <a href="./bookings.html" style={S.ctaBtn}>Book a consultation →</a>
+        </div>
+      </div>
+
+      <div style={S.footer}>
+        Lovelri carries both lab-grown and natural diamonds. Every stone comes with a GIA or IGI grading report regardless of origin.
+      </div>
+    </div>
+  );
+}
+ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+</script>
+</body>
+</html>

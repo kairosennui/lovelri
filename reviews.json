@@ -1,0 +1,29 @@
+{
+  "_comment": "Real reviews go here. Tony — replace the [PLACEHOLDER] entries with actual testimonials before promoting reviews.html publicly. Schema: name, occasion, rating (1-5), date (YYYY-MM-DD), title (short), body, ringSlug (matches RINGS catalog), verified (bool), source (Google | WeddingWire | Instagram | Direct).",
+  "reviews": [
+    {
+      "_status": "PLACEHOLDER — replace before going live",
+      "name": "[Customer initial]",
+      "occasion": "Engagement",
+      "rating": 5,
+      "date": "2026-01-15",
+      "title": "[Short, vivid title from the review]",
+      "body": "[2-4 sentences in the customer's voice. What they came in worried about, how Tony handled it, the moment of the proposal/anniversary, how the ring has held up.]",
+      "ringSlug": "sicily-lotus-ring",
+      "verified": true,
+      "source": "Google"
+    },
+    {
+      "_status": "PLACEHOLDER — replace before going live",
+      "name": "[Customer initial]",
+      "occasion": "Custom Bespoke",
+      "rating": 5,
+      "date": "2025-11-08",
+      "title": "[Short, vivid title]",
+      "body": "[Custom-design story. The original idea, what Tony added, the rendering process, the final piece.]",
+      "ringSlug": "dolomites-ring",
+      "verified": true,
+      "source": "WeddingWire"
+    }
+  ]
+}

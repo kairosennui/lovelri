@@ -174,13 +174,19 @@ function startTracking({ videoEl, canvasEl, getOptions, onStatus, onBucket }) {
     return () => {};
   }
 
+  // Mobile detection — affects video resolution AND MediaPipe model complexity.
+  // On phones: 640x480 + lite model = usable framerate. On desktop: 1280x720
+  // + full model = better landmark precision.
+  const isMobile = (typeof window !== "undefined") &&
+    (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || window.innerWidth < 768);
+
   const ctx = canvasEl.getContext("2d");
   const hands = new window.Hands({
     locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`,
   });
   hands.setOptions({
     maxNumHands: 1,
-    modelComplexity: 1,
+    modelComplexity: isMobile ? 0 : 1,
     minDetectionConfidence: 0.6,
     minTrackingConfidence: 0.6,
   });
@@ -188,9 +194,13 @@ function startTracking({ videoEl, canvasEl, getOptions, onStatus, onBucket }) {
   let lastResults = null;
   hands.onResults((res) => { lastResults = res; });
 
+  // Explicit facingMode "user" requests the front camera (selfie cam).
+  // MediaPipe Camera utility passes this to navigator.mediaDevices.getUserMedia.
   const camera = new window.Camera(videoEl, {
     onFrame: async () => { await hands.send({ image: videoEl }); },
-    width: 1280, height: 720,
+    width:  isMobile ? 640 : 1280,
+    height: isMobile ? 480 : 720,
+    facingMode: "user",
   });
 
   let stopped = false;
@@ -343,6 +353,21 @@ function App() {
   const [bucket, setBucket] = useState("FRONT");
   const [ringReady, setRingReady] = useState(false);
 
+  // Track viewport for responsive layout — desktop uses 2-column grid,
+  // mobile stacks the camera above the configurator.
+  const [isNarrow, setIsNarrow] = useState(
+    typeof window !== "undefined" ? window.innerWidth < 900 : false
+  );
+  useEffect(() => {
+    const check = () => setIsNarrow(window.innerWidth < 900);
+    window.addEventListener("resize", check);
+    window.addEventListener("orientationchange", check);
+    return () => {
+      window.removeEventListener("resize", check);
+      window.removeEventListener("orientationchange", check);
+    };
+  }, []);
+
   const filteredRings = useMemo(
     () => shape === "All" ? RINGS : RINGS.filter(r => r.shapes.includes(shape)),
     [shape]
@@ -422,9 +447,18 @@ function App() {
     optsRef.current.debug = debug;
   }, [size, debug]);
 
-  // Init MediaPipe once
+  // Init MediaPipe.
+  // Desktop: auto-start on mount.
+  // Mobile (iOS Safari especially): blocks getUserMedia without a user gesture,
+  // so we wait for a tap on the "Start camera" overlay before starting.
+  const [hasStarted, setHasStarted] = useState(false);
+  const isTouch = typeof window !== "undefined" &&
+    ("ontouchstart" in window || navigator.maxTouchPoints > 0);
+
   useEffect(() => {
     if (!videoRef.current || !canvasRef.current) return;
+    // Auto-start only on non-touch devices (desktop). Mobile waits for tap.
+    if (isTouch && !hasStarted) return;
     const stop = startTracking({
       videoEl: videoRef.current,
       canvasEl: canvasRef.current,
@@ -433,7 +467,7 @@ function App() {
       onBucket: setBucket,
     });
     return stop;
-  }, []);
+  }, [hasStarted, isTouch]);
 
   const snapshot = useCallback(() => {
     if (!canvasRef.current) return;
@@ -448,17 +482,24 @@ function App() {
     page: { fontFamily: B.sans, color: B.black, background: B.offwhite, minHeight: "100vh" },
     header: {
       display:"flex", alignItems:"center", justifyContent:"space-between",
-      padding:"22px 32px", borderBottom:`1px solid ${B.lightgray}`, background: B.white,
+      padding: isNarrow ? "16px 18px" : "22px 32px",
+      borderBottom:`1px solid ${B.lightgray}`, background: B.white,
     },
-    brand: { fontFamily: B.serif, fontSize:28, fontWeight:500, letterSpacing:"0.02em" },
+    brand: { fontFamily: B.serif, fontSize: isNarrow ? 22 : 28, fontWeight:500, letterSpacing:"0.02em" },
     eyebrow: { fontSize:11, letterSpacing:"0.22em", textTransform:"uppercase", color:B.gray },
     grid: {
-      display:"grid", gridTemplateColumns:"minmax(0,1fr) 380px",
-      gap:24, padding:24, maxWidth:1440, margin:"0 auto",
+      display:"grid",
+      gridTemplateColumns: isNarrow ? "1fr" : "minmax(0,1fr) 380px",
+      gap: isNarrow ? 14 : 24,
+      padding: isNarrow ? 12 : 24,
+      maxWidth: 1440, margin:"0 auto",
     },
     stage: {
       position:"relative", background:"#000", borderRadius:14, overflow:"hidden",
-      aspectRatio:"4/3", boxShadow:"0 20px 60px -30px rgba(0,0,0,0.4)",
+      // On mobile use a tall portrait-ish frame so the hand fills more pixels.
+      // On desktop keep the 4:3 widescreen frame.
+      aspectRatio: isNarrow ? "3/4" : "4/3",
+      boxShadow:"0 20px 60px -30px rgba(0,0,0,0.4)",
     },
     canvas: { width:"100%", height:"100%", display:"block", objectFit:"cover" },
     overlay: {
@@ -480,14 +521,18 @@ function App() {
     captureBtn: {
       pointerEvents:"auto", border:"none", cursor:"pointer",
       background: B.gold, color:"#fff",
-      padding:"12px 22px", borderRadius:999, fontSize:13, letterSpacing:"0.12em",
+      padding: isNarrow ? "14px 18px" : "12px 22px",
+      borderRadius:999, fontSize: isNarrow ? 12 : 13, letterSpacing:"0.12em",
       textTransform:"uppercase", fontWeight:500,
       boxShadow:"0 8px 30px -10px rgba(201,169,110,0.7)",
+      // Larger min tap target on mobile
+      minHeight: isNarrow ? 44 : "auto",
     },
     panel: {
-      background: B.white, borderRadius:14, padding:24,
+      background: B.white, borderRadius:14,
+      padding: isNarrow ? 16 : 24,
       border:`1px solid ${B.lightgray}`, alignSelf:"start",
-      display:"flex", flexDirection:"column", gap:20,
+      display:"flex", flexDirection:"column", gap: isNarrow ? 16 : 20,
     },
     sectionTitle: { fontFamily: B.serif, fontSize:20, fontWeight:500, margin:0 },
     sectionSub: { fontSize:12, color:B.gray, marginTop:4 },
@@ -573,8 +618,36 @@ function App() {
       <div style={S.grid}>
         <div>
           <div style={S.stage}>
-            <video ref={videoRef} className="hidden-source" playsInline muted />
+            <video ref={videoRef} className="hidden-source" playsInline muted autoPlay />
             <canvas ref={canvasRef} style={S.canvas} />
+
+            {/* Tap-to-start overlay (mobile only). iOS Safari blocks
+                getUserMedia without a user gesture — this button IS the
+                gesture. */}
+            {isTouch && !hasStarted && (
+              <div style={{
+                position:"absolute", inset:0, display:"flex",
+                flexDirection:"column", alignItems:"center", justifyContent:"center",
+                gap:18, background:"rgba(26,26,26,0.92)", color:"#fff",
+                cursor:"pointer", textAlign:"center", padding:24,
+              }} onClick={() => setHasStarted(true)}>
+                <div style={{fontFamily:B.serif, fontSize:32, lineHeight:1.1}}>
+                  Try the ring on
+                </div>
+                <div style={{fontSize:13, color:"#bdbdb8", maxWidth:280, lineHeight:1.5}}>
+                  We'll need access to your camera to overlay the ring on your hand. Tap to begin.
+                </div>
+                <button style={{
+                  marginTop:6, padding:"16px 32px", borderRadius:999,
+                  background:B.gold, color:"#fff", border:"none",
+                  fontSize:13, letterSpacing:"0.16em", textTransform:"uppercase",
+                  fontWeight:500, fontFamily:B.sans, cursor:"pointer", minHeight:48,
+                }}>
+                  Start camera
+                </button>
+              </div>
+            )}
+
             {isPilot && status === "ready" && (
               <div style={S.bucketPill}>{bucketLabel}</div>
             )}
@@ -583,6 +656,7 @@ function App() {
                 {status === "ready" ? "● Tracking" :
                  status === "starting" ? "Starting camera…" :
                  status.startsWith("camera-error") ? "Camera blocked — allow access and reload" :
+                 (isTouch && !hasStarted) ? "Tap to start" :
                  status}
               </div>
               <button style={S.captureBtn} onClick={snapshot} disabled={status !== "ready"}>

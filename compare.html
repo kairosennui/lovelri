@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Lovelri · Compare Rings</title>
+<style>
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:#fafaf8;color:#1a1a1a;font-family:'Helvetica Neue','Arial',sans-serif}
+  #root{min-height:100vh}
+  .boot{display:flex;align-items:center;justify-content:center;min-height:100vh;color:#6b6b6b;font-size:13px;letter-spacing:0.22em;text-transform:uppercase}
+  /* Mobile: stack the 3-column comparison into a single scrollable column */
+  @media (max-width: 768px) {
+    .compare-grid { grid-template-columns: 1fr !important; gap: 16px !important; }
+    .compare-header { padding: 16px 18px !important; }
+    .compare-h1 { font-size: 28px !important; }
+    .compare-container { padding: 20px 14px !important; }
+  }
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+<div id="root"><div class="boot">Loading Compare</div></div>
+
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+<script type="text/babel" data-presets="env,react">
+const { useState, useMemo } = React;
+
+const B = {
+  white:"#ffffff", offwhite:"#fafaf8", black:"#1a1a1a",
+  gray:"#6b6b6b", lightgray:"#e8e8e4", border:"#d8d8d2",
+  gold:"#c9a96e", goldDark:"#8c6d3f",
+  serif:"'Cormorant Garamond','Georgia',serif",
+  sans:"'Helvetica Neue','Arial',sans-serif",
+};
+
+// Shared ring catalog (matches index.html / try-on.html)
+const RINGS = [
+  {name:"Sicily Lotus Ring",slug:"sicily-lotus-ring",img:"./rings/sicily-lotus-ring.png",collection:"Botanical",shapes:["Oval","Radiant","Emerald","Round","Marquise","Pear","Cushion"],price:"From $3,703",budgetMax:8000,url:"https://lovelri.com/products/sicily-lotus-ring",details:"Distinctive lotus-petal basket. Botanical setting with dramatic centre stone presentation."},
+  {name:"Dolomites Ring",slug:"dolomites-ring",img:"./rings/dolomites-ring.png",collection:"Pavé",shapes:["Round","Oval","Cushion","Radiant","Emerald","Pear","Marquise","Princess"],price:"From $3,703",budgetMax:8000,url:"https://lovelri.com/products/dolomites-ring",details:"Vintage-inspired pavé band with side stones flanking the centre. The signature Lovelri pavé."},
+  {name:"Sicily Marquise",slug:"sicily-ring-marquise",img:"./rings/sicily-ring-marquise.png",collection:"Modern",shapes:["Marquise"],price:"From $3,098",budgetMax:6000,url:"https://lovelri.com/products/sicily-ring-marquise",details:"Pure marquise solitaire. East-west or north-south orientation."},
+  {name:"Hawaii Ring",slug:"hawaii-ring",img:"./rings/hawaii-ring.png",collection:"Botanical",shapes:["Round","Oval","Cushion","Radiant","Emerald","Pear","Marquise","Princess"],price:"From $3,703",budgetMax:8000,url:"https://lovelri.com/products/hawaii-ring",details:"Trefoil leaf accents on either side of the centre stone."},
+  {name:"Portland Ring",slug:"portland",img:"./rings/portland.png",collection:"Botanical",shapes:["Oval","Round","Cushion","Radiant","Emerald"],price:"From $2,934",budgetMax:6000,url:"https://lovelri.com/products/portland",details:"Subtle vine-detailed band leading into a four-prong setting."},
+  {name:"Mt. Fuji Ring",slug:"mt-fuji-ring",img:"./rings/mt-fuji-ring.png",collection:"Modern",shapes:["Round","Oval","Radiant","Emerald","Marquise","Pear"],price:"From $2,997",budgetMax:6000,url:"https://lovelri.com/products/mt-fuji-ring",details:"Architectural twisted-band solitaire. Sculptural and modern."},
+  {name:"Thunder Bay Ring",slug:"thunder-bay-ring",img:"./rings/thunder-bay-ring.png",collection:"Side Stones",shapes:["Oval","Cushion","Round","Radiant","Emerald","Marquise"],price:"From $3,500",budgetMax:8000,url:"https://lovelri.com/products/thunder-bay-ring",details:"Three-stone classic with proportionally sized accent stones."},
+  {name:"Switzerland Ring",slug:"switzerland",img:"./rings/switzerland.png",collection:"Cathedral",shapes:["Emerald","Radiant"],price:"From $3,635",budgetMax:8000,url:"https://lovelri.com/products/switzerland",details:"Cathedral-style supports raising the centre stone with airy negative space."},
+  {name:"Verona Ring",slug:"verona-ring",img:"./rings/verona-ring.png",collection:"Side Stones",shapes:["Oval","Round","Marquise","Cushion","Radiant","Pear"],price:"From $3,828",budgetMax:8000,url:"https://lovelri.com/products/verona-ring",details:"Pear-shape side stones for a soft, romantic three-stone look."},
+  {name:"Sydney Ring",slug:"sydney-ring",img:"./rings/sydney-ring.png",collection:"Cathedral",shapes:["Cushion","Oval","Round","Radiant","Emerald","Marquise"],price:"From $2,999",budgetMax:6000,url:"https://lovelri.com/products/sydney-ring",details:"Knife-edge cathedral band with a lifted centre."},
+  {name:"Tahiti Ring",slug:"tahiti-ring",img:"./rings/tahiti-ring.png",collection:"Modern",shapes:["Oval","Round","Radiant","Emerald","Cushion"],price:"From $2,997",budgetMax:6000,url:"https://lovelri.com/products/tahiti-ring",details:"Compass-prong solitaire with a polished tapered band."},
+  {name:"Lake Como Ring",slug:"lake-como-ring",img:"./rings/lake-como-ring.png",collection:"Modern",shapes:["Radiant","Emerald","Round","Oval","Marquise","Pear","Cushion"],price:"From $3,131",budgetMax:6000,url:"https://lovelri.com/products/lake-como-ring",details:"East-west elongated profile with split-shank under-gallery."},
+  {name:"Victoria Ring",slug:"victoria",img:"./rings/victoria.png",collection:"Halo",shapes:["Oval","Round","Cushion","Radiant","Pear","Marquise"],price:"From $3,131",budgetMax:6000,url:"https://lovelri.com/products/victoria",details:"Hidden halo plus pavé band — dazzle without size inflation."},
+  {name:"Versailles Ring",slug:"versailles",img:"./rings/versailles.png",collection:"Pavé",shapes:["Oval","Round","Marquise","Pear","Cushion","Radiant"],price:"From $3,703",budgetMax:8000,url:"https://lovelri.com/products/versailles",details:"Ornate pavé halo with French-cut shoulders."},
+  {name:"Ontario Ring",slug:"ontario",img:"./rings/ontario.png",collection:"Side Stones",shapes:["Round","Oval","Marquise","Pear","Radiant","Emerald"],price:"From $2,957",budgetMax:6000,url:"https://lovelri.com/products/ontario",details:"Tapered baguette side stones flanking the centre."},
+  {name:"Madrid Ring",slug:"madrid",img:"./rings/madrid.png",collection:"Modern",shapes:["Round","Oval","Cushion","Radiant","Emerald","Marquise","Pear"],price:"From $2,934",budgetMax:6000,url:"https://lovelri.com/products/madrid",details:"Knife-edge solitaire — a clean, architectural reading of the classic."},
+  {name:"Vancouver Ring",slug:"vancouver",img:"./rings/vancouver.png",collection:"Side Stones",shapes:["Pear","Radiant","Emerald","Round","Oval"],price:"From $3,500",budgetMax:8000,url:"https://lovelri.com/products/vancouver",details:"Pear halo with delicate pavé band."},
+  {name:"Edmonton Ring",slug:"edmonton",img:"./rings/edmonton.png",collection:"Solitaire",shapes:["Round","Oval","Cushion","Radiant","Emerald","Pear","Marquise","Princess"],price:"From $2,938",budgetMax:6000,url:"https://lovelri.com/products/edmonton",details:"Classic four-prong solitaire — the timeless reference setting."},
+  {name:"Florence Ring",slug:"florence",img:"./rings/florence.png",collection:"Botanical",shapes:["Oval","Round","Cushion","Radiant","Emerald","Pear","Marquise"],price:"From $3,131",budgetMax:6000,url:"https://lovelri.com/products/florence",details:"Floral filigree halo with a vintage feel."},
+  {name:"Whistler Ring",slug:"whistler",img:"./rings/whistler.png",collection:"Solitaire",shapes:["Pear"],price:"From $3,198",budgetMax:6000,url:"https://lovelri.com/products/whistler",details:"Bezel-set pear solitaire. Modern, minimalist, secure."},
+];
+
+function App() {
+  const [slots, setSlots] = useState(["sicily-lotus-ring", "dolomites-ring", "edmonton"]);
+  const rings = slots.map(slug => RINGS.find(r => r.slug === slug)).filter(Boolean);
+
+  const setSlot = (i, slug) => {
+    const next = [...slots];
+    next[i] = slug;
+    setSlots(next);
+  };
+
+  const S = {
+    page: { background: B.offwhite, minHeight: "100vh" },
+    header: { display:"flex", alignItems:"center", justifyContent:"space-between",
+              padding:"22px 32px", borderBottom:`1px solid ${B.lightgray}`, background: B.white },
+    brand: { fontFamily: B.serif, fontSize:28, fontWeight:500 },
+    eyebrow: { fontSize:11, letterSpacing:"0.22em", textTransform:"uppercase", color:B.gray },
+    container: { maxWidth: 1200, margin: "0 auto", padding: "32px 24px" },
+    intro: { textAlign:"center", marginBottom:32 },
+    h1: { fontFamily:B.serif, fontSize:38, fontWeight:500, margin:"0 0 8px" },
+    sub: { fontSize:14, color:B.gray, lineHeight:1.6, margin:"0 0 0", maxWidth:560, marginLeft:"auto", marginRight:"auto" },
+    grid: { display:"grid", gridTemplateColumns:"repeat(3, 1fr)", gap:20 },
+    col: { background:B.white, borderRadius:14, padding:24, border:`1px solid ${B.lightgray}` },
+    select: { padding:"10px 12px", border:`1px solid ${B.border}`, borderRadius:8, fontSize:13, fontFamily:B.sans, background:B.white, width:"100%", marginBottom:16 },
+    img: { width:"100%", aspectRatio:"1", objectFit:"contain", background:"#f4f4f0", borderRadius:10 },
+    name: { fontFamily:B.serif, fontSize:24, fontWeight:500, margin:"16px 0 4px" },
+    price: { fontSize:15, color:B.goldDark, marginBottom:14, letterSpacing:"0.06em" },
+    detail: { fontSize:13, color:B.gray, lineHeight:1.6, marginBottom:18, minHeight:60 },
+    specRow: { display:"flex", justifyContent:"space-between", padding:"8px 0", borderTop:`1px solid ${B.lightgray}`, fontSize:13 },
+    specLabel: { color:B.gray, fontSize:11, letterSpacing:"0.1em", textTransform:"uppercase" },
+    specVal: { color:B.black, textAlign:"right" },
+    cta: { display:"block", textAlign:"center", marginTop:18, padding:"12px 18px", background:B.gold, color:"#fff", textDecoration:"none", fontSize:12, letterSpacing:"0.14em", textTransform:"uppercase", borderRadius:999, fontFamily:B.sans },
+    footer: { textAlign:"center", padding:"32px 16px", color:B.gray, fontSize:12, borderTop:`1px solid ${B.lightgray}`, marginTop:48 },
+    link: { color:B.goldDark, textDecoration:"none", borderBottom:`1px solid ${B.gold}` },
+  };
+
+  return (
+    <div style={S.page}>
+      <header style={S.header} className="compare-header">
+        <div>
+          <div style={S.eyebrow}>Lovelri</div>
+          <div style={S.brand}>Compare</div>
+        </div>
+        <a href="./index.html" style={{...S.eyebrow, textDecoration:"none", color:B.goldDark}}>← Hub</a>
+      </header>
+
+      <div style={S.container} className="compare-container">
+        <div style={S.intro}>
+          <h1 style={S.h1} className="compare-h1">Pick three rings, place them side by side.</h1>
+          <p style={S.sub}>Helps when you've narrowed it down but still can't decide. Bring this page to your Bay Street consultation and we'll see all three together.</p>
+        </div>
+
+        <div style={S.grid} className="compare-grid">
+          {rings.map((r, i) => (
+            <div key={i} style={S.col}>
+              <select style={S.select} value={r.slug} onChange={e => setSlot(i, e.target.value)}>
+                {RINGS.map(opt => <option key={opt.slug} value={opt.slug}>{opt.name}</option>)}
+              </select>
+              <img src={r.img} style={S.img} alt={r.name} />
+              <div style={S.name}>{r.name}</div>
+              <div style={S.price}>{r.price}</div>
+              <div style={S.detail}>{r.details}</div>
+              <div style={S.specRow}><span style={S.specLabel}>Collection</span><span style={S.specVal}>{r.collection}</span></div>
+              <div style={S.specRow}><span style={S.specLabel}>Stone shapes</span><span style={S.specVal}>{r.shapes.join(", ")}</span></div>
+              <div style={S.specRow}><span style={S.specLabel}>Budget tier</span><span style={S.specVal}>Under ${r.budgetMax.toLocaleString()}</span></div>
+              <div style={S.specRow}><span style={S.specLabel}>Try on (AR)</span><span style={S.specVal}><a href={`./try-on.html#ring=${r.slug}`} style={S.link}>Open →</a></span></div>
+              <a href={r.url} target="_blank" rel="noreferrer" style={S.cta}>View on lovelri.com</a>
+            </div>
+          ))}
+        </div>
+
+        <div style={{textAlign:"center", marginTop:48}}>
+          <a href="./bookings.html" style={{...S.link, fontSize:14, letterSpacing:"0.1em", textTransform:"uppercase"}}>Book a Bay Street viewing →</a>
+        </div>
+      </div>
+
+      <div style={S.footer}>
+        Bring your shortlist to <a href="./bookings.html" style={S.link}>Bay Street</a> — we'll have all three set out for you to try in person.
+      </div>
+    </div>
+  );
+}
+ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+</script>
+</body>
+</html>
