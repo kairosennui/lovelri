@@ -65,13 +65,20 @@ REM ── COMMIT ────────────────────�
 set /p MSG="Commit message (press Enter for default): "
 if "%MSG%"=="" set MSG=Update Lovelri try-on, rings, dashboard
 
+REM Pre-build a stdin file with 500 "n" answers. If git ever asks
+REM "Deletion of directory '...' failed. Should I try again? (y/n)"
+REM during commit/repack/push, it'll auto-read "n" and continue.
+REM This makes pushes immune to Windows Defender / antivirus / OneDrive
+REM holding momentary file locks on .git/objects/XX folders.
+> "%TEMP%\lovelri_auto_n.txt" (for /l %%i in (1,1,500) do @echo n)
+
 echo.
 echo Staging...
-git add .
+git add . < "%TEMP%\lovelri_auto_n.txt"
 if errorlevel 1 goto :err
 
 echo Committing...
-git commit -m "%MSG%"
+git commit -m "%MSG%" < "%TEMP%\lovelri_auto_n.txt"
 if errorlevel 1 (
   echo Nothing new to commit, or commit failed. Will still attempt push.
 )
@@ -79,8 +86,12 @@ if errorlevel 1 (
 :pushonly
 echo.
 echo Pushing to origin (this can take ~30s for large changes)...
-git push -u origin main
-if errorlevel 1 goto :err
+git push -u origin main < "%TEMP%\lovelri_auto_n.txt"
+if errorlevel 1 (
+  del "%TEMP%\lovelri_auto_n.txt" 2>nul
+  goto :err
+)
+del "%TEMP%\lovelri_auto_n.txt" 2>nul
 
 REM ── DONE ────────────────────────────────────────────────────────────────────
 echo.
