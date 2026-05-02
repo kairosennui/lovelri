@@ -38,3 +38,10 @@ final_*.jsx
 # OneDrive / Dropbox sync conflicts
 *conflict*
 *Conflict*
+
+# Claude's safety-net backups (timestamped snapshots before every change)
+backup/
+
+# Local thumbnails / contact sheets used during the ring photo classification
+# pipeline — not needed at runtime
+ring-thumbs/
