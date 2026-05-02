@@ -43,21 +43,52 @@
     }
     .tryon-panel {
       padding: 16px !important;
-      gap: 16px !important;
+      gap: 18px !important;
     }
+    /* Bigger ring picker cards — ~half the screen wide so 2 cards visible
+       at once, generous tap target. Photo inside is bigger too. */
     .tryon-ring-card {
-      flex: 0 0 96px !important;
+      flex: 0 0 140px !important;
+      padding: 10px !important;
     }
+    .tryon-ring-rail {
+      gap: 12px !important;
+      padding-bottom: 14px !important;
+      /* Snap-to-card scrolling feels more deliberate on a phone */
+      scroll-snap-type: x mandatory !important;
+      -webkit-overflow-scrolling: touch !important;
+    }
+    .tryon-ring-card-name { font-size: 13px !important; }
+    .tryon-ring-card-price { font-size: 11px !important; }
     .tryon-capture-btn {
       padding: 14px 18px !important;
       min-height: 44px !important;
     }
-    /* Make tap targets big enough for fingers */
-    .tryon-chip { padding: 10px 16px !important; min-height: 40px !important; }
+    /* Bigger metal swatches: full-width, finger-sized, easy to tap */
+    .tryon-metal-swatch {
+      padding: 14px !important;
+      gap: 10px !important;
+    }
+    .tryon-metal-swatch-disc {
+      width: 44px !important;
+      height: 44px !important;
+    }
+    .tryon-metal-swatch-label { font-size: 11px !important; }
+    /* Bigger chips for stone shape filter */
+    .tryon-chip {
+      padding: 10px 16px !important;
+      font-size: 13px !important;
+      min-height: 40px !important;
+    }
+    /* Larger range slider thumb on mobile — default is too small for fingers */
+    .tryon-panel input[type="range"] {
+      height: 36px !important;
+    }
   }
   @media (max-width: 480px) {
     .tryon-h2 { font-size: 18px !important; }
     .tryon-grid { padding: 8px !important; }
+    .tryon-ring-card { flex: 0 0 120px !important; }
   }
 </style>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -756,9 +787,9 @@ function App() {
             <span style={S.label}>Metal</span>
             <div style={S.metalRow}>
               {METALS.map(m => (
-                <div key={m.id} style={S.metalSwatch(metal === m.id)} onClick={() => setMetal(m.id)}>
-                  <div style={S.swatchDisc(m.swatch)} />
-                  <div style={S.swatchLabel}>{m.label}</div>
+                <div key={m.id} style={S.metalSwatch(metal === m.id)} className="tryon-metal-swatch" onClick={() => setMetal(m.id)}>
+                  <div style={S.swatchDisc(m.swatch)} className="tryon-metal-swatch-disc" />
+                  <div style={S.swatchLabel} className="tryon-metal-swatch-label">{m.label}</div>
                 </div>
               ))}
             </div>
@@ -768,7 +799,7 @@ function App() {
             <span style={S.label}>Stone shape</span>
             <div style={S.chipRow}>
               {SHAPES.map(s => (
-                <div key={s} style={S.chip(shape === s)} onClick={() => setShape(s)}>{s}</div>
+                <div key={s} style={S.chip(shape === s)} className="tryon-chip" onClick={() => setShape(s)}>{s}</div>
               ))}
             </div>
           </div>
@@ -786,16 +817,16 @@ function App() {
             <span style={S.label}>
               Choose a ring · {filteredRings.length} {shape === "All" ? "" : `with ${shape}`} · green dot = multi-angle AR
             </span>
-            <div style={S.ringRail} className="ring-rail">
+            <div style={S.ringRail} className="ring-rail tryon-ring-rail">
               {filteredRings.map(r => {
                 const hasViews = !!(ringViews && ringViews.rings && ringViews.rings[r.slug]);
                 return (
-                  <div key={r.slug} style={S.ringCard(r.slug === selectedSlug, hasViews)} onClick={() => setSelectedSlug(r.slug)}>
+                  <div key={r.slug} style={S.ringCard(r.slug === selectedSlug, hasViews)} className="tryon-ring-card" onClick={() => setSelectedSlug(r.slug)}>
                     {hasViews && <span style={S.pilotDot} title="Multi-angle photos available" />}
                     <img src={r.img} style={S.ringThumb} alt={r.name}
                          onError={(e) => { e.currentTarget.src = r.remote; }} />
-                    <div style={S.ringName}>{r.name}</div>
-                    <div style={S.ringPrice}>{r.price}</div>
+                    <div style={S.ringName} className="tryon-ring-card-name">{r.name}</div>
+                    <div style={S.ringPrice} className="tryon-ring-card-price">{r.price}</div>
                   </div>
                 );
               })}
