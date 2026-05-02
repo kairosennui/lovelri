@@ -330,6 +330,51 @@ function imageToCanvas(img) {
   c.getContext("2d").drawImage(img, 0, 0);
   return c;
 }
+
+// Find the brightest spots on a ring image — these are diamond highlights, the
+// natural anchor points for simulated sparkle. Returns up to N points in the
+// image's local coordinate space (origin at top-left, normalised 0-1). We
+// downsample by stride to keep this fast (runs once per loaded image).
+function findSparklePoints(canvas, count = 6) {
+  try {
+    const ctx = canvas.getContext("2d");
+    const w = canvas.width, h = canvas.height;
+    const id = ctx.getImageData(0, 0, w, h).data;
+    const stride = 4; // Sample every 4th pixel — 16x faster
+    const candidates = [];
+    for (let y = 0; y < h; y += stride) {
+      for (let x = 0; x < w; x += stride) {
+        const i = (y * w + x) * 4;
+        const a = id[i + 3];
+        if (a < 200) continue; // skip transparent (background)
+        const r = id[i], g = id[i + 1], b = id[i + 2];
+        // Brightness × alpha. Bias toward "sparkle-like" pixels: bright + low
+        // chroma (white highlights from facets) outscore tinted pixels.
+        const max = Math.max(r, g, b), min = Math.min(r, g, b);
+        const lum = (r + g + b) / 3;
+        const lowChroma = 1 - (max - min) / 255;
+        const score = lum * (0.6 + 0.4 * lowChroma);
+        if (score > 200) candidates.push({ x: x / w, y: y / h, score });
+      }
+    }
+    candidates.sort((a, b) => b.score - a.score);
+    // Pick top spots, but spaced out — don't cluster all sparkles in one tiny
+    // facet. Greedy non-max suppression: keep the brightest, then keep the
+    // next-brightest that's >0.08 of image-width away from any kept point.
+    const picks = [];
+    for (const c of candidates) {
+      const farEnough = picks.every(p =>
+        Math.hypot(p.x - c.x, p.y - c.y) > 0.08
+      );
+      if (farEnough) picks.push(c);
+      if (picks.length >= count) break;
+    }
+    return picks;
+  } catch (e) {
+    return [];
+  }
+}
+
 function loadRingImage(url) {
   if (_ringCache.has(url)) return _ringCache.get(url);
   const isPreProcessed = /\/rings\/multi\//.test(url);
@@ -342,6 +387,8 @@ function loadRingImage(url) {
       // pre-processed multi/ images are tight-cropped (use 1.0× knuckleSpan),
       // legacy ./rings/*.png have whitespace padding (use 1.55×).
       canvas._isMulti = isPreProcessed;
+      // Pre-compute sparkle anchor points (diamond highlights) once per image.
+      canvas._sparklePoints = findSparklePoints(canvas, 6);
       resolve(canvas);
     };
     img.onerror = () => resolve(null);
@@ -508,6 +555,59 @@ function startTracking({ videoEl, canvasEl, getOptions, onStatus, onBucket, faci
         // direction, so similar rotation works as a base approximation.
         ctx.rotate(smooth.angle + Math.PI / 2);
         ctx.drawImage(drawSrc, -drawW / 2, -drawH / 2, drawW, drawH);
+
+        // ── DIAMOND SPARKLE (subtle) ──────────────────────────────────────
+        // Every ~600ms pick a random pre-computed sparkle point on this image
+        // (a brightness-detected diamond highlight). Draw a 4-pointed star
+        // with a quick fade-in + fade-out animation. Restrained: at most one
+        // sparkle visible at a time, low alpha, brief duration.
+        if (opts.sparkle !== false && drawSrc._sparklePoints && drawSrc._sparklePoints.length) {
+          const now = performance.now();
+          // Initialise per-canvas sparkle state on first render
+          if (!drawSrc._sparkleState) {
+            drawSrc._sparkleState = { nextAt: now + 200, current: null };
+          }
+          const st = drawSrc._sparkleState;
+          if (now >= st.nextAt) {
+            const pts = drawSrc._sparklePoints;
+            st.current = {
+              point: pts[Math.floor(Math.random() * pts.length)],
+              start: now,
+              duration: 350 + Math.random() * 200, // 350-550ms total
+            };
+            st.nextAt = now + 500 + Math.random() * 400; // 500-900ms gap
+          }
+          if (st.current) {
+            const t = (now - st.current.start) / st.current.duration;
+            if (t > 1) {
+              st.current = null;
+            } else {
+              // Triangle envelope: 0 → 1 → 0 over the duration
+              const env = t < 0.5 ? t * 2 : (1 - t) * 2;
+              const px = (st.current.point.x - 0.5) * drawW;
+              const py = (st.current.point.y - 0.5) * drawH;
+              const sparkleSize = drawW * 0.22 * env;
+              // Outer soft glow
+              const grad = ctx.createRadialGradient(px, py, 0, px, py, sparkleSize);
+              grad.addColorStop(0, `rgba(255,255,255,${0.85 * env})`);
+              grad.addColorStop(0.3, `rgba(255,255,255,${0.4 * env})`);
+              grad.addColorStop(1, "rgba(255,255,255,0)");
+              ctx.fillStyle = grad;
+              ctx.beginPath();
+              ctx.arc(px, py, sparkleSize, 0, Math.PI * 2);
+              ctx.fill();
+              // 4-point star spike
+              ctx.strokeStyle = `rgba(255,255,255,${env})`;
+              ctx.lineWidth = 1.2;
+              ctx.lineCap = "round";
+              const spike = sparkleSize * 1.4;
+              ctx.beginPath();
+              ctx.moveTo(px - spike, py); ctx.lineTo(px + spike, py);
+              ctx.moveTo(px, py - spike); ctx.lineTo(px, py + spike);
+              ctx.stroke();
+            }
+          }
+        }
         ctx.restore();
 
         if (opts.debug) {
