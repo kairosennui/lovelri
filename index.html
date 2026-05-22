@@ -1825,6 +1825,17 @@ function Dashboard(){
           const bookRate = uniqueLeads > 0 ? Math.round((Booked / uniqueLeads) * 100) : 0;
           const sqlRate  = Booked > 0 ? Math.round((SQLs / Booked) * 100) : 0;
           const winRate  = SQLs > 0 ? Math.round((Won / SQLs) * 100) : 0;
+          // Filter groups MUST match the counter math above. "Booked" counts
+          // everyone who reached booking stage (incl. those later qualified
+          // as SQL/MQL/Won/Lost), so the filter must do the same — otherwise
+          // the tile says "1 Booked" and clicking it shows an empty list.
+          const FILTER_GROUPS = {
+            booked: ["booked","sql","mql","won","lost"],
+            sql:    ["sql","won"],
+            mql:    ["mql"],
+            won:    ["won"],
+            lost:   ["lost"],
+          };
           return (
             <div style={{animation:"fadeIn 0.27s ease"}}>
               <Title sub="Real funnel deduplicated by email. Each step shows the conversion %. After a consultation, qualify the lead as SQL (hot), MQL (nurture), Lost, or Won.">Lead<br/><em style={{fontStyle:"italic"}}>Pipeline</em></Title>
@@ -1865,7 +1876,7 @@ function Dashboard(){
                   <button onClick={()=>setLeadStatusFilter(null)} style={{marginLeft:"auto",fontFamily:B.sans,fontSize:11,letterSpacing:"0.06em",background:"none",border:"none",color:B.gray,cursor:"pointer",textDecoration:"underline"}}>Clear</button>
                 </div>
               )}
-              <Card>{(leadStatusFilter ? deduped.filter(l => l.status === leadStatusFilter) : deduped).map((lead,i,arr)=>{
+              <Card>{(leadStatusFilter ? deduped.filter(l => (FILTER_GROUPS[leadStatusFilter] || [leadStatusFilter]).includes(l.status)) : deduped).map((lead,i,arr)=>{
                 const s = ST[lead.status] || ST.new;
                 const isDupe = lead.submissions > 1;
                 return (<Row key={lead.id||i} last={i===arr.length-1}>
@@ -2046,11 +2057,4 @@ function Dashboard(){
       </div>
       <div style={{position:"fixed",bottom:0,left:0,right:0,background:B.white,borderTop:`1px solid ${B.border}`,display:"flex",zIndex:98,overflowX:"auto"}}>
         {NAV.map(n=>(
-          <button key={n.id} onClick={()=>go(n.id)} style={{flex:"0 0 auto",minWidth:0,padding:"10px 8px 8px",border:"none",background:"none",cursor:"pointer",borderTop:active===n.id?`2px solid ${B.black}`:"2px solid transparent",display:"flex",flexDirection:"column",alignItems:"center",gap:2}}>
-            <span style={{fontFamily:B.sans,fontSize:10,letterSpacing:"0.04em",textTransform:"uppercase",color:active===n.id?B.black:B.gray,lineHeight:1.2,textAlign:"center",whiteSpace:"nowrap"}}>{n.label}</span>
-            {n.id==="leads"&&newCount>0&&<span style={{width:5,height:5,borderRadius:"50%",background:B.gold,display:"inline-block"}}/>}
-          </button>
-        ))}
-      </div>
-      <style>{`
-        @keyframes fadeIn{from{opacity:0;trans
+          <button key={n.id} onClick={()=>go(n.id)} style={{flex:"0 0 auto",minWidth:0,padding:"10px 8px 8px",border:"none",background:"none",cursor:"pointer",borderTop:act
