@@ -348,7 +348,7 @@ async function sendEmails(booking) {
 // ── GOOGLE SHEETS BACKEND ─────────────────────────────────────────────────────
 // Paste your Apps Script Web App URL here once. See apps-script.gs + README.md
 // for setup steps. Leave as empty string to fall back to localStorage-only mode.
-const SHEETS_URL = "https://script.google.com/macros/s/AKfycbzBBBgx_nBjP8FlUTEBRRf8xwrkeK6Pq2QNZ4Gun_83U681Va6tzgnIQT7Oe2b_QtrKlg/exec";
+const SHEETS_URL = "https://script.google.com/macros/s/AKfycbzlx-_5h1iIPA38oiqAW3ar1iZqD_b8BCH3PPu79jsl1U31xWEkRS3qcZCo0e_08iQ/exec";
 
 async function pushToSheet(tab, item) {
   if (!SHEETS_URL) return; // localStorage-only mode
@@ -2056,4 +2056,4 @@ function Dashboard(){
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(<Dashboard />);
-</script></body></html>
+</script></body></html>   
