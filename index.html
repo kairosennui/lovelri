@@ -268,9 +268,24 @@ function makeCalLinks(booking) {
   let [h, min] = tp.split(":").map(Number);
   if (ap === "PM" && h !== 12) h += 12;
   if (ap === "AM" && h === 12) h = 0;
-  // Note: we treat the wall-clock time as floating local time. Calendar apps
-  // will display it in the user's tz unless ctz is specified (Google).
-  const startD = new Date(Date.UTC(y, mo - 1, d, h, min));
+  // The booking time is a TORONTO wall-clock (9:00 AM = 9:00 in Toronto).
+  // We need the actual UTC moment for that wall-clock so calendar URLs
+  // pass the right Z-suffix time. new Date(Date.UTC(y,m,d,h,min)) would
+  // incorrectly mean "9:00 UTC" — off by 4-5 hours from Toronto wall time.
+  // This computes the true UTC instant via the timezone offset on that date.
+  function torontoWallToUTC(y, mo, d, h, min) {
+    const naive = Date.UTC(y, mo - 1, d, h, min);
+    const parts = new Intl.DateTimeFormat("en-US", {
+      timeZone: "America/Toronto", hour12: false,
+      year: "numeric", month: "2-digit", day: "2-digit",
+      hour: "2-digit", minute: "2-digit", second: "2-digit"
+    }).formatToParts(new Date(naive));
+    const o = Object.fromEntries(parts.filter(p => p.type !== "literal").map(p => [p.type, parseInt(p.value, 10)]));
+    const torontoWallAsUTC = Date.UTC(o.year, o.month - 1, o.day, o.hour === 24 ? 0 : o.hour, o.minute, o.second);
+    const offsetMs = naive - torontoWallAsUTC;
+    return new Date(naive + offsetMs);
+  }
+  const startD = torontoWallToUTC(y, mo, d, h, min);
   const endD = new Date(startD.getTime() + booking.duration * 60000);
   const fmt = dt => dt.toISOString().replace(/[-:]|\.\d{3}/g, "");
   const startStr = fmt(startD);
