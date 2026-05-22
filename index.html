@@ -541,23 +541,26 @@ function BookingFlow({onDone, prefill, bookings = []}) {
             </div>
           ))}
         </div>
-        {/* Calendar add buttons — pick your service. .ics uses Blob (Apple/iPhone),
-            Google/Outlook/Office open pre-filled add-event pages in a new tab. */}
+        {/* Calendar add — TWO clear options. The .ics download is universal
+            (Apple Calendar, Outlook desktop, Outlook web after drag-import,
+            Windows Calendar, any RFC 5545 client). Google needs its own web
+            deeplink. Outlook's web deeplinks are unreliable — drops params
+            after login redirect — so we send Outlook users through .ics. */}
         {bk && (() => {
           const consName = TEAM.find(t=>t.id===cons?.id)?.name || "Team";
           const cal = makeCalLinks(bk);
-          const btn = {textDecoration:"none",padding:"12px 10px",fontFamily:B.sans,fontSize:11,letterSpacing:"0.1em",textTransform:"uppercase",textAlign:"center",cursor:"pointer",border:"none",display:"block"};
+          const btn = {textDecoration:"none",padding:"14px 12px",fontFamily:B.sans,fontSize:12,letterSpacing:"0.12em",textTransform:"uppercase",textAlign:"center",cursor:"pointer",border:"none",display:"block",fontWeight:500};
           return (
             <div style={{marginBottom:14}}>
               <div style={{fontFamily:B.sans,fontSize:10,letterSpacing:"0.22em",textTransform:"uppercase",color:B.gray,marginBottom:8,textAlign:"center"}}>Add to your calendar</div>
-              <div style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:6}}>
-                <button onClick={()=>downloadICS(bk, consName)} style={{...btn,background:B.black,color:B.white}}>🍎 Apple Calendar</button>
-                <a href={cal.google} target="_blank" rel="noopener noreferrer" style={{...btn,background:B.white,color:B.black,border:`1px solid ${B.black}`}}>📅 Google</a>
-                <a href={cal.outlook} target="_blank" rel="noopener noreferrer" style={{...btn,background:B.white,color:B.black,border:`1px solid ${B.border}`}}>📨 Outlook</a>
-                <a href={cal.office} target="_blank" rel="noopener noreferrer" style={{...btn,background:B.white,color:B.black,border:`1px solid ${B.border}`}}>🏢 Office 365</a>
+              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:6}}>
+                <button onClick={()=>downloadICS(bk, consName)} style={{...btn,background:B.black,color:B.white}}>📅 Apple · Outlook · Other</button>
+                <a href={cal.google} target="_blank" rel="noopener noreferrer" style={{...btn,background:B.white,color:B.black,border:`1px solid ${B.black}`}}>📅 Google Calendar</a>
               </div>
-              <div style={{fontFamily:B.sans,fontSize:10,color:B.gray,marginTop:6,textAlign:"center",lineHeight:1.5}}>
-                Apple/iPhone: tap then "Add to Calendar". <a href={cal.yahoo} target="_blank" rel="noopener noreferrer" style={{color:B.gray,textDecoration:"underline"}}>Yahoo →</a>
+              <div style={{fontFamily:B.sans,fontSize:10,color:B.gray,marginTop:8,textAlign:"center",lineHeight:1.5}}>
+                iPhone/iPad: tap the .ics download, choose "Add to Calendar".<br/>
+                Outlook desktop / Windows Calendar: double-click the downloaded file.<br/>
+                Outlook on the web: drag the .ics file into your calendar view.
               </div>
             </div>
           );
@@ -926,11 +929,8 @@ function AdminDash({bookings,onStatus}) {
                         <button onClick={e=>{e.stopPropagation();onStatus(bk.id,"cancelled");}} style={{padding:"7px 12px",background:B.white,color:"#c0392b",border:"1px solid #c0392b",fontFamily:B.sans,fontSize:11,letterSpacing:"0.1em",textTransform:"uppercase",cursor:"pointer"}}>Cancel</button>
                       )}
                       <a href={`mailto:${bk.email}?subject=Your Lovelri Appointment`} onClick={e=>e.stopPropagation()} style={{padding:"7px 12px",background:B.white,color:B.black,border:`1px solid ${B.border}`,fontFamily:B.sans,fontSize:11,letterSpacing:"0.1em",textTransform:"uppercase",cursor:"pointer",textDecoration:"none"}}>Email Client</a>
-                      <button onClick={e=>{e.stopPropagation();downloadICS(bk, con?.name||"Team");}} style={{padding:"7px 12px",background:B.white,color:B.black,border:`1px solid ${B.border}`,fontFamily:B.sans,fontSize:11,letterSpacing:"0.1em",textTransform:"uppercase",cursor:"pointer"}}>🍎 .ics</button>
-                      {(() => { const c = makeCalLinks(bk); return (<>
-                        <a href={c.google} target="_blank" rel="noopener noreferrer" onClick={e=>e.stopPropagation()} style={{padding:"7px 12px",background:B.white,color:B.black,border:`1px solid ${B.border}`,fontFamily:B.sans,fontSize:11,letterSpacing:"0.1em",textTransform:"uppercase",cursor:"pointer",textDecoration:"none"}}>📅 Google</a>
-                        <a href={c.outlook} target="_blank" rel="noopener noreferrer" onClick={e=>e.stopPropagation()} style={{padding:"7px 12px",background:B.white,color:B.black,border:`1px solid ${B.border}`,fontFamily:B.sans,fontSize:11,letterSpacing:"0.1em",textTransform:"uppercase",cursor:"pointer",textDecoration:"none"}}>📨 Outlook</a>
-                      </>); })()}
+                      <button onClick={e=>{e.stopPropagation();downloadICS(bk, con?.name||"Team");}} style={{padding:"7px 12px",background:B.white,color:B.black,border:`1px solid ${B.border}`,fontFamily:B.sans,fontSize:11,letterSpacing:"0.1em",textTransform:"uppercase",cursor:"pointer"}}>📅 .ics</button>
+                      <a href={makeCalLinks(bk).google} target="_blank" rel="noopener noreferrer" onClick={e=>e.stopPropagation()} style={{padding:"7px 12px",background:B.white,color:B.black,border:`1px solid ${B.border}`,fontFamily:B.sans,fontSize:11,letterSpacing:"0.1em",textTransform:"uppercase",cursor:"pointer",textDecoration:"none"}}>📅 Google</a>
                     </div>
                   </div>
                 )}
