@@ -193,9 +193,12 @@ function getSlots(date, cid, bookings) {
   return baseSlots.filter(slot => !isBlocked(slot));
 }
 // ── ICS CALENDAR GENERATOR ────────────────────────────────────────────────────
-// Creates a .ics file Gary can tap to add appointment to Apple/Google Calendar
-// Includes 1hr and 15min reminders
-function makeICS(booking, consultantName) {
+// ── ICS GENERATION ────────────────────────────────────────────────────────────
+// makeICSText() returns RFC 5545 .ics content as a raw string. Safari/iOS won't
+// open a data: URL .ics, so we always download via Blob — see downloadICS().
+// makeICS() (legacy data: URL) is kept for compatibility but no longer used by
+// any visible button — only in email body text where it never worked anyway.
+function makeICSText(booking, consultantName) {
   const [y,m,d] = booking.date.split("-").map(Number);
   const [tp, ap] = booking.time.split(" ");
   let [h,min] = tp.split(":").map(Number);
@@ -207,21 +210,55 @@ function makeICS(booking, consultantName) {
   const dtStart = `${y}${pad(m)}${pad(d)}T${pad(h)}${pad(min)}00`;
   const dtEnd   = `${y}${pad(m)}${pad(d)}T${pad(eh)}${pad(em)}00`;
   const loc = booking.apptId==="virtual" ? "Virtual — Video Call" : "320 Bay Street\\, Toronto\\, ON M5H 4A6";
-  const desc = `Client: ${booking.name}\\nEmail: ${booking.email}\\nPhone: ${booking.phone||"—"}\\nOccasion: ${booking.occasion||"—"}\\nBudget: ${booking.budget||"—"}\\nNotes: ${booking.notes||"—"}\\nBooking ID: ${booking.id}`;
-  const ics = [
-    "BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//Lovelri//Bookings//EN","CALSCALE:GREGORIAN",
+  // ICS escaping: literal \n inside text, comma + semicolon escaped with \
+  const esc = s => String(s||"").replace(/\\/g,"\\\\").replace(/\n/g,"\\n").replace(/,/g,"\\,").replace(/;/g,"\\;");
+  const desc = [
+    `Client: ${esc(booking.name)}`,
+    `Email: ${esc(booking.email)}`,
+    `Phone: ${esc(booking.phone||"—")}`,
+    `Occasion: ${esc(booking.occasion||"—")}`,
+    `Budget: ${esc(booking.budget||"—")}`,
+    `Notes: ${esc(booking.notes||"—")}`,
+    `Booking ID: ${esc(booking.id)}`,
+  ].join("\\n");
+  const uid = `${booking.id}@lovelri.com`;
+  const stamp = new Date().toISOString().replace(/[-:]|\.\d{3}/g,"");
+  return [
+    "BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//Lovelri//Bookings//EN","CALSCALE:GREGORIAN","METHOD:PUBLISH",
     "BEGIN:VEVENT",
+    `UID:${uid}`,
+    `DTSTAMP:${stamp}`,
     `DTSTART;TZID=America/Toronto:${dtStart}`,
     `DTEND;TZID=America/Toronto:${dtEnd}`,
-    `SUMMARY:💍 ${booking.type} — ${booking.name}`,
+    `SUMMARY:Lovelri ${esc(booking.type)} — ${esc(booking.name)}`,
     `DESCRIPTION:${desc}`,
     `LOCATION:${loc}`,
-    `STATUS:CONFIRMED`,
-    `BEGIN:VALARM\nTRIGGER:-PT60M\nACTION:DISPLAY\nDESCRIPTION:1 hour: ${booking.type} with ${booking.name}\nEND:VALARM`,
-    `BEGIN:VALARM\nTRIGGER:-PT15M\nACTION:DISPLAY\nDESCRIPTION:15 min: ${booking.type} with ${booking.name}\nEND:VALARM`,
+    "STATUS:CONFIRMED",
+    "BEGIN:VALARM","TRIGGER:-PT60M","ACTION:DISPLAY",`DESCRIPTION:Lovelri appointment in 1 hour`,"END:VALARM",
+    "BEGIN:VALARM","TRIGGER:-PT15M","ACTION:DISPLAY",`DESCRIPTION:Lovelri appointment in 15 minutes`,"END:VALARM",
     "END:VEVENT","END:VCALENDAR"
   ].join("\r\n");
-  return "data:text/calendar;charset=utf8," + encodeURIComponent(ics);
+}
+
+// Programmatic download — works on Chrome, Safari (incl iOS), Firefox, Edge.
+// Mobile Safari opens the .ics, prompts "Add to Calendar?", user taps Add.
+function downloadICS(booking, consultantName) {
+  const text = makeICSText(booking, consultantName);
+  const blob = new Blob([text], { type: "text/calendar;charset=utf-8" });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement("a");
+  a.href = url;
+  a.download = `lovelri-booking-${booking.id}.ics`;
+  a.rel = "noopener";
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(url), 5000);
+}
+
+// Legacy wrapper — still returns data: URL for any old caller. Don't use for buttons.
+function makeICS(booking, consultantName) {
+  return "data:text/calendar;charset=utf8," + encodeURIComponent(makeICSText(booking, consultantName));
 }
 // ── CALENDAR DEEP LINKS ───────────────────────────────────────────────────────
 // One-click "Add to Calendar" URLs for Google / Outlook (live + 365) / Yahoo.
@@ -493,14 +530,28 @@ function BookingFlow({onDone, prefill, bookings = []}) {
             </div>
           ))}
         </div>
-        {/* Calendar add button — works on iPhone and Android */}
-        {calLink && (
-          <a href={calLink} download={`lovelri-booking-${bk.id}.ics`} style={{textDecoration:"none",display:"block",marginBottom:12}}>
-            <div style={{padding:"14px",background:B.black,color:B.white,fontFamily:B.sans,fontSize:13,letterSpacing:"0.12em",textTransform:"uppercase",textAlign:"center"}}>
-              📅 Add to My Calendar
+        {/* Calendar add buttons — pick your calendar service. .ics download
+            uses Blob (works on iPhone / Android / desktop). Google/Outlook/Yahoo
+            open pre-filled add-event pages in a new tab. */}
+        {bk && (() => {
+          const consName = TEAM.find(t=>t.id===cons?.id)?.name || "Team";
+          const cal = makeCalLinks(bk);
+          const btn = {textDecoration:"none",padding:"12px 10px",fontFamily:B.sans,fontSize:11,letterSpacing:"0.1em",textTransform:"uppercase",textAlign:"center",cursor:"pointer",border:"none",display:"block"};
+          return (
+            <div style={{marginBottom:14}}>
+              <div style={{fontFamily:B.sans,fontSize:10,letterSpacing:"0.22em",textTransform:"uppercase",color:B.gray,marginBottom:8,textAlign:"center"}}>Add to your calendar</div>
+              <div style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:6}}>
+                <button onClick={()=>downloadICS(bk, consName)} style={{...btn,background:B.black,color:B.white}}>🍎 Apple Calendar</button>
+                <a href={cal.google} target="_blank" rel="noopener noreferrer" style={{...btn,background:B.white,color:B.black,border:`1px solid ${B.black}`}}>📅 Google</a>
+                <a href={cal.outlook} target="_blank" rel="noopener noreferrer" style={{...btn,background:B.white,color:B.black,border:`1px solid ${B.border}`}}>📨 Outlook</a>
+                <a href={cal.office} target="_blank" rel="noopener noreferrer" style={{...btn,background:B.white,color:B.black,border:`1px solid ${B.border}`}}>🏢 Office 365</a>
+              </div>
+              <div style={{fontFamily:B.sans,fontSize:10,color:B.gray,marginTop:6,textAlign:"center",lineHeight:1.5}}>
+                Apple/iPhone: tap → "Add to Calendar". Yahoo? <a href={cal.yahoo} target="_blank" rel="noopener noreferrer" style={{color:B.gray,textDecoration:"underline"}}>Use Yahoo Calendar →</a>
+              </div>
             </div>
-          </a>
-        )}
+          );
+        })()}
         <div style={{fontFamily:B.sans,fontSize:13,color:B.gray,lineHeight:1.6,marginBottom:20}}>
           Need to reschedule? Call <strong style={{color:B.black}}>+1 437-433-3799</strong>
         </div>
@@ -865,7 +916,13 @@ function AdminDash({bookings,onStatus}) {
                         <button onClick={e=>{e.stopPropagation();onStatus(bk.id,"cancelled");}} style={{padding:"7px 12px",background:B.white,color:"#c0392b",border:"1px solid #c0392b",fontFamily:B.sans,fontSize:11,letterSpacing:"0.1em",textTransform:"uppercase",cursor:"pointer"}}>Cancel</button>
                       )}
                       <a href={`mailto:${bk.email}?subject=Your Lovelri Appointment`} onClick={e=>e.stopPropagation()} style={{padding:"7px 12px",background:B.white,color:B.black,border:`1px solid ${B.border}`,fontFamily:B.sans,fontSize:11,letterSpacing:"0.1em",textTransform:"uppercase",cursor:"pointer",textDecoration:"none"}}>Email Client</a>
-                      <a href={cl} download={`lovelri-${bk.id}.ics`} onClick={e=>e.stopPropagation()} style={{padding:"7px 12px",background:B.white,color:B.black,border:`1px solid ${B.border}`,fontFamily:B.sans,fontSize:11,letterSpacing:"0.1em",textTransform:"uppercase",cursor:"pointer",textDecoration:"none"}}>📅 Add to Cal</a>
+                      <button onClick={e=>{e.stopPropagation();downloadICS(bk, con?.name||"Team");}} style={{padding:"7px 12px",background:B.white,color:B.black,border:`1px solid ${B.border}`,fontFamily:B.sans,fontSize:11,letterSpacing:"0.1em",textTransform:"uppercase",cursor:"pointer"}}>🍎 .ics</button>
+                      {(() => { const c = makeCalLinks(bk); return (
+                        <>
+                          <a href={c.google} target="_blank" rel="noopener noreferrer" onClick={e=>e.stopPropagation()} style={{padding:"7px 12px",background:B.white,color:B.black,border:`1px solid ${B.border}`,fontFamily:B.sans,fontSize:11,letterSpacing:"0.1em",textTransform:"uppercase",cursor:"pointer",textDecoration:"none"}}>📅 Google</a>
+                          <a href={c.outlook} target="_blank" rel="noopener noreferrer" onClick={e=>e.stopPropagation()} style={{padding:"7px 12px",background:B.white,color:B.black,border:`1px solid ${B.border}`,fontFamily:B.sans,fontSize:11,letterSpacing:"0.1em",textTransform:"uppercase",cursor:"pointer",textDecoration:"none"}}>📨 Outlook</a>
+                        </>
+                      ); })()}
                     </div>
                   </div>
                 )}
@@ -2023,38 +2080,4 @@ function Dashboard(){
                 {week:"Week 1",theme:"Craftsmanship",posts:["Atelier close-up","Ring of the week","Reel — making-of Botanical","Ask our jeweller Q&A"]},
                 {week:"Week 2",theme:"Client Love",posts:["Proposal reveal","She said yes ring close-up","Client testimonial","Behind-the-scenes wax-to-ring"]},
                 {week:"Week 3",theme:"Education",posts:["Lab vs natural diamond","Choosing ring shape","Reel — 5 things nobody tells you","Story poll: Oval or Round?"]},
-                {week:"Week 4",theme:"Brand Story",posts:["Maison heritage","New collection announcement","Reel — Toronto atelier tour","CTA: Book consultation"]},
-              ].map((w,i,a)=>(<Row key={i} last={i===a.length-1}><div style={{fontFamily:B.sans,fontSize:13,fontWeight:500,color:B.black,marginBottom:6,letterSpacing:"0.04em"}}>{w.week} — {w.theme}</div>{w.posts.map((p,j)=>(<div key={j} style={{display:"flex",gap:6,marginBottom:3,alignItems:"flex-start"}}><span style={{color:B.gold,flexShrink:0}}>—</span><span style={{fontFamily:B.sans,fontSize:13,color:B.gray,lineHeight:1.5}}>{p}</span></div>))}</Row>))}
-            </Card>
-          </div>
-        )}
-        {active==="seo"&&(
-          <div style={{animation:"fadeIn 0.25s ease"}}>
-            <Title sub="Shopify store, blog, and physical Toronto location — strong local SEO foundations. Almost none of it is currently optimised.">SEO<br/><em style={{fontStyle:"italic"}}>Audit & Keyword Strategy</em></Title>
-            <Label>Priority Keywords to Own</Label>
-            <Card mb={24}>
-              {[
-                {kw:"Lab diamond engagement ring Toronto",intent:"Commercial",difficulty:"High",priority:"#1"},
-                {kw:"Custom engagement ring Toronto",intent:"Commercial",difficulty:"High",priority:"#1"},
-                {kw:"Bespoke engagement ring Toronto",intent:"Commercial",difficulty:"Medium",priority:"High"},
-                {kw:"Botanical engagement ring",intent:"Commercial",difficulty:"Low",priority:"High"},
-                {kw:"Lab diamond vs natural diamond Toronto",intent:"Informational",difficulty:"Low",priority:"Medium"},
-                {kw:"Engagement ring Toronto price",intent:"Commercial",difficulty:"Medium",priority:"High"},
-                {kw:"Oval engagement ring Toronto",intent:"Commercial",difficulty:"Medium",priority:"Medium"},
-                {kw:"Hidden halo engagement ring Toronto",intent:"Commercial",difficulty:"Low",priority:"Medium"},
-              ].map((kw,i,a)=>(<Row key={i} last={i===a.length-1}><div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",gap:8,marginBottom:4}}><div style={{fontFamily:B.sans,fontSize:14,fontWeight:500,color:B.black,flex:1}}>{kw.kw}</div><Chip label={kw.priority==="#1"?"🎯 Priority #1":kw.priority} bg={kw.priority==="#1"?"rgba(201,169,110,0.15)":"rgba(26,26,26,0.06)"} color={kw.priority==="#1"?B.gold:B.black}/></div><div style={{display:"flex",gap:6}}><Chip label={kw.intent}/><Chip label={`Difficulty: ${kw.difficulty}`} bg={kw.difficulty==="Low"?"rgba(76,175,125,0.08)":kw.difficulty==="Medium"?"rgba(255,193,7,0.08)":"rgba(220,53,69,0.08)"} color={kw.difficulty==="Low"?"#2d7a54":kw.difficulty==="Medium"?"#8c6d00":"#c0392b"}/></div></Row>))}
-            </Card>
-          </div>
-        )}
-        {active==="embed"&&(
-          <div style={{animation:"fadeIn 0.25s ease"}}>
-            <Title sub="All tools embed directly into the Shopify storefront. One snippet per tool — no redesign, no rebuild.">Embed on<br/><em style={{fontStyle:"italic"}}>lovelri.com</em></Title>
-            {[{t:"1. Intake Form",d:"Add to any collection page or /pages/consultation."},{t:"2. Chat Widget",d:"Add to theme.liquid before </body>. Floats on every page."},{t:"3. EmailJS Setup",d:"Free. 200 emails/month. 5-minute setup."},{t:"4. Deploy to Vercel",d:"Host both tools free. One command in terminal."}].map((b,i)=>(
-              <Card key={i} mb={14}><Row><div style={{fontFamily:B.sans,fontSize:14,fontWeight:500,color:B.black,marginBottom:3}}>{b.t}</div><div style={{fontFamily:B.sans,fontSize:13,color:B.gray,lineHeight:1.6}}>{b.d}</div></Row></Card>
-            ))}
-          </div>
-        )}
-      </div>
-      <div style={{position:"fixed",bottom:0,left:0,right:0,background:B.white,borderTop:`1px solid ${B.border}`,display:"flex",zIndex:98,overflowX:"auto"}}>
-        {NAV.map(n=>(
-          <button key={n.id} onClick={()=>go(n.id)} style={{flex:"0 0 auto",minWidth:0,padding:"10px 8px 8px",border:"none",background:"none",cursor:"pointer",borderTop:act
+                {week:"Week 4",theme:"Brand Story",posts:["Maison herita
