@@ -42,6 +42,11 @@ final_*.jsx
 # Claude's safety-net backups (timestamped snapshots before every change)
 backup/
 
+# repair-git.bat renames broken .git to .git-broken-<timestamp> as a recovery
+# safety net — never commit it (it's 90MB+ and pure noise).
+.git-broken-*/
+.test-write
+
 # Local thumbnails / contact sheets used during the ring photo classification
 # pipeline — not needed at runtime
 ring-thumbs/
