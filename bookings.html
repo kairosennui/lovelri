@@ -53,7 +53,7 @@ const TEAM = [
   { id:"tony",      name:"Tony",           role:"Founder & Lead Jeweller", color:"#2d7a54" },
   { id:"christina", name:"Christina",      role:"Senior Consultant",       color:"#3a5fb0" },
   { id:"jen",       name:"Jen",            role:"Ring Consultant",         color:"#8c6d3f" },
-  { id:"natalie",   name:"Natalie",        role:"Ring Consultant",         color:"#6b4c8c" },
+  { id:"raheem",    name:"Raheem",         role:"Ring Consultant",         color:"#6b4c8c" },
 ];
 // ── APPOINTMENT TYPES ─────────────────────────────────────────────────────────
 const APPT_TYPES = [
@@ -69,7 +69,7 @@ const MONTHS = ["January","February","March","April","May","June","July","August
 const DAYS = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
 function getDaysInMonth(y,m){return new Date(y,m+1,0).getDate();}
 function getFirstDay(y,m){return new Date(y,m,1).getDay();}
-function getSlots(date,cid){const s=date.getDate()+date.getMonth()*31+(cid==="tony"?7:cid==="christina"?13:cid==="jen"?17:cid==="natalie"?11:3);return SLOTS.filter((_,i)=>((s*(i+1))%5)!==0&&!(i>=5&&i<=6));}
+function getSlots(date,cid){const s=date.getDate()+date.getMonth()*31+(cid==="tony"?7:cid==="christina"?13:cid==="jen"?17:cid==="raheem"?11:3);return SLOTS.filter((_,i)=>((s*(i+1))%5)!==0&&!(i>=5&&i<=6));}
 // ── ICS CALENDAR GENERATOR ────────────────────────────────────────────────────
 // Creates a .ics file Gary can tap to add appointment to Apple/Google Calendar
 // Includes 1hr and 15min reminders
@@ -228,7 +228,7 @@ let STORE = [
   {id:"BK002",name:"James T.",  email:"james@email.com",  phone:"+1 416 555 0202",type:"Virtual Consultation",  apptId:"virtual",     consultant:"christina",date:"2026-05-13",time:"2:00 PM", duration:45,status:"confirmed",notes:"Anniversary gift",       occasion:"Anniversary",budget:"$3,500–$6,000"},
   {id:"BK003",name:"Priya K.",  email:"priya@email.com",  phone:"+1 416 555 0303",type:"Custom Design Session", apptId:"custom",      consultant:"tony",    date:"2026-05-14",time:"11:00 AM",duration:90,status:"pending",  notes:"Bespoke $25K+ cathedral",occasion:"Engagement",budget:"$25,000+"},
   {id:"BK004",name:"Michael C.",email:"michael@email.com",phone:"+1 416 555 0404",type:"Ring Viewing",          apptId:"viewing",     consultant:"jen",     date:"2026-05-15",time:"3:00 PM", duration:30,status:"confirmed",notes:"Pavé solitaire",          occasion:"Engagement",budget:"$3,500–$6,000"},
-  {id:"BK005",name:"Emma L.",   email:"emma@email.com",   phone:"+1 416 555 0505",type:"Private Consultation",  apptId:"consultation",consultant:"natalie", date:"2026-05-16",time:"1:30 PM", duration:60,status:"pending",  notes:"Botanical style",         occasion:"Engagement",budget:"$6,000–$12,000"},
+  {id:"BK005",name:"Emma L.",   email:"emma@email.com",   phone:"+1 416 555 0505",type:"Private Consultation",  apptId:"consultation",consultant:"raheem",  date:"2026-05-16",time:"1:30 PM", duration:60,status:"pending",  notes:"Botanical style",         occasion:"Engagement",budget:"$6,000–$12,000"},
 ];
 // ── SHARED UI ─────────────────────────────────────────────────────────────────
 const Lbl = ({c,mt})=><div style={{fontFamily:B.sans,fontSize:11,letterSpacing:"0.22em",textTransform:"uppercase",color:B.gray,marginBottom:10,marginTop:mt||0}}>{c}</div>;
