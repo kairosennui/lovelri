@@ -43,18 +43,23 @@ where git >nul 2>nul || (
   pause & exit /b 1
 )
 
-REM ── STEP 1: Move broken .git aside ──────────────────────────────────────────
-echo Step 1 of 4: Backing up broken .git ...
+REM ── STEP 1: Move broken .git OUTSIDE the working tree ──────────────────────
+REM IMPORTANT: keep the backup OUT of the repo folder. If it sits next to
+REM index.html, push.bat's `git add .` will stage 90MB of dead pack data
+REM and push it up. Park it under %USERPROFILE%\git-repos\ instead.
+echo Step 1 of 4: Backing up broken .git outside the repo ...
 if exist .git (
-  REM Build timestamp YYYYMMDD-HHMMSS without relying on locale
   for /f %%a in ('powershell -nologo -noprofile -command "Get-Date -Format yyyyMMdd-HHmmss"') do set TS=%%a
-  ren .git .git-broken-!TS!
-  if errorlevel 1 (
-    echo   ERROR: could not rename .git. It may be open in another program.
+  if not exist "%NEW_GIT_PARENT%" mkdir "%NEW_GIT_PARENT%"
+  set BACKUP_DIR=%NEW_GIT_PARENT%\lovelri-git-broken-!TS!
+  robocopy .git "!BACKUP_DIR!" /E /MOVE /NFL /NDL /NJH /NJS /NC /NS >nul
+  if errorlevel 8 (
+    echo   ERROR: could not move .git. It may be open in another program.
     echo   Close VS Code / GitHub Desktop / any git client and re-run.
     pause & exit /b 1
   )
-  echo   .git renamed to .git-broken-!TS!  ^(delete manually once push works^)
+  echo   .git moved to: !BACKUP_DIR!
+  echo   ^(safe to delete manually once push works — never committed to repo^)
 ) else (
   echo   No .git found — skipping backup.
 )
