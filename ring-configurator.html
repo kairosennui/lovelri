@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Lovelri · Design Your Ring</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --white:#ffffff; --offwhite:#fafaf8; --black:#1a1a1a; --gray:#6b6b6b;
+    --lightgray:#e8e8e4; --border:#d8d8d2; --gold:#c9a96e; --brown:#8c6d3f;
+    --serif:'Cormorant Garamond','Georgia',serif;
+    --sans:'Helvetica Neue','Arial',sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--offwhite);color:var(--black);font-family:var(--sans)}
+  a{color:inherit}
+
+  .config{display:flex;min-height:100vh}
+
+  /* ── LEFT: full-bleed editorial hero ────────────────────────── */
+  .stage{position:relative;width:48%;min-height:100vh;overflow:hidden;background:#cfc6b8}
+  .hero{position:absolute;inset:0;background-size:cover;background-position:center;
+    opacity:0;transition:opacity 1.6s ease;transform:scale(1.04);animation:kenburns 18s ease-in-out infinite alternate}
+  .hero.on{opacity:1}
+  @keyframes kenburns{from{transform:scale(1.04)}to{transform:scale(1.12)}}
+  .stage::after{content:"";position:absolute;inset:0;z-index:2;pointer-events:none;
+    background:linear-gradient(180deg, rgba(20,16,10,0.32) 0%, rgba(20,16,10,0) 26%, rgba(20,16,10,0) 55%, rgba(20,16,10,0.5) 100%)}
+  .stage .wordmark{position:absolute;top:30px;left:34px;z-index:3;color:#fff}
+  .stage .wordmark .ey{font-size:11px;letter-spacing:0.34em;text-transform:uppercase;opacity:.9}
+  .stage .wordmark .mk{font-family:var(--serif);font-size:30px;font-weight:600;letter-spacing:0.05em;margin-top:2px}
+  .stage .tagline{position:absolute;bottom:36px;left:34px;right:34px;z-index:3;color:#fff;
+    font-family:var(--serif);font-style:italic;font-size:22px;line-height:1.3;max-width:84%;
+    text-shadow:0 2px 18px rgba(0,0,0,0.4)}
+
+  /* ── RIGHT: step panel ──────────────────────────────────────── */
+  .panel{width:52%;min-height:100vh;background:var(--offwhite);position:relative;display:flex;flex-direction:column}
+  .topbar{display:flex;align-items:center;justify-content:space-between;padding:26px 40px 0}
+  .progress{flex:1;height:2px;background:var(--lightgray);border-radius:2px;margin-right:24px;overflow:hidden;max-width:240px}
+  .progress > i{display:block;height:100%;background:var(--gold);width:25%;transition:width .5s ease}
+  .stepcount{font-size:11px;letter-spacing:0.28em;text-transform:uppercase;color:var(--gray);margin-right:24px}
+  .close{font-size:22px;line-height:1;color:var(--gray);text-decoration:none;width:34px;height:34px;
+    display:flex;align-items:center;justify-content:center;border-radius:50%;transition:background .2s}
+  .close:hover{background:var(--lightgray)}
+
+  .panelbody{flex:1;display:flex;flex-direction:column;justify-content:center;
+    padding:32px 56px 36px;max-width:680px;margin:0 auto;width:100%}
+  .eyebrow{font-size:11px;letter-spacing:0.3em;text-transform:uppercase;color:var(--gold);margin:0 0 14px;text-align:center}
+  h1.q{font-family:var(--serif);font-weight:500;font-size:40px;line-height:1.1;margin:0 0 8px;text-align:center}
+  h1.q em{font-style:italic}
+  .sub{font-size:14px;color:var(--gray);text-align:center;margin:0 0 34px}
+
+  /* category + design cards */
+  .cards{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .card{background:var(--white);border:1px solid var(--lightgray);border-radius:14px;padding:22px 18px 18px;
+    text-align:center;cursor:pointer;transition:border-color .2s,box-shadow .2s,transform .2s}
+  .card:hover{border-color:var(--gold);box-shadow:0 12px 30px rgba(60,45,25,0.08);transform:translateY(-2px)}
+  .card.sel{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold) inset}
+  .card .thumb{height:118px;display:flex;align-items:center;justify-content:center;margin-bottom:10px}
+  .card .thumb img{max-height:116px;max-width:100%;object-fit:contain}
+  .card .label{font-size:13px;letter-spacing:0.14em;text-transform:uppercase;color:var(--black)}
+  .card.wide{grid-column:1 / -1}
+
+  /* metal swatches */
+  .metals{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  .metal{background:var(--white);border:1px solid var(--lightgray);border-radius:14px;padding:24px 12px 18px;
+    text-align:center;cursor:pointer;transition:border-color .2s,box-shadow .2s,transform .2s}
+  .metal:hover{border-color:var(--gold);transform:translateY(-2px);box-shadow:0 12px 30px rgba(60,45,25,0.08)}
+  .metal.sel{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold) inset}
+  .swatch{width:54px;height:54px;border-radius:50%;margin:0 auto 12px;border:1px solid rgba(0,0,0,0.08)}
+  .sw-yellow{background:linear-gradient(135deg,#f4dca0,#caa24f)}
+  .sw-white{background:linear-gradient(135deg,#fafafa,#cfd2d6)}
+  .sw-rose{background:linear-gradient(135deg,#f4d0c0,#d39a82)}
+  .metal .label{font-size:12px;letter-spacing:0.14em;text-transform:uppercase}
+  .metal .sub2{font-size:11px;color:var(--gray);margin-top:3px}
+
+  /* design grid */
+  .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;max-height:52vh;overflow-y:auto;padding:4px 4px 8px}
+  .grid .card{padding:12px 8px 10px}
+  .grid .card .thumb{height:74px}
+  .grid .card .thumb img{max-height:72px}
+  .grid .card .label{font-size:10px;letter-spacing:0.1em}
+  .grid::-webkit-scrollbar{width:8px}
+  .grid::-webkit-scrollbar-thumb{background:var(--border);border-radius:8px}
+
+  /* review */
+  .summary{background:var(--white);border:1px solid var(--lightgray);border-radius:14px;padding:8px 24px;margin:0 0 28px}
+  .srow{display:flex;justify-content:space-between;align-items:center;padding:16px 0;border-bottom:1px solid var(--lightgray)}
+  .srow:last-child{border-bottom:none}
+  .srow .k{font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:var(--gray)}
+  .srow .v{font-family:var(--serif);font-size:22px;font-weight:500}
+
+  /* nav */
+  .nav{display:flex;align-items:center;justify-content:space-between;margin-top:34px}
+  .back{background:none;border:none;cursor:pointer;font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:var(--gray);padding:8px 0}
+  .back:hover{color:var(--black)}
+  .back.hidden{visibility:hidden}
+  .cta{display:inline-block;padding:14px 30px;background:var(--gold);color:#fff;text-decoration:none;border:none;
+    cursor:pointer;font-size:12px;letter-spacing:0.16em;text-transform:uppercase;border-radius:999px;font-family:var(--sans);
+    transition:background .2s,opacity .2s}
+  .cta:hover{background:#b8965b}
+  .cta:disabled{opacity:.35;cursor:not-allowed}
+
+  .foot{text-align:center;font-size:11px;color:var(--gray);padding:18px 0 26px}
+  .foot .login{color:var(--brown);border-bottom:1px solid var(--gold);text-decoration:none;padding-bottom:1px}
+
+  /* claim badge */
+  .claim{position:fixed;left:22px;bottom:22px;z-index:9;width:74px;height:74px;border-radius:50%;
+    background:var(--black);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    font-size:9px;letter-spacing:0.12em;text-transform:uppercase;text-align:center;line-height:1.35;
+    box-shadow:0 10px 24px rgba(0,0,0,0.22);cursor:pointer;border:1px solid rgba(255,255,255,0.15)}
+  .claim b{font-family:var(--serif);font-size:15px;font-weight:600;letter-spacing:0.02em}
+
+  /* steps */
+  .step{display:none}
+  .step.active{display:block;animation:fade .4s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+  @media(max-width:880px){
+    .config{flex-direction:column}
+    .stage{width:100%;min-height:46vh}
+    .panel{width:100%}
+    .panelbody{padding:28px 22px 32px}
+    h1.q{font-size:30px}
+    .grid{grid-template-columns:repeat(3,1fr)}
+  }
+</style>
+</head>
+<body>
+<div class="config">
+
+  <!-- LEFT: full-bleed editorial hero (Lovelri site photography) -->
+  <div class="stage">
+    <div class="hero on" id="h0"></div>
+    <div class="hero" id="h1"></div>
+    <div class="hero" id="h2"></div>
+    <div class="hero" id="h3"></div>
+    <div class="wordmark">
+      <div class="ey">Lovelri</div>
+      <div class="mk">Atelier</div>
+    </div>
+    <div class="tagline">From the ateliers of the great maisons,<br>to yours.</div>
+  </div>
+
+  <!-- RIGHT: step panel -->
+  <div class="panel">
+    <div class="topbar">
+      <div class="progress"><i id="bar"></i></div>
+      <div class="stepcount"><span id="stepnum">1</span> / 4</div>
+      <a class="close" href="./index.html" title="Close">&times;</a>
+    </div>
+
+    <div class="panelbody">
+
+      <!-- STEP 1 — category -->
+      <section class="step active" data-step="1">
+        <p class="eyebrow">Design your Lovelri</p>
+        <h1 class="q">What would you like to <em>design?</em></h1>
+        <p class="sub">You can always change your mind later.</p>
+        <div class="cards">
+          <div class="card" data-cat="Engagement Ring" onclick="pickCat(this)">
+            <div class="thumb"><img src="rings/capri-ring.png" alt=""></div>
+            <div class="label">Engagement Ring</div>
+          </div>
+          <div class="card" data-cat="Wedding Band" onclick="pickCat(this)">
+            <div class="thumb"><img src="rings/versailles.png" alt=""></div>
+            <div class="label">Wedding Band</div>
+          </div>
+          <div class="card wide" data-cat="Other Fine Jewellery" onclick="pickCat(this)">
+            <div class="thumb"><img src="rings/sicily-lotus-ring.png" alt=""></div>
+            <div class="label">Other Fine Jewellery</div>
+          </div>
+        </div>
+        <div class="nav">
+          <button class="back hidden">Back</button>
+          <button class="cta" id="next1" disabled onclick="go(2)">Continue</button>
+        </div>
+      </section>
+
+      <!-- STEP 2 — metal -->
+      <section class="step" data-step="2">
+        <p class="eyebrow">Step two</p>
+        <h1 class="q">Choose your <em>metal.</em></h1>
+        <p class="sub">Each is solid 14k or 18k gold, crafted to last generations.</p>
+        <div class="metals">
+          <div class="metal" data-metal="Yellow Gold" onclick="pickMetal(this)">
+            <div class="swatch sw-yellow"></div>
+            <div class="label">Yellow Gold</div>
+            <div class="sub2">Warm &amp; classic</div>
+          </div>
+          <div class="metal" data-metal="White Gold" onclick="pickMetal(this)">
+            <div class="swatch sw-white"></div>
+            <div class="label">White Gold</div>
+            <div class="sub2">Bright &amp; modern</div>
+          </div>
+          <div class="metal" data-metal="Rose Gold" onclick="pickMetal(this)">
+            <div class="swatch sw-rose"></div>
+            <div class="label">Rose Gold</div>
+            <div class="sub2">Soft &amp; romantic</div>
+          </div>
+        </div>
+        <div class="nav">
+          <button class="back" onclick="go(1)">Back</button>
+          <button class="cta" id="next2" disabled onclick="go(3)">Continue</button>
+        </div>
+      </section>
+
+      <!-- STEP 3 — design -->
+      <section class="step" data-step="3">
+        <p class="eyebrow">Step three</p>
+        <h1 class="q">Choose your <em>design.</em></h1>
+        <p class="sub">Signature settings from the Lovelri collection.</p>
+        <div class="grid" id="grid"></div>
+        <div class="nav">
+          <button class="back" onclick="go(2)">Back</button>
+          <button class="cta" id="next3" disabled onclick="go(4)">Continue</button>
+        </div>
+      </section>
+
+      <!-- STEP 4 — review -->
+      <section class="step" data-step="4">
+        <p class="eyebrow">Almost there</p>
+        <h1 class="q">Your <em>design.</em></h1>
+        <p class="sub">Bring it to life with a complimentary consultation at our Bay Street atelier.</p>
+        <div class="summary">
+          <div class="srow"><span class="k">Type</span><span class="v" id="rv-cat">—</span></div>
+          <div class="srow"><span class="k">Design</span><span class="v" id="rv-design">—</span></div>
+          <div class="srow"><span class="k">Metal</span><span class="v" id="rv-metal">—</span></div>
+        </div>
+        <div class="nav">
+          <button class="back" onclick="go(3)">Back</button>
+          <a class="cta" id="book" href="./bookings.html">Book a consultation</a>
+        </div>
+      </section>
+
+      <div class="foot">Have an account? <a class="login" href="./index.html">Log in</a></div>
+    </div>
+  </div>
+</div>
+
+<div class="claim" onclick="location.href='./bookings.html'"><span>Claim</span><b>10%</b><span>off</span></div>
+
+<script>
+  // ── Hero photography pulled from lovelri.com (Shopify CDN) ──────────────
+  const HEROES = [
+    "https://lovelri.com/cdn/shop/files/5C7A3785_kchmsv_03132025_228fbe96-4c7a-4ec7-93e4-2012c1b899de.jpg?v=1760423015&width=1800",
+    "https://lovelri.com/cdn/shop/files/DSC09788.jpg?v=1758552858&width=1800",
+    "https://lovelri.com/cdn/shop/files/5C7A3848.jpg?v=1760462039&width=1800",
+    "https://lovelri.com/cdn/shop/files/KBT24232.jpg?v=1760481604&width=1800"
+  ];
+  const layers=[document.getElementById('h0'),document.getElementById('h1'),document.getElementById('h2'),document.getElementById('h3')];
+  layers.forEach((l,i)=>{ l.style.backgroundImage="url('"+HEROES[i]+"')"; });
+  let hi=0;
+  setInterval(()=>{
+    layers[hi].classList.remove('on');
+    hi=(hi+1)%layers.length;
+    layers[hi].classList.add('on');
+  },6000);
+
+  // ── Build flow ──────────────────────────────────────────────────────────
+  const DESIGNS = [
+    ["capri-ring","Capri"],["aspen-ring","Aspen"],["burlington-ring","Burlington"],
+    ["dolomites-ring","Dolomites"],["fiji-ring","Fiji"],["florence","Florence"],
+    ["halifax","Halifax"],["hawaii-ring","Hawaii"],["kingston","Kingston"],
+    ["lake-louise-ring","Lake Louise"],["madrid","Madrid"],["mt-fuji-ring","Mt. Fuji"],
+    ["ontario","Ontario"],["sicily-lotus-ring","Sicily Lotus"],["switzerland","Switzerland"],
+    ["vancouver","Vancouver"],["verona-ring","Verona"],["versailles","Versailles"],
+    ["victoria","Victoria"],["whistler","Whistler"]
+  ];
+  const state = { step:1, cat:null, metal:null, design:null, designName:null };
+
+  const grid = document.getElementById("grid");
+  DESIGNS.forEach(([slug,name])=>{
+    const c=document.createElement("div");
+    c.className="card"; c.dataset.slug=slug; c.dataset.name=name;
+    c.innerHTML='<div class="thumb"><img src="rings/multi/'+slug+'_THREEQ_white.png" alt=""></div><div class="label">'+name+'</div>';
+    c.onclick=()=>pickDesign(c);
+    grid.appendChild(c);
+  });
+
+  function pickCat(el){
+    document.querySelectorAll('[data-cat]').forEach(c=>c.classList.remove('sel'));
+    el.classList.add('sel'); state.cat=el.dataset.cat;
+    document.getElementById('next1').disabled=false;
+  }
+  function pickMetal(el){
+    document.querySelectorAll('[data-metal]').forEach(c=>c.classList.remove('sel'));
+    el.classList.add('sel'); state.metal=el.dataset.metal;
+    document.getElementById('next2').disabled=false;
+  }
+  function pickDesign(el){
+    document.querySelectorAll('#grid .card').forEach(c=>c.classList.remove('sel'));
+    el.classList.add('sel'); state.design=el.dataset.slug; state.designName=el.dataset.name;
+    document.getElementById('next3').disabled=false;
+  }
+  function go(n){
+    state.step=n;
+    document.querySelectorAll('.step').forEach(s=>s.classList.toggle('active', +s.dataset.step===n));
+    document.getElementById('bar').style.width=(n*25)+'%';
+    document.getElementById('stepnum').textContent=n;
+    if(n===4){
+      document.getElementById('rv-cat').textContent=state.cat||'—';
+      document.getElementById('rv-design').textContent=state.designName||'—';
+      document.getElementById('rv-metal').textContent=state.metal||'—';
+      const params=new URLSearchParams({type:state.cat||'',design:state.designName||'',metal:state.metal||''});
+      document.getElementById('book').href='./bookings.html?'+params.toString();
+    }
+    window.scrollTo(0,0);
+  }
+</script>
+</body>
+</html>
