@@ -39,20 +39,6 @@ const EMAILJS_SERVICE_ID  = "service_ood0bss";
 const EMAILJS_TEMPLATE_ID = "template_zi2yxpb";
 const EMAILJS_PUBLIC_KEY  = "bRAPk3VW--Jj1UcpG";
 const GARY_EMAIL          = "garykcli@gmail.com";
-// ── GOOGLE SHEETS BACKEND ─────────────────────────────────────────────────────
-// Same Apps Script Web App endpoint the Hub (index.html) uses, so bookings made
-// from the public booking page AND the ring configurator land in the
-// Leads/Bookings tabs — not just in Gary's inbox.
-const SHEETS_URL = "https://script.google.com/macros/s/AKfycbzlx-_5h1iIPA38oiqAW3ar1iZqD_b8BCH3PPu79jsl1U31xWEkRS3qcZCo0e_08iQ/exec";
-function nowET(){ return new Date().toLocaleString("sv-SE",{timeZone:"America/Toronto"}).replace(",","") + " EST"; }
-async function pushToSheet(tab, item){
-  if(!SHEETS_URL) return;
-  try{
-    await fetch(SHEETS_URL,{ method:"POST", mode:"cors", headers:{"Content-Type":"text/plain;charset=utf-8"}, body:JSON.stringify({ tab, item:{ ...item, createdAt:nowET() } }) });
-  }catch(err){ console.error("Sheets push failed (booking still emailed):", err); }
-}
-// Selections carried over from the ring configurator (?type=&design=&metal=).
-const CONFIG = (()=>{ try{ const p=new URLSearchParams(window.location.search); const type=p.get("type")||"", design=p.get("design")||"", metal=p.get("metal")||""; return (type||design||metal)?{type,design,metal}:null; }catch(e){ return null; } })();
 // ── DESIGN TOKENS ─────────────────────────────────────────────────────────────
 const B = {
   white:"#ffffff", offwhite:"#fafaf8", black:"#1a1a1a",
@@ -256,12 +242,7 @@ function BookingFlow({onDone}) {
   const [slot,setSlot]   = useState(null);
   const [month,setMonth] = useState(new Date().getMonth());
   const [year,setYear]   = useState(new Date().getFullYear());
-  const [form,setForm]   = useState({
-    name:"", email:"", phone:"",
-    occasion: CONFIG && /engagement/i.test(CONFIG.type) ? "Engagement" : "",
-    budget:"",
-    notes: CONFIG ? `From configurator → Design: ${CONFIG.design||"—"} · Metal: ${CONFIG.metal||"—"} · Type: ${CONFIG.type||"—"}` : "",
-  });
+  const [form,setForm]   = useState({name:"",email:"",phone:"",occasion:"",budget:"",notes:""});
   const [busy,setBusy]   = useState(false);
   const [calLink,setCalLink] = useState(null);
   const today = new Date(); today.setHours(0,0,0,0);
@@ -279,14 +260,6 @@ function BookingFlow({onDone}) {
       notes:form.notes, occasion:form.occasion, budget:form.budget,
     };
     STORE = [bk,...STORE];
-    // Log to Google Sheets — Bookings tab + a matching Leads row (mirrors the Hub).
-    pushToSheet("Bookings", bk);
-    pushToSheet("Leads", {
-      id:bk.id, name:bk.name, email:bk.email, phone:bk.phone,
-      occasion:bk.occasion||"", budget:bk.budget||"", style:"",
-      source: CONFIG ? "Configurator → Booked" : "Direct Booking",
-      status:"booked", time:"Just now", notes:bk.notes||"",
-    });
     // Generate calendar link immediately
     const cl = makeICS(bk, TEAM.find(t=>t.id===cons.id)?.name||"Team");
     setCalLink(cl);
@@ -701,53 +674,4 @@ function App() {
       <div style={{background:B.white,borderBottom:`1px solid ${B.border}`,height:52,display:"flex",alignItems:"center",padding:"0 20px",gap:12,position:"sticky",top:0,zIndex:100}}>
         <img src="https://lovelri.com/cdn/shop/files/LOVELRI-V2-Black.png?v=1760486718&width=302" alt="Lovelri" style={{height:14}} onError={e=>e.target.style.display="none"}/>
         <div style={{width:1,height:18,background:B.border}}/>
-        <span style={{fontFamily:B.sans,fontSize:11,letterSpacing:"0.18em",textTransform:"uppercase",color:B.gray}}>{mode==="book"?"Book a Consultation":"Bookings Admin"}</span>
-        <div style={{marginLeft:"auto",display:"flex",gap:1}}>
-          {[["book","Book"],["admin","Admin ⚙"]].map(([m,l])=>(
-            <button key={m} onClick={()=>setMode(m)} style={{padding:"6px 14px",border:`1px solid ${B.border}`,background:mode===m?B.black:B.white,color:mode===m?B.white:B.gray,fontFamily:B.sans,fontSize:12,letterSpacing:"0.08em",textTransform:"uppercase",cursor:"pointer",transition:"all 0.15s"}}>{l}</button>
-          ))}
-        </div>
-      </div>
-      {mode==="book"&&(
-        <div className="lv-split" style={{display:"flex",alignItems:"stretch"}}>
-          <HeroRail/>
-          <div className="lv-formcol" style={{flex:1,minWidth:0,background:B.offwhite}}>
-            <div className="lv-pad" style={{maxWidth:520,margin:"0 auto",padding:"44px 40px 64px"}}>
-              <div style={{textAlign:"center",marginBottom:28,paddingBottom:24,borderBottom:`1px solid ${B.border}`}}>
-                <div style={{fontFamily:B.sans,fontSize:11,letterSpacing:"0.25em",textTransform:"uppercase",color:B.gray,marginBottom:10}}>320 Bay Street · Toronto</div>
-                <h1 style={{fontFamily:B.serif,fontSize:32,fontWeight:400,color:B.black,marginBottom:8,lineHeight:1.15}}>Begin Your<br/><em style={{fontStyle:"italic"}}>Lovelri Journey</em></h1>
-                <p style={{fontFamily:B.sans,fontSize:15,color:B.gray,lineHeight:1.75,maxWidth:360,margin:"0 auto"}}>Private consultations with our master jewellers, trained at Cartier, Tiffany & Co., and Van Cleef & Arpels.</p>
-              </div>
-              <BookingFlow onDone={handleDone}/>
-            </div>
-          </div>
-        </div>
-      )}
-      {mode==="admin"&&(
-        <div style={{maxWidth:560,margin:"0 auto",padding:"28px 16px 60px"}}>
-          <div style={{marginBottom:24}}>
-            <Lbl c="Sales Team"/>
-            <h1 style={{fontFamily:B.serif,fontSize:30,fontWeight:400,color:B.black,lineHeight:1.15,marginBottom:4}}>Bookings<br/><em style={{fontStyle:"italic"}}>Dashboard</em></h1>
-            <p style={{fontFamily:B.sans,fontSize:14,color:B.gray,lineHeight:1.7}}>Tap any booking to expand, confirm, cancel, or add to your calendar.</p>
-          </div>
-          <AdminDash bookings={bookings} onStatus={handleStatus}/>
-        </div>
-      )}
-      <style>{`
-        *{box-sizing:border-box}
-        @media(max-width:880px){
-          .lv-split{flex-direction:column !important}
-          .lv-herorail{flex:none !important;min-height:34vh !important}
-          .lv-pad{padding:32px 20px 56px !important}
-        }
-      `}</style>
-    </div>
-  );
-}
-
-
-const root = ReactDOM.createRoot(document.getElementById("root"));
-root.render(<App />);
-</script>
-</body>
-</html>
+        <span style={{fontFamily:B.sans,fontSize:11,letterSpacing:"0.18em",textTransform:"uppercase",color:B.gray}}>{mode==="book"?"Book a Consultation":"Bookings Admin"}
